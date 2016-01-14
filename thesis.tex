@@ -1,0 +1,62 @@
+\documentclass[10pt,letterpaper]{report}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{algorithm}
+\usepackage{algpseudocode} 
+\usepackage{subcaption}
+\usepackage[font=small]{caption}
+\usepackage{url}
+\usepackage[english]{babel}
+
+%\usepackage{times}
+%\usepackage{venturis2}
+
+\linespread{1.0}
+\title{Proposal \\ Towards a Framework for DHT Distributed Computing}
+\author{Andrew Rosen}
+\begin{document}
+	
+	
+	
+	\maketitle
+	
+	
+	
+	
+	\setcounter{tocdepth}{4}
+	\tableofcontents
+	\newpage
+	
+	\begin{abstract}
+		Distributed Hash Tables (DHTs) are protocols and frameworks used by peer-to-peer (P2P) systems.
+		They are used as the organizational backbone for many P2P file-sharing systems due to their scalability, fault-tolerance, and load-balancing properties.
+		These same properties are highly desirable in a distributed computing environment, especially one that wants to use heterogeneous components.
+		
+		We show that DHTs can be used not only as the framework to build a P2P file-sharing service, but as a P2P distributed computing platform.
+		We propose creating a P2P distributed computing framework using distributed hash tables, based on our prototype system ChordReduce.
+		This framework would make it simple and efficient for developers to create their own distributed computing applications.
+		Unlike Hadoop and similar MapReduce frameworks, our framework can be used both in both the context of a datacenter or as part of a P2P computing platform.  
+		This opens up new possibilities for building platforms to distributed computing problems.
+		
+		One advantage our system will have is an autonomous load-balancing mechanism.
+		Nodes will be able to independently acquire work from other nodes in the network, rather than sitting idle.
+		More powerful nodes in the network will be able use the mechanism to acquire more work, exploiting the heterogeneity of the network.
+		
+		By utilizing the load-balancing algorithm, a datacenter could easily leverage additional P2P resources at runtime on an as needed basis.
+		Our framework will allow MapReduce-like or distributed machine learning platforms to be easily deployed in a greater variety of contexts.
+		
+		
+	\end{abstract}
+	
+	\include{intro}
+	\include{background}
+	\include{prevresearch}
+	
+	
+	\bibliography{notes,dht,mapreduce,voronoi,dns,botnets,mine}
+	\bibliographystyle{plain}
+\end{document}
