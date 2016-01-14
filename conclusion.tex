@@ -1,0 +1,36 @@
+\chapter{Conclusion}
+\label{chapter:conclusion}
+Distributed Hash Tables (DHTs) are extremely powerful frameworks for distributed applications that are based off the simple and powerful hash tables.
+Because DHTs were designed with P2P applications in mind, DHTs are scalable, fault-tolerant, and load-balancing.
+These are exactly the qualities needed in a distributed computing framework.
+
+We created a new DHT called VHash, which was based off the relationship we discovered between the DHTs and Voronoi tessellation.
+VHash is a DHT that operates over a multidimensional space, which allows the embedding of arbitrary metrics into this space.
+We showed that we can optimize latency in VHash to obtain faster lookup speeds than a traditional DHT, such as Chord.
+The key to VHash is our Distributed Greedy Voronoi Heuristic (DGVH).
+DGVH is a sufficiently accurate and fast approximation of Delaunay triangulations.
+Aside from its application in VHash, DGVH's applications extend to other areas, such as wireless sensor networks.
+
+We have also shown in the previous chapters that we were able to create a prototype distributed computing application \cite{chordreduce} based on the Chord DHT \cite{chord}.
+ChordReduce, as we named it, demonstrated how MapReduce could be performed on the Chord distributed hash table.
+As a DHT, ChordReduce is completely decentralized and fault-tolerant, able to handle  nodes entering and leaving the network during churn.
+We demonstrated that ChordReduce can efficiently distribute a problem whilst undergoing significant churn and achieve a significant speedup.
+
+During our experiments with ChordReduce, we found an anomaly in which a computation undergoing a significantly high level of churn finished twice as fast than when no churn was involved.
+This implied to us that there the churn was effectively shuffling around the nodes such that nodes with no work were taking work from nodes with large amounts of work.
+We want to use this implication  develop a more intelligent autonomous load-balancing mechanism.
+Such a mechanism would allow underworked nodes to steal work from overworked nodes in the network.
+
+Part of autonomous load-balancing will involve exploiting heterogeneity in the network.
+We can do this by having more powerful nodes take a proportionally higher amount of work.
+This involves a process we dubbed \textit{mashing}, which we originally used to analyze the Sybil attack on DHTs \cite{sybil-analysis}.
+
+
+Based on the work we have completed, we proposed creating a framework, called UrDHT, and use it to create a distributed computing. 
+As the name implies, UrDHT is meant to be the prototypical DHT, from which we can derive all other DHTs.
+This framework would make it easy for developers to create not only new DHTs, but new distributed and P2P applications.
+The application that we plan on creating with UrDHT is a Distributed Computing framework based on ChordReduce.
+
+Our new framework will be able to handle more than just MapReduce problems and incorporate an autonomous load-balancing mechanism,
+Developers could use our framework to effortlessly organize a disparate set of nodes into a functional distributed computing system and run their own applications.
+Our framework could be used in numerous contexts, be it P2P or a data center.

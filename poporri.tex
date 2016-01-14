@@ -1,0 +1,345 @@
+
+\chapter{Previous Writing to incorporate above}
+
+
+
+
+
+\begin{itemize}
+	\item Build off of pond, make a \textit{completely} decentralized means of network programing (chordReduce)
+	\item Create a method of automatic load balancing via
+	\begin{itemize}
+		\item inducing churn (Me: ChordReduce)
+		\item injecting nodes (Me: Sybil Analysis)
+		\item Replica creation (not me: IRM)
+	\end{itemize}
+	\item Embedding metrics into the DHT (VHash)
+    \begin{itemize}
+        \item Geographic location (CAN)
+        \item latency 
+    \end{itemize}
+\end{itemize}
+
+
+
+\section{What I need to cover}
+
+\begin{itemize}
+	\item What is my problem
+	\item Why is it interesting
+\end{itemize}
+
+
+\section{things I have discovered and want to further explore}
+
+
+\subsection{ChordReduce}
+I found that churn can help out a network in ChordReduce.
+It works like this-
+In ChordReduce, we hypothesize this was due to the number of data pieces (larger) vs the number of workers (smaller).
+There were more workers than there were pieces of data, so some workers ended up with more data than others in the initial configuration.
+This means that there was some imbalance in the way data was distributed among nodes.
+This was \textit{further} exacerbated by small number of workers being assigned locations with a hash function.
+This leads to some nodes having larger swaths of responsibility than others.
+
+Given this setup, without any churn, the operation would be:
+Workers get triggered, they start working, and the ones with little work finish their work quickly, and the network waits for the node with a bunch of work.
+
+It's important to note here that the work in ChordReduce was performed atomically, a piece at a time.
+When a node was working on a piece, it informed it's successor, then informed them when it finished.
+These pieces of work were also small, possibly too small.
+
+Under our induced churn, we had the nodes randomly fail and  immediately join under a new ip.
+The failure rates were orders of magnitude higher than what would be expected in a ``real'' (nonexperimental) environment.
+The following possibilities could occur:
+\begin{itemize}
+	\item An node without any active jobs leaves.
+	It dies and and comes back with a new port chosen.
+	This new ID has a higher chance of landing in a larger region of responsibility.
+	In other words, it has a (relatively) higher chance of moving into an space where it becomes acquires responsibilty for enqueued jobs.
+	The outcomes of this are:
+	\begin{itemize}
+		\item The node rejoins in a region are doesn't acquire any new jobs.
+		This has no impact on the network (Case I).
+		\item The node rejoins in a region that has a jobs waiting to be done.
+		It acquires some of these jobs.
+		This speeds up performance (Case II).
+	\end{itemize}
+	\item A node with active jobs dies.
+	It rejoins in a new space.
+	The jobs were small, so not too much time is lost on the active job, and the enqueued jobs are backed up and the successor knows to complete them.
+	However, the node can rejoin in a more job-heavy region and acquire new jobs.
+	The outcomes of this are:
+	\begin{itemize}
+		\item A minor negative impact on runtime and load balancing (since the successor has more jobs to deal with) (Case III).
+		\item A possible counterbalance in load balancing by acquiring new jobs off a busy node (Case Doesn't matter).
+	\end{itemize}
+\end{itemize}
+
+Now here's the trick.
+The longer the nodes work on the jobs, the more nodes finish and have no jobs.
+This means as time increases, so do the occurrences that Case I and II occur, with a bit more weight on Case II.
+
+
+What have we learned:
+\begin{itemize}
+	\item Shooting nodes as a example to motivate other nodes works or
+	\item Even the smallest effort of trying to dynamically load  balance, such as rebooting random nodes to new locations, has benefits for runtime.
+	Our method is a horrible approximation of dynamic load-balancing, and it still shows improvement.
+\end{itemize}
+
+
+
+We still have to verify the existence of this phenomena in an independent experiment.
+Besides that, we still have the following questions:
+Can I stochastically model it?
+Does it work for other problems?
+
+
+This ties into the next bit.
+\subsection{Sybil}
+We discovered injection is easy and simple in P2P networks.
+I hypothesize we can Sybil attacks for improving load balancing on demand.
+Perhaps we need an entirely new node type.
+
+\subsection{VHash}
+Arguablely all DHT's are Voronoi tessilations or can be mapped to.
+
+
+Hops is an estimate for time, not necessarily a good one!
+We can embed latency in the DHT.
+We can try embedding geographic location in as well using
+
+
+
+
+\subsection{Pond}
+P2P can be used for decentralized volenteer computing.
+
+
+
+
+
+\section{In WSNs}
+http://users.cis.fiu.edu/~carbunar/boundary.pdf
+
+
+\section{DHTs as a volunteer Platform}
+Rather than rely on a centralized administrative source,
+
+
+Decentralized resource discovery.
+The system is organized using a P2P system built on Brunet \cite{brunet}.
+
+
+
+
+
+\subsection{PonD}
+
+Middleware platforms like BOINC \cite{anderson2004boinc} HTCondor\footnote{Formerly Condor; the name was changed after a copyright dispute.} \cite{thain2005distributed} provide a way to push distributed computing tasks to idle CPUs.
+These platforms effectively let users donate their unused processing power to some scientific collaberative effort.
+
+While the work is distributed, the organizational backbone  is centralized.
+Scalability is the primary issue here.
+
+
+On-demand computing-as-a-resource is a thing and it needs to be scalable and fault tolerant.
+P2P paradigms do that.
+
+PonD \cite{lee2012pond} does decentralized resource discovery and centralized job management/centralized scheduler.
+``Decouples resource discovery from job execution/monitoring.''
+Scheduling time is $ O(\log N) $, for $N$ resouces in the pool.
+
+\subsubsection{Improvements}
+Why not decentralized or partially decentralized job management?
+
+
+\section{Why DHTs for distributed computing?}
+
+\cite{malkhi2001viceroy} -  Between congestion, cost of join/leaves, and lookup time there are tradeoffs.  
+Optimizing for two can be done but has bad cost.
+For example, a balanced binary tree has congestion at root.
+
+
+\section{MapReduce}
+
+%copied from CHRONUS
+Google's MapReduce \cite{mapreduce} paradigm has rapidly become an integral part in the world of data processing and is capable of efficiently executing numerous Big Data programming and data-reduction tasks.  
+By using MapReduce, a user can take a large problem, split it into small, equivalent tasks and send those tasks to other processors for computation.  
+The results are sent back to the user and combined into one answer.  
+MapReduce has proven to be an extremely powerful and versatile tool, providing the framework for using distributed computing to solve a wide variety of problems, such as distributed sorting and creating an inverted index \cite{mapreduce}. 
+
+At it's core, MapReduce \cite{mapreduce} is a system for process key/value pairs, a that statement that equally describes DHTs.
+However, MapReduce operates over a different set of assumptions \cite{hadoopAssumptions} than DHTs.
+MapReduce platforms are highly centralized and tend to have single points of failure\cite{shvachko2010hadoop} as a result.   
+A centralized design assumes that the network is relatively unchanging and does not usually have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
+Finally deploying these systems and developing programs for them has an extremely steep learning curve.
+
+If we make MapReduce operate under the same assumptions as a DHT, we have effectively further abstracted the MapReduce paradigm and created a system that can operate both in a traditional large datacenter or as part of a P2P network.
+The system would be highly resistant to failures at any point, scalable, and automatically load-balance. 
+The administrator can add any number of heterogeneous nodes to the system to get it operate.
+
+\subsection{Current MapReduce DHT/P2P combos}
+There have been a few implementations combining MapReduce with a P2P framework, in varying capacities.  
+I will present two here, as well as my own implementation, ChordReduce.
+
+\subsubsection{P2P-MapReduce}
+Marozzo et al. \cite{marozzo2012p2p} investigated the issue of fault tolerance in centralized MapReduce architectures such as Hadoop.  
+They focused on creating a new P2P based MapReduce architecture built on JXTA called P2P-MapReduce.  
+P2P-MapReduce is designed to be more robust at handling node and job failures during execution.
+
+Rather than use a single master node, P2P-MapReduce employs multiple master nodes, each responsible for some job.  
+If one of those master nodes fails, another will be ready as a backup to take its place and manage the slave nodes assigned to that job.  
+This avoids the single point of failure that Hadoop is vulnerable to. Failures of the slave nodes are handled by the master node responsible for it.
+
+Experimental results were gathered via simulation and compared P2P-MapReduce to a centralized framework. 
+Their results showed that while P2P-MapReduce generated an order of magnitude more messages than a centralized approach, the difference rapidly began to shrink at higher rates of churn.  
+When looking at actual amounts of data being passed around the network, the bandwidth required by the centralized approach greatly increased as a function of churn, while the distributed approach again remained relatively static in terms of increased bandwidth usage. 
+They concluded that P2P-MapReduce would, in general, use more network resources than a centralized approach. 
+However, this was an acceptable cost as the P2P-MapReduce would lose less time from node and job failures \cite{marozzo2012p2p}.
+
+\subsubsection{Parralel Processing Framework on a P2P System}
+Lee et al.'s work \cite{leemap} draws attention to the fact that a P2P network can be much more than a way to distribute files and demonstrates how to accomplish different tasks using Map and Reduce functions over a P2P network.  
+Rather than using Chord, Lee et al. used Symphony \cite{symphony}, another DHT protocol with a ring topology.  
+To run a MapReduce job over the Symphony ring, a node is selected by the user to effectively act as the master.  
+This ad-hoc master then performs a bounded broadcast over a subsection the ring.  
+Each node repeats this broadcast over a subsection of that subsection, resulting in a tree with the first node at the top.  
+
+Map tasks are disseminated evenly throughout the tree and their results are reduced on the way back up to the ad-hoc master node.  
+This allows the ring to disseminate Map and Reduce tasks without the need for a coordinator responsible for distributing these tasks and keeping track of them, unlike Hadoop.  
+Their experimental results showed that the latency experienced by a centralized configuration is similar to the latency experienced in a completely distributed framework.
+
+
+
+
+
+\subsubsection{ChordReduce}
+ChordReduce is designed as a more abstract framework for MapReduce, able to run on any arbitrary distributed configuration.
+ChordReduce leverages the features of distributed hash tables to handle distributed file storage, fault tolerance, and lookup.  
+ChordReduce  was designed to ensure that no single node is a point of failure and that there is no need for any node to coordinate the efforts of other nodes during processing.  
+
+
+
+\subsection{Experiment Description: Comparison of MapReduce paradigm on different DHTs}
+In order to test MapReduce over a DHT, I will do the following:
+\begin{itemize}
+	\item Implement CAN \cite{can}, Pastry \cite{pastry}, Chord \cite{chord}, Kademlia \cite{kademlia}, VHash, and ZHT \cite{li2013zht} /similar
+	\begin{itemize}	
+		\item This covers different geometries with different base parameters.
+		\item This also necessitates the creation of an extensible DHT framework.
+		\item  The DHT should be extended with more powerful search functionality (see distributed database below), and built-in policies for virtual nodes.
+		
+	\end{itemize}
+	\item Compare results with each other and a traditional MapReduce platform, such as Hadoop.
+	\item Certain DHTs may be better suited to different problem formulation
+	
+\end{itemize}
+
+
+
+%\section{High End Computing}
+%PonD?
+%\subsection{Metadata Management}
+%\subsection{Robustness}
+
+%\subsection{Experiment Description:}
+
+%\section{Graph Processing on a DHT} 
+%Lookup Graphlab
+%\subsection{Embedding}
+
+%\subsection{Experiment Description:}
+%\subsection{Distribute the work for solving a graph on a DHT}
+%\subsection{Comparison to well established or state of the art methods}
+
+
+
+%\section{Machine Learning Problems on A DHT}
+
+
+%\subsubsection{Bayesian Learning}
+%%\subsection{Experiment Description:}
+%Take MapReduce machine learning algorithm
+
+\section{Distributed ``Databases'' and Complex Queries}
+
+
+DHTs run off the assumption that you know what you want to find.
+I'm looking for node responsible for this key, becuase I need the associated value.
+
+Complex queries and databases are used to find stuff based on attributes, and since you're asking, you don't know what (primary) keys you need.
+
+
+Want to find all files that match the criteria?
+
+
+
+
+
+Simple: Find all files with ``author = John Smith''.  Idiot solution, assign ``author = John Smith'' a hash key,  it's value is a file with all the files with the (that doesn't scale) 
+
+
+Complex: Processing database queries.   Find all files with age < 20 and niceness >12
+
+One proposed soultion is to use montonic (order-preserving) hash functions \cite{triantafillou2004towards}, but monotonic functions don't have randomness and uniformity.
+
+
+Could embed as dimension with VHash!
+
+
+See lee pond for their multi-tree broadcast which they got from other papers \cite{lee2012pond}
+
+
+
+Koorde?HpyerChord
+Each node has it's own subset chord ring
+
+Query to a space, then within the space, deluge and spam the query which gives a reduce path
+\subsection{Paper summaries}
+
+P2P systems have two limitations: scaling and complex queries \cite{harren2002complex}.  
+I would also say robustness.
+DHTs have solved the issue of sclaing for the most part but have a significantly limitted querying capability:  only native-exact matches are supported.  
+
+A database is to be avoided since most users will not want to manage a database.  
+The authors wish to focus purely on the abstract relational algebra operations, since the objective is only query processing.
+
+The authors proposed extending the DHT API.
+The data storage layer needs a way to iterate thru the data objects it has stored.
+Each object needs a unique local identifier and the data itself, as well as a way of accessing stored metadata for each object. 
+
+
+A big issue is supporting the range queries, since exact matches can be solved in many different ways.
+One proposed soultion is to use montonic (order-preserving) hash functions \cite{triantafillou2004towards}, but monotonic functions don't have randomness and uniformity.
+
+Triantafillou et al.\ propose keying the ID of file off the primary key of a relation and using an order-preserving hash function for each of the other attributes.\footnote{This technique was designed only for \texttt{ints}}
+For each attribute $DA_i$, the entire keyspace is partitioned into $s_i = \frac{2^{m}}{|DA_{i}|}$ and the monotonic hash function $h_i$ for $DA_i$ is defined as  $h_{i}(a_{i})=\lceil (a_{i} - \min(DA_i)) \times s_i \rceil$ for each individual attribute $a_i$  (may have botched terminology).
+
+
+When a tuple with key $t$ is \texttt{put} on the network, it's stored at \texttt{successor(t)}.  It is then replicated at each peer responsible for each attribute, which is found using the order-preserving hash functions.
+
+
+\subsubsection*{PHT}
+%Abstract level summary.  What can it do, what can't it do.
+
+
+\section{Semiautomagic Load Balancing}
+What: Automagic load balancing.  One of two possiblilities:  inject new node into region or create new virtual node in region. 
+Requires Where, when, and how/which
+
+\begin{itemize}
+    \item Where: Can be answered with Sybil selection.
+    \item When:  Can be answered with IRM for hot spots.  Can be answered with neighbor monitoring
+    \item How:  The remaining peace
+    \item Symphony demonstrates how to estimate $n$
+\end{itemize}
+
+2/28: joiner asks parent holds the most, who asks his log n nodes who holds the most
+
+
+Need equation for optimal number of replicas in the network.
+
+\section{Resources}
+\subsection{Planetlab}
+\subsection{Local Cluster}

@@ -1,0 +1,112 @@
+%TODO: godfrey2005heterogeneity
+\chapter{Proposed Work}
+\label{chapter:experiments}
+In this chapter, we will present the three parts we propose for my research.
+Each part can be completed independently of each other, but are related as to be much more beneficial to complete together.
+
+\section{UrDHT: Our DHT Framework}
+As mentioned in Chapter \ref{chapter:intro}, our plan is to create a highly configurable and easy to use DHT framework based off the DHT abstractions we have discovered.
+Rather than making a fully-functional DHT application on our own, we will be making a minimally functional DHT framework that will be easy to fork for a variety of applications.
+
+We call this proposed framework UrDHT, \textit{ur-} being the Germanic prefix denoting primal, or primitive, or original.
+UrDHT is a project that presents a minimal and extensible implementation for all the essential components for a DHT: the different aspects for a protocol definition, the storage of values, and the networking components.
+Every DHT has the same components, but there has yet to be an all-encompassing framework that clearly demonstrates this.
+
+\begin{itemize}
+	\item This will be done jointly with Brendan and anyone else who is interested in creating a completely open source framework for DHTs.
+	\item In particular, my focus on the project will be implementing each of the DHTs I plan on using to test Distributed Computing on DHTs.
+	This will require a formal description of each DHT and their components.
+	\item The goal of this step is \textbf{not only} to create a DHT, but to create an easily extensible abstract framework for DHTs.
+	\item The abstraction comes from implementing the relationship we found between DHT spheres of responsibility and Voronoi tessellations.  
+	This is the key point of the project.
+	Our previous research \cite{vhash} has led us to assert that there is a mathematical formulation for different aspects which every DHT shares in common, such as a distance metric and closeness definition.
+	
+\end{itemize}
+
+
+There are two clear goals of this project: the mathematical definitions for distributed hash tables and the UrDHT application itself.
+The UrDHT project is probably the stronger goal, since it is a fully fledged and novel framework.
+Furthermore, as an open-source application, we it will be useful to many developers since it will provide an orderly way to create new DHTs and DHT-based applications.
+
+The mathematical formulations, on the other hand, serve as novel formulations and definitions of DHTs.
+They provide new insight, but do not serve as a new application or framework.
+However, the formulations can and should be presented as an atomic unit of research.
+
+
+\section{Distributed DHT Computing}
+
+The next step is to use the UrDHT framework to re-implement ChordReduce.
+Our goal is a DHT based platform for solving embarrassingly parallel problems using DHTs.
+The steps involved in this are listed below.
+\begin{itemize}
+	\item We will use UrDHT to implement a few of the more popular DHTs.
+	\begin{itemize}
+		\item We want to compare each of the DHTs to see if there is a difference between using one or another for distributed computing.
+		\item Using UrDHT for all the implementations will minimize the non-protocol differences between each DHT, which will allow for as fair a comparison as possible.
+		\item Additionally this will serve as an example of how to implement our framework. 
+	\end{itemize}
+	\item Implement a distributed computing mechanism on each of the implemented DHTs for solving computing tasks.
+	\begin{itemize}
+		\item The emphasis of our distributed computing application is robustness and fault-tolerance.
+	\end{itemize}
+	\item Test each framework using a variety of embarrassingly parallel problems, such as:
+	\begin{itemize}
+		\item Brute-force cryptanalysis.
+		\item MapReduce problems.
+		\item Monte-Carlo computations.
+	\end{itemize}
+\end{itemize}
+
+Here there is one very clear goal.
+This would be a reimplementation of our original ChordReduce paper with completely new problems and new results.
+
+
+
+\section{Autonomous Load Balancing}
+As discussed earlier, it would be highly beneficial for each node to take advantage of their processing power.
+The most straightforward way of doing this in a DHT context is to have more powerful nodes acquire a larger stretch of the network space.
+The goals here are straightforward:
+
+\begin{itemize}
+	\item Further establish that the ``strategy'' of randomly inducing churn improves computational speeds.
+	If we successfully establish it exists,  we must determine if the process can be modeled.%stochastically modeled or otherwise predicted via theoretical analysis.
+	\item Create a processor scoring mechanism for creating virtual nodes.  
+	Essentially, we need to create a mechanism to estimate how many virtual nodes a particular piece of hardware can handle.
+	%\begin{itemize}
+	%	\item This score is a relative score, since the amount of work a node can carry is determined by the amount other nodes can carry.
+	%	\item Furthermore, the score should also be a function of the node's range, since the amount of work is dictated by the amount of range ``owned'' the node. 
+	%	This means creating the first virtual node does not double the amount of work the node has.
+	%	\item This is compared to the scores of neighboring nodes  of all the node's replicas and should give a gauge of the node's relative  power.
+	%\end{itemize}
+	\item Use this score in conjunction with various implemented strategies for autonomous load-balancing to find the most effective.
+	A few of the strategies we will examine:
+	\begin{itemize}
+		\item Passive load balancing -  Here, each node looks at range of its Sybil locations.
+		Based on its score, it choses the $k$ largest locations and injects Sybils.
+		No actual communication with other nodes is used.
+		\item IRM \cite{irm} based  strategy.
+		\item Invitation based -  Here we flip the strategy around.
+		If the node detects its region is too large or it has too much work; it invites other nodes to help.
+		The nodes look at the range in question and offer to help if they have a Sybil that fits and are not overloaded themselves.
+		The inviter looks at the offers of help and selects the best candidate.
+		\item Another invitation based scheme is that each of the nodes submits itself as a potential filler to each of its Sybil locations.
+		The nodes that would be affected by this node's entry add it to a list of fillers. 
+		When the node decides it needs help, it selects one of the fillers to join.
+		These invitation based schemes have the advantage of nodes having control of their range. 
+		The question is it ``turtles all the way down'' here?
+		Do we let the replicas also call for help?
+		\item Using the force spring model used in VHash \cite{vhash}.
+	\end{itemize}
+	%\item This may necessitate new node types, such as tracker nodes which exist only to eavesdrop on traffic loads.
+	%\item We also plan on modifying virtual nodes so they do not take on additional routing c.  
+	%We want to see how this change will impact the system.
+	\item We must determine under which contexts this kind of highly responsive load-balancing can be used. 
+	Is it only useful during distributed computation, or is it useful in file-sharing as well?
+	
+	
+\end{itemize}
+
+Once we have created the various load balancing strategies, we would need to implement them and test them against each other.
+Randomly induced churn would serve as a baseline strategy.
+We can then present which strategy is most effective at evenly spreading the network's load.
+
