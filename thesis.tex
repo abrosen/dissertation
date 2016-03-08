@@ -1,4 +1,4 @@
-\documentclass[11pt,letterpaper,titlepage]{report}
+\documentclass[11pt,letterpaper]{report}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -21,12 +21,30 @@
 \doublespacing
 
 \title{\textsc{Towards a Framework for DHT Distributed Computing}}
-\author{\textsc{Andrew Rosen}}
+\author{\textsc{Andrew Benjamin Rosen}}
 \date{}
 
 \begin{document}
 	
-	\begin{abstract}
+	
+
+	\pagestyle{empty}
+
+	\begin{center}
+		%	\includegraphics[width=0.15\textwidth]{example-image-1x1}\par\vspace{1cm}
+		{\scshape Towards a Framework for DHT Distributed Computing\par}
+		\vspace{0.5cm}
+		{by\par}
+		\vspace{0.5cm}
+		{\scshape Andrew Benjamin Rosen\par}
+		\vspace{0.5cm}
+		{Under the Direction of Dr.~Anu G.~Bourgeois, PhD \par}
+		\vspace{0.5cm}
+		{\scshape Abstract \par}
+		
+	\end{center}
+	
+	
 		Distributed Hash Tables (DHTs) are protocols and frameworks used by peer-to-peer (P2P) systems.
 		They are used as the organizational backbone for many P2P file-sharing systems due to their scalability, fault-tolerance, and load-balancing properties.
 		These same properties are highly desirable in a distributed computing environment, especially one that wants to use heterogeneous components.
@@ -44,26 +62,52 @@
 		By utilizing the load-balancing algorithm, a datacenter could easily leverage additional P2P resources at runtime on an as needed basis.
 		Our framework will allow MapReduce-like or distributed machine learning platforms to be easily deployed in a greater variety of contexts.
 		
+		\vfill
 		
-	\end{abstract}
 
-	\maketitle
+		% Bottom of the page
+		{\textsc{Index Words}: Distributed Hash Tables, P2P, Voronoi, Delaunay, Networking}
+	
 	
 	\newpage 
+	\begin{titlepage}
+		
+		\begin{center}
+			%	\includegraphics[width=0.15\textwidth]{example-image-1x1}\par\vspace{1cm}
+			{\scshape Towards a Framework for DHT Distributed Computing\par}
+			\vspace{5cm}
+			{by\par}
+			\vspace{5cm}
+			{\scshape Andrew Benjamin Rosen\par}
+			
+			\vfill
+			A Dissertation Submitted in Partial Fulfillment of the Requirements for the Degree of\\
+			Doctor of Philosophy in Computer Science\\
+			in the College of Arts and Sciences\\
+			Georgia State University\\
+			2016
+		\end{center}
+	\end{titlepage}
+	
+	
 	
 	
 	\null\vfill
-	\centering{
-	Copyright by \\
-	Andrew Benjamin Rosen\\
-	\begin{cjhebrew}
-		.hnwK
-	\end{cjhebrew}\\
-	2016}
+	\begin{center}
+		
+		Copyright by \\
+		Andrew Benjamin Rosen\\
+		\begin{cjhebrew}
+			.hnwK
+		\end{cjhebrew}\\
+		2016
+	\end{center}
 	\newpage
 	
+	\pagenumbering{roman}
 	
-	\newpage
+	\chapter*{Dedication}
+	
 	\chapter*{Acknowledgements}	
 	
 	
@@ -80,8 +124,8 @@
 
 	
 	\pagenumbering{arabic}
-	%\include{intro}
-	%\include{background}
+	\include{intro}
+	\include{background}
 	%\include{prevresearch}
 	%\include{urdht}
 	
