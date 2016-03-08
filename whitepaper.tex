@@ -121,6 +121,7 @@ To summarize our contributions:
 	We also implement a DHT in a Euclidean geometry and a hyperbolic geometry represented by a Poincar\`{e} disc (Section \ref{sec:implement}).
 %	We also discuss how we can use UrDHT to run subnetworks as a service.
 	\item We conduct experiments that show building DHTs using UrDHT produced efficiently routable networks, regardless of the underlying geometry(Section \ref{sec:experiments}). 
+	\item We present some efforts and projects that are similar to our own (Section \ref{sec:related}).
 	\item We discuss the ramifications of our work and what future work is available (Section \ref{sec:future}).
 \end{itemize}
 
@@ -687,7 +688,31 @@ This presents a strategy for trade-off of the network diameter vs. the overhead 
 \end{figure}
 
 
+\section{Related Work}\label{sec:related}
 
+There have been a number of efforts to either create abstractions of DHTs or ease the development of DHTs.
+One area of previous work focused on constructing overlay networks using system called P2 \cite{p2} \cite{loo2005implementing}.
+P2 is a network engine for constructing overlays which uses the Overlog declarative logic language.
+Writing programs for P2 in Overlog yields extremely concise and modular implementations of for overlay networks. 
+
+Our work differs in that P2 attempts to abstract overlays and ease construction by using a language and framework. while UrDHT focuses on abstracting the idea of a structured overlay into Voronoi Tessellations and Delaunay Triangulations.
+This allows developers to define the overlays they are building by mathematically defining a short number of functions.
+
+Our use case is also subtly different. 
+P2 focuses on overlays in general, all types of overlays.
+UrDHT concerns itself solely with distributed hash tables, specifically, overlays that rely on hash functions to distribute the load of the network and assign responsibility in an autonomous manner. 
+
+One difficulty in using P2 is that it is no longer supported as a project \cite{p2}. 
+P2's concise Overlog statements also present a sharp learning curve for many developers.
+These present challenges not seen with UrDHT.
+
+
+The T-Man\cite{jelasity2005t} and Vicinity \cite{voulgaris2005epidemic} protocols both present gossip-based methods for organizing overlay networks.
+The idea behind T-Man is similar to UrDHT, but again it focuses on overlays in general, while UrDHT applies specifically to DHTs.
+% T-man boasts the topology can change at run-time as the needs demand. 
+The ranking function is similar to the metrics used by UrDHT using DGVH, but DGVH guarantees full connectivity in all cases and is based on the inherent relationship between Voronoi Tessellations, Delaunay Triangulations, and DHTs.
+
+UrDHT uses a gossiping protocol similar to the ones presented by T-Man and Vicinity due to they gossip protocol's ability to rapidly adjust changes in the topology.
 
 
 \section{Applications and Future Work}
