@@ -1,5 +1,5 @@
 
-\begin{abstract}
+%\begin{abstract}
 Distributed Hash Tables (DHTs) have an inherent set of qualities, such as greedy routing, maintaining lists of peers which define the topology, and form an overlay network.
 Rather than having a developer be concerned with the details of a given DHT, we have constructed a new framework, UrDHT, that generalizes the functionality and implementation of various DHTs.
 
@@ -14,7 +14,7 @@ For example, we implemented a DHT operating in a hyperbolic geometry, a previous
 %The consequence of this is that, unlike other DHTs, the routing algorithm always uses the shortest latency path to a given destination.
 
 	
-\end{abstract}
+%\end{abstract}
 
 \section{Introduction}
 %Distributed Hash Tables (DHT) have been extensively researched for the past decade.
@@ -158,12 +158,12 @@ The base greedy algorithm is always the same regardless of the implementation.
 	\centering
 	\includegraphics[width=0.75\linewidth]{figs/voronoi}
 	\caption{An example Voronoi diagram for objects on a 2-dimensional space.  The black lines correspond to the borders of the Voronoi region, while the dashed lines correspond to the edges of the Delaunay Triangulation.}
-	\label{voro-ex}
+	\label{fig:voro-ex}
 \end{figure}
 
 
 With the components of a DHT defined above, we can now show the relationship between DHTs and the primal-dual problems of Delaunay Triangulation and Voronoi Tessellation.
-An example Delaunay Triangulation and Voronoi Tessellation is show in Figure \ref{voro-ex}.
+An example Delaunay Triangulation and Voronoi Tessellation is show in Figure \ref{fig:voro-ex}.
 
 %TODO A one-dimensional voronoi fig as example
 We can map a given node's ID to a point in a space and the set of short peers to the Delaunay Triangulation.
