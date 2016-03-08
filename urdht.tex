@@ -1,36 +1,3 @@
-\documentclass[11pt,conference]{IEEEtran}
-
-\usepackage[latin1]{inputenc}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-%\usepackage{hyperref}
-
-\usepackage{listings}
-\usepackage{subcaption}
-%\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
-\usepackage{algorithm} 
-\usepackage{algpseudocode}
-\usepackage[font=footnotesize]{caption}
-
-\title{UrDHT: A Unified Model for Distributed Hash Tables}
-
-
-
-\author{\IEEEauthorblockN{Andrew Rosen \qquad Brendan Benshoof \qquad Robert W. Harrison \qquad Anu G. Bourgeois}
-	\IEEEauthorblockA{Department of Computer Science\\
-		Georgia State University\\
-		Atlanta, Georgia\\
-		rosen@cs.gsu.edu \qquad  bbenshoof@cs.gsu.edu  \qquad rharrison@cs.gsu.edu \qquad anu@cs.gsu.edu }
-}
-
-\hyphenation{op-tical net-works semi-conduc-tor Chord-Reduce Map-Reduce Data-Nodes Name-Nodes Ur-DHT Ur-CHORD}
-
-
-\begin{document}
-\lstset{language=Python} 
-\maketitle
 
 \begin{abstract}
 Distributed Hash Tables (DHTs) have an inherent set of qualities, such as greedy routing, maintaining lists of peers which define the topology, and form an overlay network.
@@ -48,11 +15,6 @@ For example, we implemented a DHT operating in a hyperbolic geometry, a previous
 
 	
 \end{abstract}
-
-\begin{IEEEkeywords}
-	Peer-to-Peer Networks;  Distributed Hash Tables; Computational Geometry; Delaunay Triangulation; Voronoi Tessellation; Self-Organizing Networks;
-	
-\end{IEEEkeywords}
 
 \section{Introduction}
 %Distributed Hash Tables (DHT) have been extensively researched for the past decade.
@@ -194,7 +156,7 @@ The base greedy algorithm is always the same regardless of the implementation.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.75\linewidth]{voronoi}
+	\includegraphics[width=0.75\linewidth]{figs/voronoi}
 	\caption{An example Voronoi diagram for objects on a 2-dimensional space.  The black lines correspond to the borders of the Voronoi region, while the dashed lines correspond to the edges of the Delaunay Triangulation.}
 	\label{voro-ex}
 \end{figure}
@@ -752,8 +714,3 @@ This approach would maintain the decentralized strengths of DHTs, while reducing
 
 
 %Hyperbolic spaces allow us to cleanly embed scale free graphs
-
-\bibliography{mine,dht,voronoi}
-\bibliographystyle{IEEEtran}
-
-\end{document}

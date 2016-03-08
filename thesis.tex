@@ -1,4 +1,4 @@
-\documentclass[10pt,letterpaper]{report}
+\documentclass[11pt,letterpaper,titlepage]{report}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -11,25 +11,20 @@
 \usepackage[font=small]{caption}
 \usepackage{url}
 \usepackage[english]{babel}
+\usepackage{setspace} 
+\usepackage[margin=1in]{geometry}
 
+\usepackage{cjhebrew}
 %\usepackage{times}
 %\usepackage{venturis2}
 
-\linespread{1.0}
-\title{Proposal \\ Towards a Framework for DHT Distributed Computing}
-\author{Andrew Rosen}
+\doublespacing
+
+\title{\textsc{Towards a Framework for DHT Distributed Computing}}
+\author{\textsc{Andrew Rosen}}
+\date{}
+
 \begin{document}
-	
-	
-	
-	\maketitle
-	
-	
-	
-	
-	\setcounter{tocdepth}{4}
-	\tableofcontents
-	\newpage
 	
 	\begin{abstract}
 		Distributed Hash Tables (DHTs) are protocols and frameworks used by peer-to-peer (P2P) systems.
@@ -51,11 +46,44 @@
 		
 		
 	\end{abstract}
+
+	\maketitle
 	
-	\include{intro}
-	\include{background}
-	\include{prevresearch}
+	\newpage 
 	
+	
+	\null\vfill
+	\centering{
+	Copyright by \\
+	Andrew Benjamin Rosen\\
+	\begin{cjhebrew}
+		.hnwK
+	\end{cjhebrew}\\
+	2016}
+	\newpage
+	
+	
+	\newpage
+	\chapter*{Acknowledgements}	
+	
+	
+	
+	\setcounter{tocdepth}{4}
+	\listoftables
+	\listoffigures
+	\cleardoublepage
+	\addcontentsline{toc}{chapter}{\listtablename}
+	\addcontentsline{toc}{chapter}{\listfigurename}
+	\tableofcontents
+	\newpage
+	
+
+	
+	\pagenumbering{arabic}
+	%\include{intro}
+	%\include{background}
+	%\include{prevresearch}
+	%\include{urdht}
 	
 	\bibliography{notes,dht,mapreduce,voronoi,dns,botnets,mine}
 	\bibliographystyle{plain}
