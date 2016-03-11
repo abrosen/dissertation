@@ -22,6 +22,7 @@ MapReduce runs on top of the Chord network and utilizes the underlying features 
 
 
 \subsection{Chord}
+\label{sec:chord-detail}
 We introduced Chord in Chapter \ref{chapter:background}, but we present it here again in greater depth.
 Chord \cite{chord} is a P2P protocol for file sharing that uses a hash function to assign addresses to nodes and files for a ring overlay. 
 The Chord protocol takes in some key and returns the identity (ID) of the node responsible for that key.  
@@ -64,23 +65,40 @@ If not, it looks for the entry in the finger table for the closest preceding nod
 This allows each step to skip up to half the nodes in the network, giving a $\log_2(n)$ lookup time.
 Because nodes can constantly join and leave the network, each entry in the table is periodically checked and updated during a finger maintenance period. 
 
-To join the network, node $n$ first asks $n'$ to find $successor(n)$ for it.  Node $n$ uses the information to set his successor, but the other nodes in the ring will not acknowledge $n$'s presence yet.  Node $n$ relies on the stabilize routine to fully integrate into the ring.
+To join the network, node $n$ first asks $n'$ to find $successor(n)$ for it.  
+Node $n$ uses the information to set his successor, but the other nodes in the ring will not acknowledge $n$'s presence yet.  
+Node $n$ relies on the stabilize routine to fully integrate into the ring.
 
-The stabilize routine helps the network integrate new nodes and route around nodes who have left the network. Each node periodically checks to see who their successor's predecessor is.  In the case of a static network, this would be the checking node.  However, if the checking node gets back a different node, it looks at that returned node's hash value and changes its own successor if needed.  Regardless of whether the checking node changes its successor, that node then notifies the (possibly) new successor,  who then checks if he needs to change his predecessor based on this new information.  While complex, the stabilization process is no more expensive than a heartbeat function.  A more concrete example:
+The stabilize routine helps the network integrate new nodes and route around nodes who have left the network. 
+Each node periodically checks to see who their successor's predecessor is.  In the case of a static network, this would be the checking node.  
+However, if the checking node gets back a different node, it looks at that returned node's ID and changes its own successor if needed.  
 
+Regardless of whether the checking node changes its successor, that node then notifies the (possibly) new successor,  who then checks if he needs to change his predecessor based on this new information.  
+While complex, the stabilization process is no more expensive than a heartbeat function.  A more concrete example:
 
-Suppose Alice, Bob, Carol, and Dan are members of the ring and everyone is ordered alphabetically (Fig. \ref{fig:abcd1}). Alice is quite sure that Carol is her successor.  Alice asks Carol who her predecessor is and Carol says Bob is.  Since Bob is closer than Carol, Alice changes her successor to Bob and notifies him.  
+Suppose Alice, Bob, Carol, and Dan are members of the ring and everyone is ordered alphabetically (Fig. \ref{fig:abcd1}). 
+Alice is quite sure that Carol is her successor.  
+Alice asks Carol who her predecessor is and Carol says Bob is.  
+Since Bob is closer to Alice than Carol, Alice changes her successor to Bob and notifies him.  
 
-When Bob sees that notification, he can see Alice is closer than whoever his previous predecessor is and sets Alice to be his predecessor.  During the next stabilization cycle, Alice will see that she is still Bob's predecessor and notify him that she's still there (Fig. \ref{fig:abcd2}).
+When Bob sees that notification, he can see Alice is closer than whoever his previous predecessor is and sets Alice to be his predecessor.  
+During the next stabilization cycle, Alice will see that she is still Bob's predecessor and notify him that she's still there (Fig. \ref{fig:abcd2}).
 
-To prevent loss of data due to churn, each node sends a backup of their data to their successor.  Section IV discusses the implementation of the backup process in ChordReduce and expands upon it for backing up Map and Reduce tasks.
+To prevent loss of data due to churn, each node sends a backup of their data to their successor, or multiple successors upstream.  
+Section \ref{sec:chordreduce-robust} discusses the implementation of the backup process in ChordReduce and expands upon it for backing up Map and Reduce tasks.
 
 
 \subsection{Extensions of Chord}
 
-The Cooperative File System (CFS) is an anonymous, distributed file sharing system built on top of Chord \cite{CFS}.  In CFS, rather than storing an entire file at a single node, the file is split up into multiple chunks around 10 kilbytes in size.  These chunks are each assigned a hash and stored in nodes corresponding to their hash in the same way that whole files are.  The node that would normally store the whole file instead stores a \emph{key block}, which holds the hash address of the chunks of the file. 
+The Cooperative File System (CFS) is an anonymous, distributed file sharing system built on top of Chord \cite{CFS}.  
+In CFS, rather than storing an entire file at a single node, the file is split up into multiple chunks around 10 kilobytes in size.
+These chunks are each assigned a hash and stored in nodes corresponding to their hash in the same way that whole files are.  
+The node that would normally store the whole file instead stores a \emph{key block}, which holds the hash address of the chunks of the file. 
 
-The chunking allows for numerous advantages.  First, it promotes load balancing. Each piece of the overall file would (ideally) be stored in a different node, each with a different backup or backups.  This would prevent any single node from becoming overwhelmed from fulfilling multiple requests for a large file.  It would also prevent retrieval from being bottlenecked by a node with a relatively low bandwidth. Finally, when Chord uses some sort of caching scheme like that described in CFS \cite{CFS}, caching chunks as opposed to the entire file resulted in about 1000 times less storage overhead.  
+The chunking allows for numerous advantages.  
+First, it promotes load balancing. 
+Each piece of the overall file would (ideally) be stored in a different node, each with a different backup or backups.  
+This would prevent any single node from becoming overwhelmed from fulfilling multiple requests for a large file.  It would also prevent retrieval from being bottlenecked by a node with a relatively low bandwidth. Finally, when Chord uses some sort of caching scheme like that described in CFS \cite{CFS}, caching chunks as opposed to the entire file resulted in about 1000 times less storage overhead.  
 
 Mutable files  and IRM, which is short for Integrated File Replication and Consistency Maintenance \cite{irm}, has nodes keep track of file requests they initiate or forward.  If they find they are frequently forwarding a request for a particular file, they store that file locally until it is no longer requested frequently.  What makes IRM unique is that it combines caching with a 
 
@@ -144,7 +162,8 @@ ChordReduce uses Chord to act as a completely distributed topology for MapReduce
 
 
 \subsection{Handling Node Failures in Chord}
-Due to the potentially volatile nature of a peer-to-peer network, Chord has to be able to handle (or at the very least, tolerate) an arbitrary amount of churn.  Section II described how Chord gradually guides nodes into their correct locations after they join the network.  The same is true for when a node leaves the network; the stabilize procedure will guide nodes to their correct successors and predecessors.  However, we can exert more control over how to handle nodes leaving the network.
+\label{sec:chordreduce-robust}
+Due to the potentially volatile nature of a peer-to-peer network, Chord has to be able to handle (or at the very least, tolerate) an arbitrary amount of churn.  Section \ref{sec:chord-detail} described how Chord gradually guides nodes into their correct locations after they join the network.  The same is true for when a node leaves the network; the stabilize procedure will guide nodes to their correct successors and predecessors.  However, we can exert more control over how to handle nodes leaving the network.
 
 When a node $n$ changes his successor, $n$ asks if the successor is holding any data $n$ should be responsible for.  The successor looks at all the data $n$ is responsible for and sends it to $n$.  The successor does not have to delete this data. In fact, keeping this data as a backup is beneficial to the network as a whole, as $n$ could decide to leave the network at any point. 
 
