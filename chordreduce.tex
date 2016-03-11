@@ -98,15 +98,23 @@ The node that would normally store the whole file instead stores a \emph{key blo
 The chunking allows for numerous advantages.  
 First, it promotes load balancing. 
 Each piece of the overall file would (ideally) be stored in a different node, each with a different backup or backups.  
-This would prevent any single node from becoming overwhelmed from fulfilling multiple requests for a large file.  It would also prevent retrieval from being bottlenecked by a node with a relatively low bandwidth. Finally, when Chord uses some sort of caching scheme like that described in CFS \cite{CFS}, caching chunks as opposed to the entire file resulted in about 1000 times less storage overhead.  
+This would prevent any single node from becoming overwhelmed from fulfilling multiple requests for a large file.  
+It would also prevent retrieval from being bottlenecked by a node with a relatively low bandwidth. 
+Finally, when Chord uses some sort of caching scheme like that described in CFS \cite{CFS}, caching chunks as opposed to the entire file resulted in about 1000 times less storage overhead.  
 
-Mutable files  and IRM, which is short for Integrated File Replication and Consistency Maintenance \cite{irm}, has nodes keep track of file requests they initiate or forward.  If they find they are frequently forwarding a request for a particular file, they store that file locally until it is no longer requested frequently.  What makes IRM unique is that it combines caching with a 
+Mutable files and IRM, which is short for Integrated File Replication and Consistency Maintenance \cite{irm}, has nodes keep track of file requests they initiate or forward.  
+If nodes find they are frequently forwarding a request for a particular file, they store that file locally until it is no longer requested frequently.  
 
 Chunking also opens up the options for implementing additional redundancy such as erasure codes \cite{rizzo1997effective}. 
-With erasure codes, redundant chunks are created but any combination of a particular number of chunks is sufficient to recreate the file.  For example, a file that would normally be split into 10 chunks might be split into 15 encoded chunks.  The retrieval of any 10 of those 15 chunks is enough to recreate the file.  Implementing erasure codes would presumably make the network more fault tolerant, but that is an exercise left for future work.
+With erasure codes, redundant chunks are created but any combination of a particular number of chunks is sufficient to recreate the file.  
+For example, a file that would normally be split into 10 chunks might be split into 15 encoded chunks.  The retrieval of any 10 of those 15 chunks is enough to recreate the file.  
+Implementing erasure codes would presumably make a DHT more fault tolerant, but that is an exercise left for future work.
 
 
-Generally, related files should be kept together; Chord, however, just hashes the filename to find the responsible node and sends it to that location without any thought to organization.  Our solution to this is to use allow the file owner to select first 80 bits of a file's hash, then generating the remaining least significant bits by hashing the filename.  It does not matter if a file owner, in some infinitesimally small coincidence, chooses the same 80 bit prefix as another file owner, as the purpose is to keep related files together.   
+Generally, related files should be kept together for quick retrieval; Chord, however, just hashes the filename to find the responsible node and sends it to that location without any thought to organization.  
+One solution to this is to use allow the file owner to select the first $ \beta $ bits of a file's hash, then generating the remaining least significant bits by hashing the filename.  
+It does not matter if a file owner, in some infinitesimally small coincidence, chooses the same $ \beta $ bit prefix as another file owner, as the purpose is to keep related files together.   
+
 
 \subsection{MapReduce}
 At its core, MapReduce \cite{mapreduce} is a system for division of labor, providing a layer of separation between the programmer and the more complicated parts of concurrent processing.  The programmer sends a large task to a master node, who then divides that task among slave nodes (which may further divide the task).  This task has two distinct parts: Map and Reduce.  Map performs some operation on a set of data and then produces a result for each Map operation.  The resulting data can then be reduced, combining these sets of results into a single set, which is further combined with other sets.  This process continues until one set of data remains.  A key concept here is the tasks are distributed to the nodes that already contain the relevant data, rather than the data and task being distributed together among arbitrary nodes.
