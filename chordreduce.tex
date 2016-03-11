@@ -338,3 +338,88 @@ Our testing rates for churn are an order of magnitude higher than the rates used
 
 
 Our experiments show that for a given problem, ChordReduce can effectively distribute the problem, yielding a substantial speedup.  Furthermore, our results showed that the larger the problem is, the more workers could be added before diminishing returns were incurred.  During runtime, we experienced multiple instances where $plot$ would fail to run and the stager would report socket errors, indicating that it had lost connection with a node in the ring.  Despite this turbulence, every node managed to reestablish connection with each other and report back all the data.  This further demonstrated that we were able to handle the churn in the network.
+
+
+\section{Remarks}
+
+
+During our experiments testing the capabilities of ChordReduce, we experienced a significant and completely unexpected anomaly while testing churn.
+One of the things previous research \cite{marozzo2012p2p}  \cite{leemap} in the same area we felt we needed to explore better was how a completely decentralized computation could handle churn.
+Now, despite our initial prototype having numerous bugs and only able to handle small networks, we were fairly certain of it's ability to handle churn.
+
+Marozzo et al.\ \cite{marozzo2012p2p} tested their network using churn rates of 0.025\%, 0.05\%, 0.1\%, 0.2\%, and 0.4\% per minute.
+The churn rate of $cr << 1$ per minute means that each minute on average, $cr \cdot n$ nodes leave the network and $cr \cdot n$  new nodes join the network.\footnote{It is standard practice to assume the joining rate and leaving rate are equal.}
+This could effectively be thought of as each node flipping a weighted coin every minute.
+When the coin lands on tails, the node leaves.
+A similar process happens for nodes wanting to join the network.
+
+We wanted the robustness of our system to be beyond reproach, so we tested at rates from 0.0025\% to 0.8\% \textbf{\textit{per second}}, 120 times the fastest rate used to test P2P-MapReduce.
+This is an absurdly fast and unrealistic speed, the only purpose of which was to cement the fault tolerance of the system.
+Since we were testing ChordReduce on Amazon's EC2 and paying per instance per hour, we limited the number of nodes.
+Rather than having a pool of nodes waiting to join the network, we conserved our funds by having leaving nodes immediately rejoin the network under a new IP/port combo.
+The meant our churn operation was essentially a simultaneous leave and join.
+
+
+What we found was that jobs on ChordReduce finished twice as fast under the unrealistic levels churn (0.8\% per second) than no churn (Table \ref{tab:churnSpeed}).
+This completely mystified us.
+Churn is a disruptive force; how can it be aiding the network?
+
+\subsection*{Hypothesis}
+We hypothesize this was due to the number of data pieces (larger) vs the number of workers (smaller).
+There were more workers than there were pieces of data, so some workers ended up with more data than others in the initial distribution.
+This means that there was some imbalance in the way data was distributed among nodes.
+This was \textit{further} exacerbated by small number of workers distributed over a large hash space, leading some nodes to have larger swaths of responsibility than others.
+
+Given this setup, without any churn, the operation would be:
+Workers get triggered, they start working, and the ones with little work finish their work quickly, and the network waits for the node with higher loads of work.
+
+Its important to note here that the work in ChordReduce was performed atomically, a piece at a time.
+When a node was working on a piece, it informed it's successor, then informed them when it finished.
+These pieces of work were also small, possibly too small.
+
+As mentioned previously, under our induced experimental churn, we had the nodes randomly fail and immediately join under a new IP/port combination, which yields a new hash.
+The failure rates were orders of magnitude higher than what would be expected in a ``real'' (nonexperimental) environment.
+The following possibilities could occur:
+\begin{itemize}
+	\item A node without any active jobs leaves.
+	It dies and and comes back with a new port chosen.
+	This new ID has a higher chance of landing in a larger region of responsibility (since new joining nodes have a greater chance of hashing to a larger region than a smaller).
+	In other words, it has a (relatively) higher chance of moving into an space where it becomes acquires responsibility for enqueued jobs.
+	The outcomes of this are:
+	\begin{itemize}
+		\item The node rejoins in a region and does not acquire any new jobs.
+		This has no impact on the network (Case I).
+		\item The node rejoins in a region that has jobs waiting to be done.
+		It acquires some of these jobs.
+		This speeds up performance (Case II).
+	\end{itemize}
+	\item A node with active jobs dies.
+	It rejoins in a new space.
+	The jobs were small, so not too much time is lost on the active job, and the enqueued jobs are backed up and the successor knows to complete them.
+	However, the node can rejoin in a more job-heavy region and acquire new jobs.
+	The outcomes of this are:
+	\begin{itemize}
+		\item A minor negative impact on runtime and load balancing (since the successor has more jobs to handle) (Case III).
+		\item A possible counterbalance in load balancing by acquiring new jobs off a busy node (Case IV).
+	\end{itemize}
+\end{itemize}
+
+The longer the nodes work on the jobs, the more nodes finish and have no jobs.
+This means as time increases, so do the occurrences of Case I and II.
+
+
+This leads us to two hypotheses:
+\begin{itemize}
+	\item Deleting nodes motivates other nodes to work harder to avoid deletion (a ``beatings will continue until morale improves'' situation).
+	\item Our high rate of churn was dynamically load-balancing the network.
+	It appears even the smallest effort of trying to dynamically load balance, such as rebooting random nodes to new locations, has benefits for runtime.
+	Our method is a poor approximation of dynamic load-balancing, and it still shows improvement.
+\end{itemize}
+
+The first hypothesis is mentally pleasing to anyone who has tried to create a distributed system, but lacks rigor.
+Verification, analysis, and exploitation of this phenomena is  the subject of (Chapter \ref{chapter:auto-balance}).
+
+
+Once we have established that it does exist, we need a better load-balancing strategy than randomly inducing.
+We want nodes to have a precomputed list of locations in which they can insert nodes to perform load-balancing on an ad-hoc basis during runtime.
+This precomputed list ties directly into the security research on DHTs we have done \cite{sybil-analysis} and is the subject of Chapter \ref{chapter:sybil}.
