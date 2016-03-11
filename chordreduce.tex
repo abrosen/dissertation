@@ -1,18 +1,32 @@
 \chapter{ChordReduce}
 \label{chapter:chordreduce}
 
-As we have previously discussed, Google's MapReduce \cite{mapreduce} paradigm has rapidly become an integral part in the world of data processing and is capable of efficiently executing numerous Big Data programming and data-reduction tasks.  
-The paradigm MapReduce is much simpler than the previous sentence suggests.
-By using MapReduce, a user can take a large problem, split it into small, equivalent tasks and send those tasks to other processors for computation.  
-The results are sent back to the user and combined into one answer.  
 
-Many popular platforms for MapReduce, such as Hadoop \cite{hadoop}, utilize a central source of coordination and organization to store and operate on data.
-The hierarchical structure of Hadoop results in a single point of failure at the node that concentrates the results and also requires a complicated scheme for handling node failures.
+Distributed computing is a current trend and will continue to be the approach for intensive  applications.
+We see this in the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{anderson2004boinc} and Folding@Home \cite{larson2002folding}, and MapReduce  \cite{mapreduce}.
+Google's MapReduce  in particular has rapidly become an integral part in the world of data processing.
+A user can use MapReduce to take a large problem, split it into small, equivalent tasks and send those tasks to other processors for computation.
+The results are sent back to the user and combined into one answer.
 
-We developed a system, called ChordReduce, which was our first attempt to leverage the qualities of a DHT to create a distributed computing platform.  
+Popular platforms for MapReduce, such as Hadoop \cite{hadoop}  \cite{shvachko2010hadoop}, are explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
+However, as we have previously mentioned, there are notable issues with a centralized design.
+
+First and foremost is the issue of fault-tolerance.
+Centralized designs have a single point of failure \cite{shvachko2010hadoop}.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}.
+
+A centralized design assumes that the network is relatively unchanging and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
+Many environments also anticipate a certain degree in homogeneity in the system.
+Finally deploying these systems and developing programs for them has an extremely steep learning curve.
+
+There is no reason that these assumptions need to be the case for MapReduce, or for many distributed computing frameworks in general.
+Moving away from the data center context opens up more possibilities for distributed computing, such as P2P clouds \cite{p2p-cloud}.
+However, without a centralized framework, the network needs some kind of protocol to organize the various components in the network.
+As part of our research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
+
 It is a system that can scale, is fault tolerant, has a minimal amount of latency, and distributes tasks evenly.  
 ChordReduce leverages the underlying protocol from Chord \cite{chord} to distribute Map and Reduce tasks to nodes evenly, provide greater data redundancy, and guarantee a greater amount of fault tolerance. 
-Rather than viewing Chord solely as a means for sharing files, we see it as a means for distributing work. This paper establishes the effectiveness of using Chord as a framework for distributed programming. At the same time we avoid the architectural and file system constraints of systems like Hadoop.  
+Rather than viewing Chord solely as a means for sharing files, we see it as a means for distributing work. We established the effectiveness of using Chord as a framework for distributed programming. At the same time we avoid the architectural and file system constraints of systems like Hadoop.  
 
 
 \section{Background}
@@ -117,13 +131,30 @@ It does not matter if a file owner, in some infinitesimally small coincidence, c
 
 
 \subsection{MapReduce}
-At its core, MapReduce \cite{mapreduce} is a system for division of labor, providing a layer of separation between the programmer and the more complicated parts of concurrent processing.  The programmer sends a large task to a master node, who then divides that task among slave nodes (which may further divide the task).  This task has two distinct parts: Map and Reduce.  Map performs some operation on a set of data and then produces a result for each Map operation.  The resulting data can then be reduced, combining these sets of results into a single set, which is further combined with other sets.  This process continues until one set of data remains.  A key concept here is the tasks are distributed to the nodes that already contain the relevant data, rather than the data and task being distributed together among arbitrary nodes.
+At its core, MapReduce \cite{mapreduce} is a system for division of labor, providing a layer of separation between the programmer and the more complicated parts of concurrent processing.
+The programmer sends a large task to a master node, who then divides that task among slave nodes (which may further divide the task).  This task has two distinct parts: Map and Reduce.  
+Map performs some operation on a set of data and then produces a result for each Map operation.  
+The resulting data can then be reduced, combining these sets of results into a single set, which is further combined with other sets.
+This process continues until one set of data remains.
+A core concept here is the tasks are distributed to the nodes that already contain the relevant data, rather than the data and task being distributed together among arbitrary nodes.
 
-The archetypal example of using MapReduce is counting the occurrence of each word in a collection of documents, called WordCount.  These documents have been split up into blocks and stored on the network over the distributed file system.  The master node locates the worker nodes with blocks and sends the Map and Reduce tasks associated with WordCount.  Each worker then goes through their blocks and creates a small word frequency list.  These lists are then used by other workers, who combine them into larger and larger lists, until the master node is left with a word frequency list of all the words in the documents. 
+The archetypal example of using MapReduce is WordCount -- the task of counting the occurrence of each word in a collection of documents.
+These documents have been split up into blocks and stored on the network over the distributed file system.  
+The master node locates the worker nodes with blocks and sends the Map and Reduce tasks associated with WordCount.  
+Each worker then goes through their blocks and creates a small word frequency list.  
+These lists are then used by other workers, who combine them into larger and larger lists, until the master node is left with a word frequency list of all the words in the documents. 
 
-The most popular platform for MapReduce is Hadoop \cite{hadoop}. Hadoop is an open-source Java implementation developed by Apache and Yahoo! \cite{pavlo2009comparison}.  Hadoop has two components, the Hadoop Distributed File System (HDFS) \cite{hdfs} and the Hadoop MapReduce Framework \cite{mrsurvey}.  Under HDFS, nodes are arranged in a hierarchical tree, with a master node, called the NameNode, at the top.  The NameNode's job is to organize and distribute information to the slave nodes, called DataNodes.  This makes the NameNode a single point of failure \cite{shvachko2010hadoop} in the network, as well as a potential bottleneck for the system \cite{hadoop-bottle}.
+The most popular platform for MapReduce is Hadoop \cite{hadoop}. 
+Hadoop is an open-source Java implementation developed by Apache and Yahoo! \cite{pavlo2009comparison}.  
+Hadoop has two components, the Hadoop Distributed File System (HDFS) \cite{hdfs} and the Hadoop MapReduce Framework \cite{mrsurvey}.  
+Under HDFS, nodes are arranged in a hierarchical tree, with a master node, called the NameNode, at the top.  
+The NameNode's job is to organize and distribute information to the slave nodes, called DataNodes.  
+This makes the NameNode a single point of failure \cite{shvachko2010hadoop} in the network, as well as a potential bottleneck for the system \cite{hadoop-bottle}.
 
-To do work on Hadoop, the user stores their data on the network.  This is handled by the NameNode, which equally apportions the data among the DataNodes.  When a user wants to run some analysis on the data or some subset the data, then that function is sent by the NameNode to each of the DataNodes that is responsible for the indicated data.   After the DataNode finishes processing, the result is handled by other nodes called Reducers which collect and reduce the results of multiple DataNodes.
+To do work on Hadoop, the user stores their data on the network.  
+This is handled by the NameNode, which equally apportions the data among the DataNodes.  
+When a user wants to run some analysis on the data or some subset the data, then that function is sent by the NameNode to each of the DataNodes that is responsible for the indicated data.   
+After the DataNode finishes processing, the result is handled by other nodes called Reducers which collect and reduce the results of multiple DataNodes.
 
 
 
