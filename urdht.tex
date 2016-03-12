@@ -1,6 +1,12 @@
-
+\chapter{UrDHT}
+\label{chapter:urdht}
 %\begin{abstract}
 As we have previously discussed, Distributed Hash Tables (DHTs) have an inherent set of qualities, such as greedy routing, maintaining lists of peers which define the topology, and forming an overlay network.
+All DHTs use functionally similar protocols to perform lookup, storage, and retrieval operations.
+Despite this, no one has created a cohesive formal DHT specification.
+
+Our primary motivation for this project was to create an abstracted model for Distributed Hash Tables based on observations we made during previous research \cite{dgvh}.
+We found that all DHTs can cleanly be mapped to the primal-dual problems of Voronoi Tessellation and Delaunay Triangulation.
 Rather than having a developer be concerned with the details of a given DHT, we have constructed a new framework, UrDHT, that generalizes the functionality and implementation of various DHTs.
 
 UrDHT is an abstract model of a Distributed Hash Table that implements a self-organizing web of computational units.
@@ -16,8 +22,8 @@ For example, we implemented a DHT operating in a hyperbolic geometry, a previous
 	
 %\end{abstract}
 
-\section{Introduction}
-%Distributed Hash Tables (DHT) have been extensively researched for the past decade.
+%\section{Introduction}
+%%Distributed Hash Tables (DHT) have been extensively researched for the past decade.
 %Many different DHT protocols have developed over the years.
 %What is a DHT
 % Mention the DHT API
@@ -26,32 +32,28 @@ For example, we implemented a DHT operating in a hyperbolic geometry, a previous
 
 %UrDHT is our specification and implementation of an abstract DHT.
 
-
-
-We present UrDHT, an abstract model of a distributed hash table (DHT). %that solves a number of problems.
-It is a unified and cohesive model for creating DHTs and P2P applications based on DHTs.
-%UrDHT also provides a single network for bootstrapping distributed applications.
-%Third, we show that using the abstraction features of UrDHT, we can embed latency into the DHT's overlay.
 %
-%\subsubsection{Abstraction}
-
-Distributed Hash Tables have been the catalyst for the creation of many P2P applications.
-Among these are Redis \cite{redis}, Freenet \cite{freenet}, and, most notably, BitTorrent \cite{bittorrent}. 
-All DHTs use functionally similar protocols to perform lookup, storage, and retrieval operations.
-Despite this, no one has created a cohesive formal DHT specification.
-
-Our primary motivation for this project was to create an abstracted model for Distributed Hash Tables based on observations we made during previous research \cite{dgvh}.
-We found that all DHTs can cleanly be mapped to the primal-dual problems of Voronoi Tessellation and Delaunay Triangulation.
-
-%TODO Match vocabulary
-UrDHT builds its topology directly upon this insight.
-It uses a greedy distributed heuristic for approximating Delaunay Triangulations.
-We found that we could reproduce the topology of different DHTs by defining a selection heuristic and rejection algorithm for the geometry the DHT.
-For every DHT we implemented, our greedy approximation of Delaunay Triangulation produced a stable DHT, regardless of the geometry.  
-This works in non-Euclidean geometries such as XOR (Kademlia) or even a hyperbolic geometry represented by a Poincar\`{e} disc.
-
-The end result is not only do we have an abstract model of DHTs, we have a simple framework that developers can use to quickly create new distributed applications.
-This simple framework allows generation of internally consistent implementations of different DHTs that can have their performance rigorously compared.  %we can now test DHTs against each other fairly
+%
+%%We present UrDHT, an abstract model of a distributed hash table (DHT). %that solves a number of problems.
+%%It is a unified and cohesive model for creating DHTs and P2P applications based on DHTs.
+%%%UrDHT also provides a single network for bootstrapping distributed applications.
+%%%Third, we show that using the abstraction features of UrDHT, we can embed latency into the DHT's overlay.
+%%%
+%%%\subsubsection{Abstraction}
+%
+%Distributed Hash Tables have been the catalyst for the creation of many P2P applications.
+%Among these are Redis \cite{redis}, Freenet \cite{freenet}, and, most notably, BitTorrent \cite{bittorrent}. 
+%
+%
+%%TODO Match vocabulary
+%UrDHT builds its topology directly upon this insight.
+%It uses a greedy distributed heuristic for approximating Delaunay Triangulations.
+%We found that we could reproduce the topology of different DHTs by defining a selection heuristic and rejection algorithm for the geometry the DHT.
+%For every DHT we implemented, our greedy approximation of Delaunay Triangulation produced a stable DHT, regardless of the geometry.  
+%This works in non-Euclidean geometries such as XOR (Kademlia) or even a hyperbolic geometry represented by a Poincar\`{e} disc.
+%
+%The end result is not only do we have an abstract model of DHTs, we have a simple framework that developers can use to quickly create new distributed applications.
+%This simple framework allows generation of internally consistent implementations of different DHTs that can have their performance rigorously compared.  %we can now test DHTs against each other fairly
 
 
 
@@ -67,25 +69,25 @@ This simple framework allows generation of internally consistent implementations
 %This would make new distributed applications easier to adopt by creating a network to bootstrap \textit{other networks}.
 %UrDHT does this by making it easy to add other networks as a service.
 
-%\subsubsection*{Accomplishments}
-To summarize our contributions:
-\begin{itemize}
-	\item We give a formal specification for what needs to be defined in order to create a functioning DHT.
-	While there has long existed a well known protocol shared by distributed hash tables, this defines what a DHT does.
-	It does not describe what a DHT is.
-	
-	We show that DHTs cleanly map to the primal-dual problem of Delaunay Triangulation and Voronoi Tessellation.
-	We list a set of simple functions that, once defined, allow our Distributed Greedy Voronoi Heuristic (DGVH) to be run in any space, creating a DHT overlay for that space (Section \ref{sec:define}).
-	
-	\item We present UrDHT as an abstract DHT and show how a developer would modify the functions we defined to create an arbitrary new DHT topology (Section \ref{sec:urdht}).
-	
-	\item We show how to reproduce the topology of Chord and Kademlia using UrDHT.
-	We also implement a DHT in a Euclidean geometry and a hyperbolic geometry represented by a Poincar\`{e} disc (Section \ref{sec:implement}).
-%	We also discuss how we can use UrDHT to run subnetworks as a service.
-	\item We conduct experiments that show building DHTs using UrDHT produced efficiently routable networks, regardless of the underlying geometry(Section \ref{sec:experiments}). 
-	\item We present some efforts and projects that are similar to our own (Section \ref{sec:related}).
-	\item We discuss the ramifications of our work and what future work is available (Section \ref{sec:future}).
-\end{itemize}
+%%\subsubsection*{Accomplishments}
+%To summarize our contributions:
+%\begin{itemize}
+%	\item We give a formal specification for what needs to be defined in order to create a functioning DHT.
+%	While there has long existed a well known protocol shared by distributed hash tables, this defines what a DHT does.
+%	It does not describe what a DHT is.
+%	
+%	We show that DHTs cleanly map to the primal-dual problem of Delaunay Triangulation and Voronoi Tessellation.
+%	We list a set of simple functions that, once defined, allow our Distributed Greedy Voronoi Heuristic (DGVH) to be run in any space, creating a DHT overlay for that space (Section \ref{sec:define}).
+%	
+%	\item We present UrDHT as an abstract DHT and show how a developer would modify the functions we defined to create an arbitrary new DHT topology (Section \ref{sec:urdht}).
+%	
+%	\item We show how to reproduce the topology of Chord and Kademlia using UrDHT.
+%	We also implement a DHT in a Euclidean geometry and a hyperbolic geometry represented by a Poincar\`{e} disc (Section \ref{sec:implement}).
+%%	We also discuss how we can use UrDHT to run subnetworks as a service.
+%	\item We conduct experiments that show building DHTs using UrDHT produced efficiently routable networks, regardless of the underlying geometry(Section \ref{sec:experiments}). 
+%	\item We present some efforts and projects that are similar to our own (Section \ref{sec:related}).
+%	\item We discuss the ramifications of our work and what future work is available (Section \ref{sec:future}).
+%\end{itemize}
 
 
 \section{What Defines a DHT}
@@ -709,8 +711,6 @@ We believe we can embed a latency graph in a hyperbolic space and define UrDHT s
 The end result would be a DHT with latency embedded into the overlay.
 Nodes would respond to changes in latency and the network by rejoining the network at new positions.
 This approach would maintain the decentralized strengths of DHTs, while reducing overall delay and communication costs.
-%We use  a force spring model to accomplish this.
 
 
-
-%Hyperbolic spaces allow us to cleanly embed scale free graphs
+\section{Remarks}
