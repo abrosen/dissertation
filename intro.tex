@@ -213,9 +213,9 @@ We will take advantage of this for distributing the workload automatically.
 %There is no well-known mechanism to that exists to automatically allocate virtual nodes on the fly \footnote{citation needed, although this can be similar to IRM}. 
 
 % TODO Rewrite this section to cover all chapters.
-\section{Roadmap}
+\section{Outline}
 
-In this section, we give a brief overview of our work.
+In this section, we give a brief overview of our work and the contents of this tome.
 Chapter \ref{chapter:background} lays out the prerequisite knowledge for Distributed Hash Tables.
 %We go into further detail of our previous work in Chapter \ref{chapter:prev} and present the proposed work of our dissertation in Chapter \ref{chapter:experiments}. 
 \subsection{Completed Work}
@@ -231,7 +231,6 @@ Under beyond practical levels of experimental churn, we found that our computati
 We hypothesized that this is because the random churn is acting as a (inefficient) process for autonomous load-balancing.
 This phenomena is described in detail in Chapter \ref{chapter:auto-balance}, but suggested to us that there was a way to  dynamically load-balance during execution.
 
-%VHash as the ur-example
 Our second project was to develop VHash \cite{dgvh} \cite{vhash}, a distributed hash table based on Delaunay Triangulation.
 VHash is unique due to the way it could work in multidimensional spaces.
 Other DHTs typically use a space with a single dimension and optimize for the number of hops.
@@ -296,6 +295,7 @@ The dissertation is divided into distinct, but mutually dependent parts.
 %One of these parts, the DHT framework, is a part that will be done jointly with Brendan Benshoof.
 Chapter \ref{chapter:background} covers the requisite background material.
 Each subsequent chapter, summarized below, covers a specific project.
+Chapter \ref{chapter:conclusion}, closes with remarks on our work.
 %The specifics are given in Chapter \ref{chapter:experiments}.
 
 
@@ -326,7 +326,7 @@ UrDHT is an open source project for creating DHTs using this principle.
 %significance is abstractions and our Voronoi definitations 
 
 \subsubsection{Distributed Decentralized Domain Name Service}
-D$^{3}$NS (Chapter \ref{chapter:d3dns}) is a system to replace the current top level DNS system and certificate authorities, offering increased scalability, security and robustness. 
+D$^{3}$NS (Chapter \ref{chapter:d3ns}) is a system to replace the current top level DNS system and certificate authorities, offering increased scalability, security and robustness. 
 D$^{3}$NS is based on a distributed hash table and utilizes a domain name ownership system based on the Bitcoin blockchain \cite{bitcoin} and addresses previous criticism that a DHT would not suffice as a DNS replacement. 
 
 Our system provides solutions to current DNS vulnerabilities such as DDOS attacks, DNS spoofing and censorship by local governments.
@@ -334,14 +334,16 @@ It eliminates the need for certificate authorities by providing a decentralized 
 Unlike many other DNS replacement proposals, D$^{3}$NS is reverse compatible with DNS and allows for incremental implementation within the current system.
 
 \subsubsection{Sybil Analysis}
-
+Chapter \ref{chapter:sybil} analyses the cost of performing a Sybil attack from the perspective of an adversary.
+Previous analyses have all focused on defending from the aforementioned adversary, but little to no work has been performed quantifying the attacker's capabilities.
+Our analysis places reasonable  constraints on the attacker and evaluates the resources the attacker needs to effectively own a target network.
 
 
 
 \subsubsection{Autonomous Load-Balancing}
-Our goal is to develop a new and efficient algorithm for balancing the workload among members of the DHT.
+Chapter 8 \ref{chapter:auto-balance} presents strategies for nodes to balance the workload among members of the DHT.
 Load balancing schemes do exist for file storage, but none exist for computation.
-Furthermore, we want to develop a system that takes into account the heterogeneity of a given system, allowing more powerful nodes to take on more responsibility.
+Furthermore, we wanted to develop a system that takes into account the heterogeneity of a given system, allowing more powerful nodes to take on more responsibility.
 
 %\section{Old stuff starts here}
 
