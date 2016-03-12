@@ -274,7 +274,7 @@ The following papers are in progress:
 
 	
 
-Below are publications with other authors not relevant to the proposed work.
+Below are publications with other authors not relevant to the work discussed in this dissertation.
 \begin{itemize}
 	\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
 	``A Model Architecture for Big Data applications using Relational Databases''
@@ -292,12 +292,21 @@ Below are publications with other authors not relevant to the proposed work.
 \subsection{Summary of Dissertation}
 
 
-We divide the proposed work into three distinct, but mutually dependent parts.
-One of these parts, the DHT framework, is a part that will be done jointly with Brendan Benshoof.
-The specifics are given in Chapter \ref{chapter:experiments}.
+The dissertation is divided into distinct, but mutually dependent parts.
+%One of these parts, the DHT framework, is a part that will be done jointly with Brendan Benshoof.
+Chapter \ref{chapter:background} covers the requisite background material.
+Each subsequent chapter, summarized below, covers a specific project.
+%The specifics are given in Chapter \ref{chapter:experiments}.
 
 
-\subsubsection{DHT Framework}
+
+\subsubsection{ChordReduce - DHT Distributed Computing}
+
+This portion will be the bulk of the experimental work and data gathering.
+Using our created framework, we will create implement and test distributed computing problems on different DHT implementations, such as Chord \cite{chord} and Kademlia \cite{kademlia}.
+
+
+\subsubsection{UrDHT -- an Abstract DHT Framework}
 The goal of the DHT framework is to create a ready-to-use framework for creating DHT applications.
 We will then use this to create the DHT applications for DHT distributed computing.
 While developing VHash, we discovered the closeness metric used by DHTs to determine which node is responsible for what data is analogous to the metric used to create a Voronoi tessellation.
@@ -312,10 +321,7 @@ Using the same base framework allows us to minimize implementation differences w
 
 %significance is abstractions and our Voronoi definitations 
 
-\subsubsection{DHT Distributed Computing}
 
-This portion will be the bulk of the experimental work and data gathering.
-Using our created framework, we will create implement and test distributed computing problems on different DHT implementations, such as Chord \cite{chord} and Kademlia \cite{kademlia}.
 
 \subsubsection{Autonomous Load-Balancing}
 Our goal is to develop a new and efficient algorithm for balancing the workload among members of the DHT.
