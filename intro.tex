@@ -212,12 +212,12 @@ We will take advantage of this for distributing the workload automatically.
 %However, this is not a feasible option for any kind of truly decentralized system and would need to be done automatically.
 %There is no well-known mechanism to that exists to automatically allocate virtual nodes on the fly \footnote{citation needed, although this can be similar to IRM}. 
 
-
+% TODO Rewrite this section to cover all chapters.
 \section{Roadmap}
 
 In this section, we give a brief overview of our work.
 Chapter \ref{chapter:background} lays out the prerequisite knowledge for Distributed Hash Tables.
-We go into further detail of our previous work in Chapter \ref{chapter:prev} and present the proposed work of our dissertation in Chapter \ref{chapter:experiments}. 
+%We go into further detail of our previous work in Chapter \ref{chapter:prev} and present the proposed work of our dissertation in Chapter \ref{chapter:experiments}. 
 \subsection{Completed Work}
 
 %chord reduce
@@ -229,7 +229,7 @@ We then tested our prototype's fault-tolerance by executing MapReduce jobs under
 Our experiments with excessively high levels of churn created an anomaly in the runtime of our computations.
 Under beyond practical levels of experimental churn, we found that our computation was quicker than our experiments without churn.
 We hypothesized that this is because the random churn is acting as a (inefficient) process for autonomous load-balancing.
-This phenomena is described in detail in Chapter \ref{sec:auto-load-bal}, but suggested to us that there was a way to  dynamically load-balance during execution.
+This phenomena is described in detail in Chapter \ref{chapter:auto-balance}, but suggested to us that there was a way to  dynamically load-balance during execution.
 
 %VHash as the ur-example
 Our second project was to develop VHash \cite{dgvh} \cite{vhash}, a distributed hash table based on Delaunay Triangulation.
@@ -257,6 +257,9 @@ We believe that some of the components that are used to perform a Sybil attack c
 	\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Short Paper ICA CON 2014 \cite{vhash}
 	\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
 	\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``A Distributed Greedy Heuristic for Computing Voronoi Tessellations With Applications Towards Peer-to-Peer Networks'' IEEE IPDPS 2015 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems \cite{dgvh}
+	\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison
+	``Distributed Decentralized Domain Name Service''
+	IEEE IPDPS 2016 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems
 	
 \end{itemize}
 
@@ -286,7 +289,7 @@ Below are publications with other authors not relevant to the proposed work.
 
 
 
-\subsection{Summary of Proposal}
+\subsection{Summary of Dissertation}
 
 
 We divide the proposed work into three distinct, but mutually dependent parts.
@@ -302,7 +305,7 @@ This means the neighbors of a node map to Delaunay triangulations.
 To the best of our knowledge, no other party has inferred the relationship between Voronoi tessellations, Delaunay triangulations and DHTs.
 These properties give us a way to postulate an \textit{ur}-DHT, a progenitor DHT which could be used to define all other DHTs.
 
-UrDht is an open source project which we created.
+UrDHT is an open source project which we created.
 We will use UrDHT to implement and test multiple DHTs and applications.
 Using the same base framework allows us to minimize implementation differences when comparing DHTs in experiments, but also allows us to create applications quickly.
 
@@ -319,7 +322,7 @@ Our goal is to develop a new and efficient algorithm for balancing the workload 
 Load balancing schemes do exist for file storage, but none exist for computation.
 Furthermore, we want to develop a system that takes into account the heterogeneity of a given system, allowing more powerful nodes to take on more responsibility.
 
-
+\subsubsection{Other Chapters}
 
 %\section{Old stuff starts here}
 
@@ -359,9 +362,6 @@ Furthermore, we want to develop a system that takes into account the heterogenei
 %Each node was assigned a certain number of tokens and the node would create a virtual node for each token.
 %The realization DeCandia et al\. had was that there was no reason to use the same scheme for data partitioning and data placement.
 %DeCandia et al\. introduced two new strategies which work off assigning nodes equally sized partitions.
-
-
-% HELP
 
 %While most DHTs follow this scheme, there is some minor variation on how keys are generated.
 %Some DHTs can or do use geographic information to generate keys.
