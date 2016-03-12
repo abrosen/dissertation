@@ -310,25 +310,28 @@ Using our created framework, we will create implement and test distributed compu
 
 \subsubsection{DGVH and VHash}
 
+Chapter \ref{chapter:dgvh} covers the origin of our Distributed Greedy Voronoi Heuristic (DGVH).
+This provides an efficient way to create (with some error) Voronoi Tessellations and the corresponding Delaunay Triangulation.
+While DGVH produces only approximates the solution for Voronoi Tessellations, it can do so in any geometric space with distance function in any number of dimensions.
+In addition, the computational complexity is independent of the number of dimensions and can be performed locally at each node, rather than requiring global knowledge of the network's state.
 
+This directly leads into Chapter \ref{chapter:urdht}, which using DGVH to abstract DHTs.
 
 \subsubsection{UrDHT -- an Abstract DHT Framework}
-The goal of the DHT framework is to create a ready-to-use framework for creating DHT applications.
-We will then use this to create the DHT applications for DHT distributed computing.
-While developing VHash, we discovered the closeness metric used by DHTs to determine which node is responsible for what data is analogous to the metric used to create a Voronoi tessellation.
-This means the neighbors of a node map to Delaunay triangulations. 
-To the best of our knowledge, no other party has inferred the relationship between Voronoi tessellations, Delaunay triangulations and DHTs.
-These properties give us a way to postulate an \textit{ur}-DHT, a progenitor DHT which could be used to define all other DHTs.
-
-UrDHT is an open source project which we created.
-We will use UrDHT to implement and test multiple DHTs and applications.
-Using the same base framework allows us to minimize implementation differences when comparing DHTs in experiments, but also allows us to create applications quickly.
+In Chapter \ref{chapter:urdht}, we found that DHTs can be mapped to the constructs of Delaunay Triangulation and Voronoi Tessellation.
+Thus, creating the topology of a DHT can be done by solving for the appropriate Delaunay Triangulation.
+UrDHT is an open source project for creating DHTs using this principle.
 
 
 %significance is abstractions and our Voronoi definitations 
 
 \subsubsection{Distributed Decentralized Domain Name Service}
+D$^{3}$NS (Chapter \ref{chapter:d3dns}) is a system to replace the current top level DNS system and certificate authorities, offering increased scalability, security and robustness. 
+D$^{3}$NS is based on a distributed hash table and utilizes a domain name ownership system based on the Bitcoin blockchain \cite{bitcoin} and addresses previous criticism that a DHT would not suffice as a DNS replacement. 
 
+Our system provides solutions to current DNS vulnerabilities such as DDOS attacks, DNS spoofing and censorship by local governments.
+It eliminates the need for certificate authorities by providing a decentralized authenticated record of domain name ownership. 
+Unlike many other DNS replacement proposals, D$^{3}$NS is reverse compatible with DNS and allows for incremental implementation within the current system.
 
 \subsubsection{Sybil Analysis}
 
