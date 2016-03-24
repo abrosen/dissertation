@@ -1,11 +1,12 @@
 class Simulator(object):
-    events = [] # queue of time  
+    events = [] # queue of timed events  
     nodes = {}  # Key object
     
     numNodes = 100
     nodes = []
     
     numtasks = 10000
+    
 
 class Event(object):
     pass
