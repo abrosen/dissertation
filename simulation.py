@@ -25,12 +25,18 @@ class Simulator(object):
       
     
     def doTick(self):
-        
+        self.churnNetwork(self)
+        self.performWork()
+        self.time += 1    
+    
+    def churnNetwork(self):
+        pass
+    
+    def performWork(self):
         for n in self.nodes:
             workDone = self.nodes[n].doWork()
             if workDone:  # if the node finished a task
                 self.numDone += 1
-        self.time += 1    
     
     def simulate(self):
         while(self.numDone < self.numTasks):
