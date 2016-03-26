@@ -1,6 +1,6 @@
 import bisect
 import builder
-
+import random
 
 print("Begin")
 
@@ -13,6 +13,8 @@ class Simulator(object):
     
     numNodes = 1000
     numTasks = 1000000
+    churnRate = 0.001 # chance of join/leave per tick per node
+
     perfectTime = numTasks/numNodes
     numDone = 0
     time = 0 
@@ -30,8 +32,21 @@ class Simulator(object):
         self.time += 1    
     
     def churnNetwork(self):
+        """
+        figure out who is leaving and store it
+        figure out who is joining and store it
+        for each leaving node,
+            remove it 
+            reassign tasks
+            generate new id and add it to pool
+        for each joining
+            add new node
+            reassign tasks from affected nodes
+
+        """
         pass
     
+
     def performWork(self):
         for n in self.nodes:
             workDone = self.nodes[n].doWork()
@@ -50,15 +65,17 @@ class Simulator(object):
     
     def __init__(self, topology =  "chord", strategy = "static"):
         self.nodeIDs = builder.createStaticIDs(self.numNodes)
+        
         print("Creating Nodes")
         for id in self.nodeIDs:
             n = SimpleNode(id)
             self.nodes[id] = n
+
         print("Creating Tasks")
         for key in builder.generateFileIDs(self.numTasks):
             id, _ = self.whoGetsFile(key)
             self.nodes[id].addTask(key)
-
+        self.topology =  topology
 
 class SimpleNode(object):
     def __init__(self, id):
