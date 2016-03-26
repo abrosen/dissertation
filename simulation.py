@@ -1,43 +1,75 @@
-from hashlib import sha1
-BASE = 160
-MAX = 2**BASE
+import bisect
+import builder
+
 
 print("Begin")
 
 
-def createStaticIDs(size):
-    """
-    This creates |size| IDs
-    The output will be the same each time we run this. 
-    """
-    
-    population = sorted([int(sha1(bytes(str(x), "UTF-8")).hexdigest(), 16) % MAX for x in range(size)])
-    return population
-
-print(createStaticIDs(10))
-
-
 class Simulator(object):
     events = [] # queue of timed events  
+    nodeIDs = []
     nodes = {}  # (id: int, Node: object)
     
-    numNodes = 100
-    numtasks = 10000   
     
+    numNodes = 1000
+    numTasks = 1000000
+    perfectTime = numTasks/numNodes
+    numDone = 0
+    time = 0 
+    
+    def whoGetsFile(self, key : int):
+        i =  bisect.bisect_left(self.nodeIDs, key) # index of node closest without going over
+        if i == len(self.nodeIDs):
+            i = 0 
+        return self.nodeIDs[i], i        
+      
     
     def doTick(self):
+        
         for n in self.nodes:
-            self.nodes[n].doWork()
+            workDone = self.nodes[n].doWork()
+            if workDone:  # if the node finished a task
+                self.numDone += 1
+        self.time += 1    
     
-    def __init__(self, topology, strategy):
-        pass
+    def simulate(self):
+        while(self.numDone < self.numTasks):
+            self.doTick()
+            print(self.time, self.numDone)
+        print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
+        print(self.perfectTime)
+        
+        # maxNode =max(self.nodes.values(), key= lambda x: len(x.done))
+        # print(len(maxNode.done))
     
+    def __init__(self, topology =  "chord", strategy = "static"):
+        self.nodeIDs = builder.createStaticIDs(self.numNodes)
+        print("Creating Nodes")
+        for id in self.nodeIDs:
+            n = SimpleNode(id)
+            self.nodes[id] = n
+        print("Creating Tasks")
+        for key in builder.generateFileIDs(self.numTasks):
+            id, _ = self.whoGetsFile(key)
+            self.nodes[id].addTask(key)
 
 
+class SimpleNode(object):
+    def __init__(self, id):
+        self.id = id
+        self.tasks = []
+        self.done = []
     
+    def doWork(self):
+        if len(self.tasks) > 0:
+            x = self.tasks.pop()
+            self.done.append(x)
+            return True
+        return False
     
-class Event(object):
-    pass
+    def addTask(self,task):
+        self.tasks.append(task)
+
 
 class Task(object):
     def __init__(self, key, size=1):
@@ -52,22 +84,6 @@ class Result(object):
         self.results = self.results + other.results
 
 
-class SimpleNode(object):
-    def __init__(self, id):
-        self.id = id
-        self.tasks = []
-    
-    
-    def doWork(self):
-        pass
-
-
-
-
-
-
-
-
 class DHTNode(object):
     def __init__(self,hashkey: int):
         self.id  = hashkey  # hashkey int from SHA1
@@ -80,12 +96,9 @@ class DHTNode(object):
         self.longPeers = [] # assumptions: lazy update for long peers to start 
                             # (eg find new one only when an error occurs)
                             # unless protocol specifies otherwise
-        
+        print("DONE")
         self.tasks = []
-        self.backTask = {}  # Tasks that other nodes have been assigned.
-        
-        
-        
+        self.backTask = {}  # Tasks that other nodes have been assigned.    
         
     def store(self, key: int, value: int):
         self.files[key] = value
@@ -100,5 +113,7 @@ class DHTNode(object):
     
     def relinquishOwnership(self, key:int):
         pass
-    
-print("DONE")
+
+
+s = Simulator()
+s.simulate()    
