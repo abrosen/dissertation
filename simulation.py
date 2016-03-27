@@ -8,6 +8,7 @@ print("Begin")
 class Simulator(object):
     events = [] # queue of timed events  
     nodeIDs = []
+    pool = []
     nodes = {}  # (id: int, Node: object)
     
     
@@ -36,17 +37,56 @@ class Simulator(object):
         figure out who is leaving and store it
         figure out who is joining and store it
         for each leaving node,
-            remove it 
-            reassign tasks
-            generate new id and add it to pool
+            remove it
+            collect tasks
+        reassign tasks
+        
         for each joining
             add new node
             reassign tasks from affected nodes
-
+            
+        generate new ids and add them to pool
+        
         """
-        pass
-    
+        leaving = []
+        joining = []
+        for nodeID in self.nodeIDs:
+            if random.random() < self.churnRate:
+                leaving.append(nodeID)
+        for nodeID in self.pool:
+            if random.random() < self.churnRate:
+                joining.append(nodeID)
+        
+        tasks = []
+        for l in leaving:
+            tasks += self.removeNode(l)
+        self.reallocateTasks(tasks)
+        
+        for j in joining:
+            # index = bisect.bisect_left(self.nodeIDs, j)
+            # self.nodeIDs.insert(index, j)
+            
+            # newNode = SimpleNode(j)
+            pass
+            
+        self.addToPool(len(leaving))
+        
+            
+    def addToPool(self, num):
+        for x in builder.generateFileIDs(num):
+            self.pool.append(x)
 
+    def removeNode(self, id):
+        tasks = self.nodes[id].tasks[:]
+        del self.nodeIDs[id]
+        del self.nodes[id]
+        return tasks
+        
+    def reallocateTasks(self, tasks):
+        for task in tasks:
+            id, _  = self.whoGetsFile(task)
+            
+    
     def performWork(self):
         for n in self.nodes:
             workDone = self.nodes[n].doWork()
