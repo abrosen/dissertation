@@ -6,19 +6,36 @@ print("Begin")
 
 
 class Simulator(object):
-    events = [] # queue of timed events  
-    nodeIDs = []
-    pool = []
-    nodes = {}  # (id: int, Node: object)
+    def __init__(self, topology =  "chord", strategy = "static"):
+        self.nodeIDs = []
+        self.pool = []
+        self.nodes = {}  # (id: int, Node: object)
+        
+        
+        self.numNodes = 100
+        self.numTasks = 100000
+        self.churnRate = 0.00 # chance of join/leave per tick per node
     
-    
-    numNodes = 1000
-    numTasks = 1000000
-    churnRate = 0.001 # chance of join/leave per tick per node
-
-    perfectTime = numTasks/numNodes
-    numDone = 0
-    time = 0 
+        self.perfectTime = self.numTasks/self.numNodes
+        
+        self.numDone = 0
+        self.time = 0
+        
+        self.nodeIDs = builder.createStaticIDs(self.numNodes)
+        self.addToPool(self.numNodes)
+        
+        print("Creating Nodes")
+        for id in self.nodeIDs:
+            n = SimpleNode(id)
+            self.nodes[id] = n
+            
+        
+        
+        print("Creating Tasks")
+        for key in [next(builder.generateFileIDs()) for _ in range(self.numTasks)]:
+            id, _ = self.whoGetsFile(key)
+            self.nodes[id].addTask(key)
+        self.topology =  topology 
     
     def whoGetsFile(self, key : int):
         i =  bisect.bisect_left(self.nodeIDs, key) # index of node closest without going over
@@ -28,7 +45,8 @@ class Simulator(object):
       
     
     def doTick(self):
-        self.churnNetwork(self)
+        assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
+        self.churnNetwork()
         self.performWork()
         self.time += 1    
     
@@ -53,42 +71,77 @@ class Simulator(object):
         for nodeID in self.nodeIDs:
             if random.random() < self.churnRate:
                 leaving.append(nodeID)
-        for nodeID in self.pool:
+        for j in self.pool:
             if random.random() < self.churnRate:
-                joining.append(nodeID)
+                joining.append(j)
+                self.pool.remove(j)
         
         tasks = []
+        
         for l in leaving:
             tasks += self.removeNode(l)
         self.reallocateTasks(tasks)
         
         for j in joining:
-            # index = bisect.bisect_left(self.nodeIDs, j)
-            # self.nodeIDs.insert(index, j)
+            assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
+        
+            index  = bisect.bisect_left(self.nodeIDs, j)
+            succ = None
+            if index == len(self.nodeIDs): 
+                succ =  self.nodes[self.nodeIDs[0]]
+            else:
+                succID = self.nodeIDs[index]
+                succ =  self.nodes[succID]
+                
+            if j in self.nodeIDs:
+                continue
             
-            # newNode = SimpleNode(j)
-            pass
+            assert(j not in self.nodeIDs)
+            
+            
+            self.nodeIDs.insert(index, j)            
+            
+            newNode = SimpleNode(j)
+            self.nodes[j] = newNode
+            
+            tasks = succ.tasks[:]
+            succ.tasks = []
+            
+            for task in tasks:
+                if newNode.id < succ.id:
+                    if task <= newNode.id:
+                        newNode.addTask(task)
+                    else:
+                        succ.addTask(task)
+                else:
+                    if task > succ.id and  task < newNode.id:
+                        newNode.addTask(task)
+                    else:
+                        succ.addTask(task)
             
         self.addToPool(len(leaving))
         
             
     def addToPool(self, num):
-        for x in builder.generateFileIDs(num):
+        for _ in range(num):
+            x = next(builder.generateFileIDs())
+            assert(x not in self.nodeIDs)
             self.pool.append(x)
 
-    def removeNode(self, id):
-        tasks = self.nodes[id].tasks[:]
-        del self.nodeIDs[id]
-        del self.nodes[id]
+    def removeNode(self, key):
+        tasks = self.nodes[key].tasks[:]
+        self.nodeIDs.remove(key)
+        del(self.nodes[key])
         return tasks
         
     def reallocateTasks(self, tasks):
         for task in tasks:
             id, _  = self.whoGetsFile(task)
-            
+            self.nodes[id].addTask(task)
+        
     
     def performWork(self):
-        for n in self.nodes:
+        for n in self.nodeIDs:
             workDone = self.nodes[n].doWork()
             if workDone:  # if the node finished a task
                 self.numDone += 1
@@ -96,26 +149,14 @@ class Simulator(object):
     def simulate(self):
         while(self.numDone < self.numTasks):
             self.doTick()
-            print(self.time, self.numDone)
+            print(self.time, self.numDone, len(self.nodeIDs), len(self.pool), len(self.pool) + len(self.nodeIDs) )
         print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
         print(self.perfectTime)
         
         # maxNode =max(self.nodes.values(), key= lambda x: len(x.done))
         # print(len(maxNode.done))
     
-    def __init__(self, topology =  "chord", strategy = "static"):
-        self.nodeIDs = builder.createStaticIDs(self.numNodes)
-        
-        print("Creating Nodes")
-        for id in self.nodeIDs:
-            n = SimpleNode(id)
-            self.nodes[id] = n
-
-        print("Creating Tasks")
-        for key in builder.generateFileIDs(self.numTasks):
-            id, _ = self.whoGetsFile(key)
-            self.nodes[id].addTask(key)
-        self.topology =  topology
+    
 
 class SimpleNode(object):
     def __init__(self, id):
@@ -134,6 +175,8 @@ class SimpleNode(object):
         self.tasks.append(task)
 
 
+
+
 class Task(object):
     def __init__(self, key, size=1):
         self.key = key
@@ -146,36 +189,6 @@ class Result(object):
     def combine(self, other) -> None:
         self.results = self.results + other.results
 
-
-class DHTNode(object):
-    def __init__(self,hashkey: int):
-        self.id  = hashkey  # hashkey int from SHA1
-        self.files = {}     # files[hashkey] = value , collisions overwrite (S.O.P.)
-        self.backups = {}   # Original Owner -> {files})
-                            # or should it just be like files
-                            # or above + add another mapping  
-        
-        self.shortPeers =  []
-        self.longPeers = [] # assumptions: lazy update for long peers to start 
-                            # (eg find new one only when an error occurs)
-                            # unless protocol specifies otherwise
-        print("DONE")
-        self.tasks = []
-        self.backTask = {}  # Tasks that other nodes have been assigned.    
-        
-    def store(self, key: int, value: int):
-        self.files[key] = value
-        # do backup 
-        
-    def backup(self, key: int, value:int)-> None:
-        self.backups[key] = [value]
-        
-    def becomeOwner(self, key:int):
-        self.files
-        del self.backups[key]
-    
-    def relinquishOwnership(self, key:int):
-        pass
 
 
 s = Simulator()
