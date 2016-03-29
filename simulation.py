@@ -7,14 +7,15 @@ print("Begin")
 
 class Simulator(object):
     def __init__(self, topology =  "chord", strategy = "static"):
-        self.nodeIDs = []
+        self.nodeIDs = []   # the (super)nodes
+        self.workerIDs = [] # the nodes and sybils 
         self.pool = []
         self.nodes = {}  # (id: int, Node: object)
         
         
-        self.numNodes = 100
-        self.numTasks = 100000
-        self.churnRate = 0.00 # chance of join/leave per tick per node
+        self.numNodes = 1000
+        self.numTasks = 1000000
+        self.churnRate = 0.01 # chance of join/leave per tick per node
     
         self.perfectTime = self.numTasks/self.numNodes
         
@@ -83,7 +84,7 @@ class Simulator(object):
         self.reallocateTasks(tasks)
         
         for j in joining:
-            assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
+            # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         
             index  = bisect.bisect_left(self.nodeIDs, j)
             succ = None
@@ -96,7 +97,7 @@ class Simulator(object):
             if j in self.nodeIDs:
                 continue
             
-            assert(j not in self.nodeIDs)
+            # assert(j not in self.nodeIDs)
             
             
             self.nodeIDs.insert(index, j)            
