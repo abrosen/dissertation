@@ -1,7 +1,6 @@
 import bisect
 import builder
 import random
-
 print("Begin")
 
 
@@ -9,15 +8,17 @@ class Simulator(object):
     def __init__(self, topology =  "chord", strategy = "static"):
         # Theses are defaults, setup new simulations with another func
         self.nodeIDs = []   # the (super)nodes
+        self.sybilIDs = []
         self.sybils = {} # the nodes and sybils 
         self.pool = []
         self.nodes = {}  # (id: int, Node: object)
         
         
-        self.numNodes = 1000
-        self.numTasks = 1000000
+        self.numNodes = 100
+        self.numTasks = 10000
         self.churnRate = 0.001 # chance of join/leave per tick per node
         self.adaptationRate = 5 # number of ticks
+        self.maxSybils  = 10
         
         self.perfectTime = self.numTasks/self.numNodes
         
@@ -55,17 +56,34 @@ class Simulator(object):
     def doTick(self):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         self.randomInject()
-        self.churnNetwork()
+        #self.churnNetwork()
         self.performWork()
         self.time += 1    
+    
+    def randomInject(self):
+        if (self.time % self.adaptationRate) == 0:
+            for nodeID in self.nodeIDs:
+                node =  self.nodes[nodeID]
+                if len(node.tasks) < (self.numTasks/self.numNodes)/10 and self.numSybils(nodeID) < self.maxSybils:
+                    self.addSybil(nodeID)
+                
+                if self.numSybils(nodeID) > 0 and len(node.tasks) == 0:
+                    for s in self.sybils[nodeID]:
+                        del(self.nodes[s])
+                        self.sybilIDs.remove(s)
+                    self.sybils[nodeID] = []
     
     def performWork(self):
         for n in self.nodeIDs:
             workDone = self.nodes[n].doWork()
             if workDone:  # if the node finished a task
                 self.numDone += 1
-    
-    
+        for n in self.sybilIDs:
+            workDone = self.nodes[n].doWork()
+            if workDone:  # if the node finished a task
+                self.numDone += 1
+        
+        
     def churnNetwork(self):
         """
         figure out who is leaving and store it
@@ -142,8 +160,18 @@ class Simulator(object):
             return 0
         return len(self.sybils[id])
     
+    def addSybil(self, nodeID):
+        sybilID =  next(builder.generateFileIDs())
+        if nodeID not in self.sybils:
+            self.sybils[nodeID] = [sybilID]
+        else:
+            self.sybils[nodeID].append(sybilID)
+        
+        self.nodes[sybilID] = self.nodes[nodeID]
+        self.sybilIDs.append(sybilID)
+    
     def addToPool(self, num):
-        # Adds num nuodes to the pool of possible joining nodes
+        # Adds num nodes to the pool of possible joining nodes
         for _ in range(num):
             x = next(builder.generateFileIDs())
             assert(x not in self.nodeIDs)
@@ -157,11 +185,13 @@ class Simulator(object):
         
         # remove all sybils
         if self.numSybils(key) > 0:
-            for s in sybils[key]:
-                del(self.nodes[key])
-            del(sybils[key])
+            for s in self.sybils[key]:
+                del(self.nodes[s])
+                self.sybilIDs.remove(s)
+            del(self.sybils[key])
         return tasks
-        
+    
+    
     def reallocateTasks(self, tasks):
         for task in tasks:
             id, _  = self.whoGetsFile(task)
@@ -172,7 +202,7 @@ class Simulator(object):
     def simulate(self):
         while(self.numDone < self.numTasks):
             self.doTick()
-            print(self.time, self.numDone, len(self.nodeIDs), len(self.pool), len(self.pool) + len(self.nodeIDs) )
+            print(self.time, self.numDone, len(self.nodeIDs), len(self.pool), len(self.nodeIDs) + len(self.sybilIDs) )
         print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
         print(self.perfectTime)
         
