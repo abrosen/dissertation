@@ -92,10 +92,9 @@ class Simulator(object):
                 succ =  self.nodes[self.nodeIDs[0]]
             else:
                 succID = self.nodeIDs[index]
-                succ =  self.nodes[succID]
-                
-            if j in self.nodeIDs:
-                continue
+                succ =  self.nodes[succID]                
+            # if j in self.nodeIDs:
+            #    continue
             
             # assert(j not in self.nodeIDs)
             
