@@ -7,22 +7,27 @@ print("Begin")
 
 class Simulator(object):
     def __init__(self, topology =  "chord", strategy = "static"):
+        # Theses are defaults, setup new simulations with another func
         self.nodeIDs = []   # the (super)nodes
-        self.workerIDs = [] # the nodes and sybils 
+        self.sybils = {} # the nodes and sybils 
         self.pool = []
         self.nodes = {}  # (id: int, Node: object)
         
         
         self.numNodes = 1000
         self.numTasks = 1000000
-        self.churnRate = 0.01 # chance of join/leave per tick per node
-    
+        self.churnRate = 0.001 # chance of join/leave per tick per node
+        self.adaptationRate = 5 # number of ticks
+        
         self.perfectTime = self.numTasks/self.numNodes
         
         self.numDone = 0
         self.time = 0
         
-        self.nodeIDs = builder.createStaticIDs(self.numNodes)
+        #self.nodeIDs = builder.createStaticIDs(self.numNodes)
+        for _ in range(self.numNodes):
+            id = next(builder.generateFileIDs())
+            self.nodeIDs.append(id)
         self.addToPool(self.numNodes)
         
         print("Creating Nodes")
@@ -38,7 +43,9 @@ class Simulator(object):
             self.nodes[id].addTask(key)
         self.topology =  topology 
     
+        
     def whoGetsFile(self, key : int):
+        # returns closest node without going over and it's index in the nodeIDs
         i =  bisect.bisect_left(self.nodeIDs, key) # index of node closest without going over
         if i == len(self.nodeIDs):
             i = 0 
@@ -46,10 +53,18 @@ class Simulator(object):
       
     
     def doTick(self):
-        assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
+        # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
+        self.randomInject()
         self.churnNetwork()
         self.performWork()
         self.time += 1    
+    
+    def performWork(self):
+        for n in self.nodeIDs:
+            workDone = self.nodes[n].doWork()
+            if workDone:  # if the node finished a task
+                self.numDone += 1
+    
     
     def churnNetwork(self):
         """
@@ -121,17 +136,30 @@ class Simulator(object):
             
         self.addToPool(len(leaving))
         
-            
+    def numSybils(self, id):
+        # number of sybils id has made.
+        if id not in self.sybils.keys():
+            return 0
+        return len(self.sybils[id])
+    
     def addToPool(self, num):
+        # Adds num nuodes to the pool of possible joining nodes
         for _ in range(num):
             x = next(builder.generateFileIDs())
             assert(x not in self.nodeIDs)
             self.pool.append(x)
 
     def removeNode(self, key):
+        # kills a node with the id key
         tasks = self.nodes[key].tasks[:]
         self.nodeIDs.remove(key)
         del(self.nodes[key])
+        
+        # remove all sybils
+        if self.numSybils(key) > 0:
+            for s in sybils[key]:
+                del(self.nodes[key])
+            del(sybils[key])
         return tasks
         
     def reallocateTasks(self, tasks):
@@ -140,11 +168,6 @@ class Simulator(object):
             self.nodes[id].addTask(task)
         
     
-    def performWork(self):
-        for n in self.nodeIDs:
-            workDone = self.nodes[n].doWork()
-            if workDone:  # if the node finished a task
-                self.numDone += 1
     
     def simulate(self):
         while(self.numDone < self.numTasks):
