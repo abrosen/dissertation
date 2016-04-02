@@ -64,10 +64,12 @@ class Simulator(object):
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.nodeIDs:
                 node =  self.nodes[nodeID]
-                if len(node.tasks) < (self.numTasks/self.numNodes)/10 and self.numSybils(nodeID) < self.maxSybils:
-                    self.addSybil(nodeID)
+                if len(node.tasks) < (self.numTasks/self.numNodes) / 10:
+                    if nodeID in self.sybils: 
+                        if len(self.sybils[nodeID]) < self.maxSybils:
+                            self.addSybil(nodeID)
                 
-                if self.numSybils(nodeID) > 0 and len(node.tasks) == 0:
+                if nodeID in self.sybils and len(node.tasks) == 0:
                     for s in self.sybils[nodeID]:
                         del(self.nodes[s])
                         self.sybilIDs.remove(s)
@@ -153,12 +155,14 @@ class Simulator(object):
                         succ.addTask(task)
             
         self.addToPool(len(leaving))
-        
+    
+    """    
     def numSybils(self, id):
         # number of sybils id has made.
         if id not in self.sybils.keys():
             return 0
         return len(self.sybils[id])
+    """
     
     def addSybil(self, nodeID):
         sybilID =  next(builder.generateFileIDs())
@@ -184,7 +188,7 @@ class Simulator(object):
         del(self.nodes[key])
         
         # remove all sybils
-        if self.numSybils(key) > 0:
+        if key in self.sybils:
             for s in self.sybils[key]:
                 del(self.nodes[s])
                 self.sybilIDs.remove(s)
