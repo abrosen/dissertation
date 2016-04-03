@@ -140,42 +140,6 @@ class Simulator(object):
         for j in joining:
             # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
             self.insertWorker(j)
-            """
-            index  = bisect.bisect_left(self.nodeIDs, j)
-            succ = None
-            if index == len(self.nodeIDs): 
-                succ =  self.nodes[self.nodeIDs[0]]
-            else:
-                succID = self.nodeIDs[index]
-                succ =  self.nodes[succID]                
-            # if j in self.nodeIDs:
-            #    continue
-            
-            # assert(j not in self.nodeIDs)
-            
-            
-            self.nodeIDs.insert(index, j)            
-            
-            newNode = SimpleNode(j)
-            self.nodes[j] = newNode
-            
-            tasks = succ.tasks[:]
-            succ.tasks = []
-            
-            for task in tasks:
-                if newNode.id < succ.id:
-                    if task <= newNode.id:
-                        newNode.addTask(task)
-                    else:
-                        succ.addTask(task)
-                else:
-                    if task > succ.id and  task < newNode.id:
-                        newNode.addTask(task)
-                    else:
-                        succ.addTask(task)
-            bisect.insort(self.superNodes, j)
-            """
-            
         self.addToPool(len(leaving))
     
     """    
