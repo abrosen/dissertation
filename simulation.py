@@ -1,6 +1,7 @@
 import bisect
 import builder
 import random
+import variables
 
 
 print("Begin")
@@ -12,13 +13,11 @@ class Simulator(object):
     def __init__(self):
         pass
        
-    def setupSimulation(self, strategy= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1):
-        self.strategy = None
+    def setupSimulation(self, strategy= None, homogeneity= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1):
+        self.strategy = strategy
         
         self.nodeIDs = []   # the network topology
-        self.superNodes = [] # the nodes that will do the sybilling
-        #self.sybilIDs = []
-        self.numSybils = 0
+        self.superNodes = [] # the nodes that will do the sybilling  
         self.sybils = {} # (node, [] of sybils)
         self.pool = []
         self.nodes = {}  # (id: int, Node: object)
@@ -36,6 +35,7 @@ class Simulator(object):
         
         self.numDone = 0
         self.time = 0
+        self.numSybils = 0
         
         #self.nodeIDs = builder.createStaticIDs(self.numNodes)
         for _ in range(self.numNodes):
@@ -44,12 +44,12 @@ class Simulator(object):
             self.superNodes.append(id)
         self.addToPool(self.numNodes)
         
-        print("Creating Nodes")
+        #print("Creating Nodes")
         for id in self.superNodes:
             n = SimpleNode(id)
             self.nodes[id] = n
             
-        print("Creating Tasks")
+        #print("Creating Tasks")
         for key in [next(builder.generateFileIDs()) for _ in range(self.numTasks)]:
             id, _ = self.whoGetsFile(key)
             self.nodes[id].addTask(key)
@@ -74,7 +74,7 @@ class Simulator(object):
         self.churnNetwork()
         workThisTick = self.performWork(workMeasurement)
         self.time += 1
-        print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
+        #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
     def randomInject(self):
         if (self.time % self.adaptationRate) == 0:
@@ -150,15 +150,6 @@ class Simulator(object):
             self.insertWorker(j)
         self.addToPool(len(leaving))
     
-    """    
-    def numSybils(self, id):
-        # number of sybils id has made.
-        if id not in self.sybils.keys():
-            return 0
-        return len(self.sybils[id])
-    """
-    
-    
     def canSybil(self, superNode):
         if superNode not in self.sybils.keys():
             return True
@@ -173,13 +164,7 @@ class Simulator(object):
         
         self.nodes[sybilID] = self.nodes[superNode]
         self.numSybils += 1
-        
-        # change this to grab the work
         self.insertWorker(sybilID, self.nodes[sybilID])
-        
-        
-        
-        #bisect.insort(self.nodeIDs, sybilID)
         
     def insertWorker(self, joiningID, node = None):
         index  = bisect.bisect_left(self.nodeIDs, joiningID)
@@ -273,5 +258,7 @@ class SimpleNode(object):
 
 
 s = Simulator()
-s.setupSimulation()
-s.simulate()    
+for networkSize in variables.networkSizes:
+    for _ in range(variables.trials):
+        s.setupSimulation(numNodes=networkSize)
+        s.simulate()    
