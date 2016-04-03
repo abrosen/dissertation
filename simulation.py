@@ -63,7 +63,7 @@ class Simulator(object):
     def doTick(self, workMeasurement =None):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         self.randomInject()
-        # self.churnNetwork()
+        self.churnNetwork()
         workThisTick = self.performWork(workMeasurement)
         self.time += 1
         print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
@@ -123,7 +123,7 @@ class Simulator(object):
         """
         leaving = []
         joining = []
-        for nodeID in self.nodeIDs:
+        for nodeID in self.superNodes:
             if random.random() < self.churnRate:
                 leaving.append(nodeID)
         for j in self.pool:
@@ -139,7 +139,8 @@ class Simulator(object):
         
         for j in joining:
             # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
-        
+            self.insertWorker(j)
+            """
             index  = bisect.bisect_left(self.nodeIDs, j)
             succ = None
             if index == len(self.nodeIDs): 
@@ -172,6 +173,8 @@ class Simulator(object):
                         newNode.addTask(task)
                     else:
                         succ.addTask(task)
+            bisect.insort(self.superNodes, j)
+            """
             
         self.addToPool(len(leaving))
     
@@ -223,6 +226,7 @@ class Simulator(object):
         if node is None:
             node = SimpleNode(joiningID)
             self.nodes[joiningID] = node
+            bisect.insort(self.superNodes, joiningID)
         
         tasks = succ.tasks[:]
         succ.tasks = []
