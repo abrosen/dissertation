@@ -270,19 +270,5 @@ class SimpleNode(object):
 
 
 
-class Task(object):
-    def __init__(self, key, size=1):
-        self.key = key
-        self.size = size
-        
-
-class Result(object):
-    results = []
-    
-    def combine(self, other) -> None:
-        self.results = self.results + other.results
-
-
-
 s = Simulator()
 s.simulate()    
