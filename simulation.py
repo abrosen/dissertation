@@ -60,11 +60,11 @@ class Simulator(object):
             id, _  = self.whoGetsFile(task)
             self.nodes[id].addTask(task) 
     
-    def doTick(self):
+    def doTick(self, workMeasurement =None):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         self.randomInject()
         # self.churnNetwork()
-        workThisTick = self.performWork()
+        workThisTick = self.performWork(workMeasurement)
         self.time += 1
         print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
@@ -83,14 +83,15 @@ class Simulator(object):
         equal = default = None: each supernode does one task, regardless of of num of sybils
         strength = each supernode does strength number of tasks
         sybil = node and sybil does one task per tick
-        
-
         """
         
         numCompleted = 0
         population = None
         if workMeasurement is None or workMeasurement == "equal" or workMeasurement == 'default':
             population =  self.superNodes
+        elif workMeasurement == 'sybil':
+            population = self.nodeIDs
+        
         for n in population:
             workDone = self.nodes[n].doWork()
             if workDone:  # if the node finished a task
@@ -273,9 +274,9 @@ class Simulator(object):
         
     
     
-    def simulate(self):
+    def simulate(self,  workMeasurement = None):
         while(self.numDone < self.numTasks):
-            self.doTick()
+            self.doTick(workMeasurement)
             
         print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
         print(self.perfectTime)
@@ -288,7 +289,7 @@ class Simulator(object):
 class SimpleNode(object):
     def __init__(self, id):
         self.id = id
-        self.strength = random.randint(1, maxSybils )
+        self.strength = maxSybils #random.randint(1, maxSybils )
         self.tasks = []
         self.done = []
     
