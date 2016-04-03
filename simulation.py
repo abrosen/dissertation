@@ -3,7 +3,7 @@ import builder
 import random
 print("Begin")
 
-
+maxSybils  = 10
 class Simulator(object):
     def __init__(self, topology =  "chord", strategy = "static"):
         # Theses are defaults, setup new simulations with another func
@@ -19,7 +19,7 @@ class Simulator(object):
         self.numTasks = 10000
         self.churnRate = 0.001 # chance of join/leave per tick per node
         self.adaptationRate = 5 # number of ticks  
-        self.maxSybils  = 10
+        
         self.sybilThreshold = (self.numTasks/self.numNodes) / 10
         
         self.perfectTime = self.numTasks/self.numNodes
@@ -63,25 +63,40 @@ class Simulator(object):
     def doTick(self):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         self.randomInject()
-        #self.churnNetwork()
-        self.performWork()
-        self.time += 1    
+        # self.churnNetwork()
+        workThisTick = self.performWork()
+        self.time += 1
+        print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
     def randomInject(self):
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
-                node =  self.nodes[nodeID]
+                node = self.nodes[nodeID]
                 if len(node.tasks) < self.sybilThreshold and self.canSybil(nodeID):
                     self.addSybil(nodeID)
                 
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)
     
-    def performWork(self):
-        for n in self.nodeIDs:
+    def performWork(self, workMeasurement = None):
+        """
+        equal = default = None: each supernode does one task, regardless of of num of sybils
+        strength = each supernode does strength number of tasks
+        sybil = node and sybil does one task per tick
+        
+
+        """
+        
+        numCompleted = 0
+        population = None
+        if workMeasurement is None or workMeasurement == "equal" or workMeasurement == 'default':
+            population =  self.superNodes
+        for n in population:
             workDone = self.nodes[n].doWork()
             if workDone:  # if the node finished a task
                 self.numDone += 1
+                numCompleted += 1
+        return numCompleted
         
         #for n in self.sybilIDs:
         #    workDone = self.nodes[n].doWork()
@@ -167,28 +182,68 @@ class Simulator(object):
         return len(self.sybils[id])
     """
     
-    def canSybil(self, supernode):
-        if supernode not in self.sybils.keys():
-            return True
-        return len(self.sybils[supernode]) < self.maxSybils
     
-    def addSybil(self, nodeID):
+    def canSybil(self, superNode):
+        if superNode not in self.sybils.keys():
+            return True
+        return len(self.sybils[superNode]) < self.nodes[superNode].strength
+    
+    def addSybil(self, superNode):
         sybilID =  next(builder.generateFileIDs())
-        if nodeID not in self.sybils:
-            self.sybils[nodeID] = [sybilID]
+        if superNode not in self.sybils:
+            self.sybils[superNode] = [sybilID]
         else:
-            self.sybils[nodeID].append(sybilID)
+            self.sybils[superNode].append(sybilID)
         
-        self.nodes[sybilID] = self.nodes[nodeID]
-        bisect.insort(self.nodeIDs, sybilID)
+        self.nodes[sybilID] = self.nodes[superNode]
         self.sybilIDs.append(sybilID)
         
-    def clearSybils(self, supernode):
-        for s in self.sybils[supernode]:
+        # change this to grab the work
+        self.insertWorker(sybilID, self.nodes[sybilID])
+        
+        
+        
+        #bisect.insort(self.nodeIDs, sybilID)
+        
+    def insertWorker(self, joiningID, node = None):
+        index  = bisect.bisect_left(self.nodeIDs, joiningID)
+        succ = None
+        if index == len(self.nodeIDs): 
+            succ =  self.nodes[self.nodeIDs[0]]
+        else:
+            succID = self.nodeIDs[index]
+            succ =  self.nodes[succID]                
+        # if j in self.nodeIDs:
+        #    continue
+        
+        # assert(j not in self.nodeIDs)
+        
+        self.nodeIDs.insert(index, joiningID)         
+        if node is None:
+            node = SimpleNode(joiningID)
+            self.nodes[joiningID] = node
+        
+        tasks = succ.tasks[:]
+        succ.tasks = []
+        
+        for task in tasks:
+            if node.id < succ.id:
+                if task <= node.id:
+                    node.addTask(task)
+                else:
+                    succ.addTask(task)
+            else:
+                if task > succ.id and  task < node.id:
+                    node.addTask(task)
+                else:
+                    succ.addTask(task)
+ 
+    def clearSybils(self, superNode):
+        for s in self.sybils[superNode]:
             del(self.nodes[s])
             self.sybilIDs.remove(s)
             self.nodeIDs.remove(s)
-        self.sybils[supernode] = []
+        self.sybils[superNode] = []
     
     def addToPool(self, num):
         # Adds num nodes to the pool of possible joining nodes
@@ -221,7 +276,7 @@ class Simulator(object):
     def simulate(self):
         while(self.numDone < self.numTasks):
             self.doTick()
-            print(self.time, self.numDone, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
+            
         print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
         print(self.perfectTime)
         
@@ -233,6 +288,7 @@ class Simulator(object):
 class SimpleNode(object):
     def __init__(self, id):
         self.id = id
+        self.strength = random.randint(1, maxSybils )
         self.tasks = []
         self.done = []
     
