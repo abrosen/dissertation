@@ -1,12 +1,20 @@
 import bisect
 import builder
 import random
+
+
 print("Begin")
 
 maxSybils  = 10
+
+
 class Simulator(object):
-    def __init__(self, topology =  "chord", strategy = "static"):
-        # Theses are defaults, setup new simulations with another func
+    def __init__(self):
+        pass
+       
+    def setupSimulation(self, strategy= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1):
+        self.strategy = None
+        
         self.nodeIDs = []   # the network topology
         self.superNodes = [] # the nodes that will do the sybilling
         #self.sybilIDs = []
@@ -16,12 +24,13 @@ class Simulator(object):
         self.nodes = {}  # (id: int, Node: object)
         
         
-        self.numNodes = 100
-        self.numTasks = 10000
-        self.churnRate = 0.01 # chance of join/leave per tick per node
-        self.adaptationRate = 5 # number of ticks  
+        self.numNodes = numNodes
+        self.numTasks = numTasks
+        self.churnRate = churnRate # chance of join/leave per tick per node
+        self.adaptationRate = adaptationRate # number of ticks  
+        self.maxSybil = maxSybil
+        self.sybilThreshold = int((self.numTasks/self.numNodes) * sybilThreshold)
         
-        self.sybilThreshold = (self.numTasks/self.numNodes) / 10
         
         self.perfectTime = self.numTasks/self.numNodes
         
@@ -40,14 +49,12 @@ class Simulator(object):
             n = SimpleNode(id)
             self.nodes[id] = n
             
-        
-        
         print("Creating Tasks")
         for key in [next(builder.generateFileIDs()) for _ in range(self.numTasks)]:
             id, _ = self.whoGetsFile(key)
             self.nodes[id].addTask(key)
-        self.topology =  topology 
     
+
         
     def whoGetsFile(self, key : int):
         # returns closest node without going over and it's index in the nodeIDs
@@ -233,11 +240,6 @@ class Simulator(object):
             self.clearSybils(key)
         return tasks
     
-    
-    
-        
-    
-    
     def simulate(self,  workMeasurement = None):
         while(self.numDone < self.numTasks):
             self.doTick(workMeasurement)
@@ -271,4 +273,5 @@ class SimpleNode(object):
 
 
 s = Simulator()
+s.setupSimulation()
 s.simulate()    
