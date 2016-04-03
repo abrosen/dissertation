@@ -9,7 +9,8 @@ class Simulator(object):
         # Theses are defaults, setup new simulations with another func
         self.nodeIDs = []   # the network topology
         self.superNodes = [] # the nodes that will do the sybilling
-        self.sybilIDs = []
+        #self.sybilIDs = []
+        self.numSybils = 0
         self.sybils = {} # (node, [] of sybils)
         self.pool = []
         self.nodes = {}  # (id: int, Node: object)
@@ -17,7 +18,7 @@ class Simulator(object):
         
         self.numNodes = 100
         self.numTasks = 10000
-        self.churnRate = 0.001 # chance of join/leave per tick per node
+        self.churnRate = 0.01 # chance of join/leave per tick per node
         self.adaptationRate = 5 # number of ticks  
         
         self.sybilThreshold = (self.numTasks/self.numNodes) / 10
@@ -164,7 +165,7 @@ class Simulator(object):
             self.sybils[superNode].append(sybilID)
         
         self.nodes[sybilID] = self.nodes[superNode]
-        self.sybilIDs.append(sybilID)
+        self.numSybils += 1
         
         # change this to grab the work
         self.insertWorker(sybilID, self.nodes[sybilID])
@@ -181,9 +182,7 @@ class Simulator(object):
         else:
             succID = self.nodeIDs[index]
             succ =  self.nodes[succID]                
-        # if j in self.nodeIDs:
-        #    continue
-        
+ 
         # assert(j not in self.nodeIDs)
         
         self.nodeIDs.insert(index, joiningID)         
@@ -208,9 +207,10 @@ class Simulator(object):
                     succ.addTask(task)
  
     def clearSybils(self, superNode):
+        
         for s in self.sybils[superNode]:
             del(self.nodes[s])
-            self.sybilIDs.remove(s)
+            self.numSybils -= 1
             self.nodeIDs.remove(s)
         self.sybils[superNode] = []
     
@@ -230,11 +230,7 @@ class Simulator(object):
         
         # remove all sybils
         if key in self.sybils:
-            for s in self.sybils[key]:
-                del(self.nodes[s])
-                self.sybilIDs.remove(s)
-                self.nodeIDs.remove(s)
-            del(self.sybils[key])
+            self.clearSybils(key)
         return tasks
     
     
