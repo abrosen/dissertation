@@ -1,5 +1,5 @@
 # integrated variables 
-trials = 50
+trials = 3
 networkSizes = [10, 50, 100, 500, 1000, 2500, 5000, 10000]
 
 # unintegrated variables
