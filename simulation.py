@@ -71,7 +71,7 @@ class Simulator(object):
     def doTick(self, workMeasurement =None):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         self.randomInject()
-        self.churnNetwork()
+        self.churnNetwork() #if churn is 0
         workThisTick = self.performWork(workMeasurement)
         self.time += 1
         #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
@@ -80,7 +80,7 @@ class Simulator(object):
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
-                if len(node.tasks) < self.sybilThreshold and self.canSybil(nodeID):
+                if len(node.tasks) < self.sybilThreshold and self.canSybil(nodeID):  #what if threshhold is zero?
                     self.addSybil(nodeID)
                 
                 if nodeID in self.sybils and len(node.tasks) == 0:
