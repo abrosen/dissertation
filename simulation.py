@@ -2,6 +2,8 @@ import bisect
 import builder
 import random
 import variables
+import statistics
+import matplotlib.pyplot as plt
 import datetime
 
 
@@ -53,6 +55,7 @@ class Simulator(object):
         #print("Creating Tasks")
         for key in [next(builder.generateFileIDs()) for _ in range(self.numTasks)]:
             id, _ = self.whoGetsFile(key)
+            #print(id % 10000)
             self.nodes[id].addTask(key)
     
         
@@ -138,7 +141,7 @@ class Simulator(object):
         population = None
         if workMeasurement is None or workMeasurement == "equal" or workMeasurement == 'default':
             population =  self.superNodes
-        elif workMeasurement == 'sybil':
+        elif workMeasurement == 'strength' or workMeasurement == 'sybil':
             population = self.nodeIDs
         
         for n in population:
@@ -271,10 +274,10 @@ class Simulator(object):
         while(self.numDone < self.numTasks):
             self.doTick(workMeasurement)
             
-        print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
-        print(self.perfectTime)
-        
-        # maxNode =max(self.nodes.values(), key= lambda x: len(x.done))
+        #print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
+        #print(self.perfectTime)
+        maxNode =max(self.nodes.values(), key= lambda x: x.done)
+        return self.time, maxNode.done
         # print(len(maxNode.done))
     
     
@@ -284,12 +287,12 @@ class SimpleNode(object):
         self.id = id
         self.strength = maxSybils #random.randint(1, maxSybils )
         self.tasks = []
-        self.done = []
+        self.done = 0
     
     def doWork(self):
         if len(self.tasks) > 0:
             x = self.tasks.pop()
-            self.done.append(x)
+            self.done += 1
             return True
         return False
     
@@ -300,8 +303,22 @@ class SimpleNode(object):
 
 
 s = Simulator()
-for networkSize in variables.networkSizes:
-    for jobSize in variables.jobSizes:
+print("Nodes \t Tasks \t Time \t medianStart \t avgWork \t mostWork")
+for networkSize in variables.networkSizes[2:]:
+    for jobSize in variables.jobSizes[::-1]:
         for _ in range(variables.trials):
-            s.setupSimulation(numNodes=networkSize, numTasks=jobSize )
-            s.simulate()    
+            s.setupSimulation(strategy=None,numNodes=networkSize, numTasks=jobSize )
+            loads = [len(x.tasks) for x in s.nodes.values()]
+            #print(sorted(loads))
+            medianNumStartingTasks = statistics.median_low(loads)
+            
+            """
+            x = s.nodeIDs
+            y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
+            plt.semilogx(x,y, 'ro')
+            plt.show()
+            """
+            numTicks, hardestWorker= s.simulate()
+            
+            averageWorkPerTick = jobSize/numTicks
+            print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(networkSize, jobSize, numTicks, medianNumStartingTasks, averageWorkPerTick,  hardestWorker))
