@@ -48,6 +48,7 @@ class Simulator(object):
             self.superNodes.append(id)
         self.addToPool(self.numNodes)
         self.nodeIDs = sorted(self.nodeIDs)
+        self.superNodes = sorted(self.superNodes)
         
         #print("Creating Nodes")
         for id in self.superNodes:
@@ -331,3 +332,5 @@ for networkSize in variables.networkSizes[4:5]:
                 averageWorkPerTick = jobSize/numTicks
                 #print("{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker))
                 times.append(numTicks)
+            ticks =  sum(times)/len(times)
+            print(str(churn) + "\t" + str(ticks))
