@@ -5,6 +5,7 @@ import variables
 import statistics
 import matplotlib.pyplot as plt
 import datetime
+from variables import churnRates
 
 
 print("Begin")
@@ -46,6 +47,7 @@ class Simulator(object):
             self.nodeIDs.append(id)
             self.superNodes.append(id)
         self.addToPool(self.numNodes)
+        self.nodeIDs = sorted(self.nodeIDs)
         
         #print("Creating Nodes")
         for id in self.superNodes:
@@ -74,7 +76,7 @@ class Simulator(object):
     def doTick(self, workMeasurement =None):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         # self.randomInject()
-        self.neighborInject()
+        #self.neighborInject()
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork(workMeasurement)
@@ -303,22 +305,29 @@ class SimpleNode(object):
 
 
 s = Simulator()
-print("Nodes \t Tasks \t Time \t medianStart \t avgWork \t mostWork")
-for networkSize in variables.networkSizes[2:]:
-    for jobSize in variables.jobSizes[::-1]:
-        for _ in range(variables.trials):
-            s.setupSimulation(strategy=None,numNodes=networkSize, numTasks=jobSize )
-            loads = [len(x.tasks) for x in s.nodes.values()]
-            #print(sorted(loads))
-            medianNumStartingTasks = statistics.median_low(loads)
+print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
+for networkSize in variables.networkSizes[4:5]:
+    for jobSize in variables.jobSizes[5:6]:
+        for churn in variables.churnRates:
+            times = []
+            for _ in range(variables.trials):
+                s.setupSimulation(strategy=None,numNodes=networkSize, numTasks=jobSize, churnRate =churn)
+                loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
+                #print(sorted(loads))
+                medianNumStartingTasks = statistics.median_low(loads)
+                # variance
+                # varience over time
+                """
+                x = s.nodeIDs
+                y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
+                plt.plot(x,y, 'ro')
+                plt.show()
+                """
             
-            """
-            x = s.nodeIDs
-            y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
-            plt.semilogx(x,y, 'ro')
-            plt.show()
-            """
-            numTicks, hardestWorker= s.simulate()
-            
-            averageWorkPerTick = jobSize/numTicks
-            print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(networkSize, jobSize, numTicks, medianNumStartingTasks, averageWorkPerTick,  hardestWorker))
+                numTicks, hardestWorker= s.simulate()
+                idealTime = jobSize/networkSize
+                slowness  = numTicks/idealTime
+                
+                averageWorkPerTick = jobSize/numTicks
+                #print("{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker))
+                times.append(numTicks)

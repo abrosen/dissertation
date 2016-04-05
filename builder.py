@@ -1,5 +1,7 @@
 from hashlib import sha1
 import random
+import matplotlib.pyplot as plt
+import math
 
 # Global constants
 BASE = 160
@@ -55,3 +57,27 @@ class DHTNode(object):
     def relinquishOwnership(self, key:int):
         pass
 
+if __name__ == '__main__':
+    xs = []
+    ys = [] 
+    fx = []
+    fy = []
+    for _ in range(10):
+        n = next(generateFileIDs())
+        x = math.sin(2*math.pi*n/ MAX)
+        y = math.cos(2*math.pi*n/ MAX)
+        xs.append(x)
+        ys.append(y)
+    
+    for _ in range(100):
+        n = next(generateFileIDs())
+        x = math.sin(2*math.pi*n/ MAX)
+        y = math.cos(2*math.pi*n/ MAX)
+        fx.append(x)
+        fy.append(y)
+    #plt.axes([-1.0,1.0,-1.0,1.0] )
+    plt.plot(xs,ys, 'ro')
+    plt.plot(fx,fy, 'bo')
+    plt.show()
+    
+    
