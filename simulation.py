@@ -307,8 +307,10 @@ class SimpleNode(object):
 
 s = Simulator()
 print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
+
+    
 for networkSize in variables.networkSizes[4:5]:
-    for jobSize in variables.jobSizes[5:6]:
+    for jobSize in variables.jobSizes[5:7]:
         for churn in variables.churnRates:
             times = []
             for _ in range(variables.trials):
@@ -328,9 +330,14 @@ for networkSize in variables.networkSizes[4:5]:
                 numTicks, hardestWorker= s.simulate()
                 idealTime = jobSize/networkSize
                 slowness  = numTicks/idealTime
-                
                 averageWorkPerTick = jobSize/numTicks
-                #print("{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker))
+                results = "{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
+                with open("results.txt", 'a') as f:
+                    f.write(results)
+                    f.write("\n")
+                print(results)
                 times.append(numTicks)
             ticks =  sum(times)/len(times)
-            print(str(churn) + "\t" + str(ticks))
+            with open("averages.txt", 'a') as averages:
+                averages.write(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks) + "\n")
+            #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
