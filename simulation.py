@@ -2,6 +2,7 @@ import bisect
 import builder
 import random
 import variables
+import datetime
 
 
 print("Begin")
@@ -13,7 +14,7 @@ class Simulator(object):
     def __init__(self):
         pass
        
-    def setupSimulation(self, strategy= None, homogeneity= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1):
+    def setupSimulation(self, strategy= None, homogeneity= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1, numSuccessors=5):
         self.strategy = strategy
         
         self.nodeIDs = []   # the network topology
@@ -29,7 +30,7 @@ class Simulator(object):
         self.adaptationRate = adaptationRate # number of ticks  
         self.maxSybil = maxSybil
         self.sybilThreshold = int((self.numTasks/self.numNodes) * sybilThreshold)
-        
+        self.numSuccessors = numSuccessors
         
         self.perfectTime = self.numTasks/self.numNodes
         
@@ -69,12 +70,14 @@ class Simulator(object):
     
     def doTick(self, workMeasurement =None):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
-        self.randomInject()
+        # self.randomInject()
+        self.neighborInject()
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork(workMeasurement)
         self.time += 1
         #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
+    
     
     def randomInject(self):
         if (self.time % self.adaptationRate) == 0:
@@ -91,9 +94,38 @@ class Simulator(object):
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
                 if len(node.tasks) <= self.sybilThreshold and self.canSybil(nodeID):
-                    pass
-                
+                    indexOfSybiler = self.nodeIDs.index(nodeID)
+                    firstNeighbor = (indexOfSybiler + 1) % len(self.nodeIDs)
+                    lastNeighbor = (indexOfSybiler + 1 + self.numSuccessors) % len(self.nodeIDs)
+                    largestGap = 0 
+                    boundaryA = -1 
+                    boundaryB = -1
                     
+                    for i, j in zip(range(indexOfSybiler, lastNeighbor - 1) , range(firstNeighbor, lastNeighbor)):
+                        gapSize = (j - i) % builder.MAX
+                        if gapSize >largestGap :
+                            largestGap = gapSize
+                            boundaryA = i
+                            boundaryB = j
+                    
+                    # TODO Unsimplify.  Right now we just cheat and generate a number rather than hashing
+                    a = (self.nodeIDs[boundaryA]+1) % builder.MAX 
+                    b = (self.nodeIDs[boundaryB] -1) % builder.MAX
+                    sybilID = self.mash(a, b)
+                    self.addSybil(nodeID, sybilID)
+                    #assert((a < sybilID and sybilID < b) or  ()  )
+                    
+                    
+                    
+    def mash(self, a:int, b :int) -> int:
+        if b < a:
+            offset = builder.MAX - a 
+            b =  b + offset 
+            a = 0
+            retval  =  (random.randint(a, b) - offset)  % builder.MAX
+            return retval
+            
+        return random.randint(a, b)
     
     def performWork(self, workMeasurement = None):
         """
@@ -164,8 +196,9 @@ class Simulator(object):
             return True
         return len(self.sybils[superNode]) < self.nodes[superNode].strength
     
-    def addSybil(self, superNode):
-        sybilID =  next(builder.generateFileIDs())
+    def addSybil(self, superNode, sybilID = None):
+        if sybilID is None:
+            sybilID =  next(builder.generateFileIDs())
         if superNode not in self.sybils:
             self.sybils[superNode] = [sybilID]
         else:
