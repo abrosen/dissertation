@@ -54,7 +54,6 @@ class Simulator(object):
             id, _ = self.whoGetsFile(key)
             self.nodes[id].addTask(key)
     
-
         
     def whoGetsFile(self, key : int):
         # returns closest node without going over and it's index in the nodeIDs
@@ -71,7 +70,8 @@ class Simulator(object):
     def doTick(self, workMeasurement =None):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
         self.randomInject()
-        self.churnNetwork() #if churn is 0
+        if not self.churnRate == 0:
+            self.churnNetwork() #if churn is 0
         workThisTick = self.performWork(workMeasurement)
         self.time += 1
         #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
@@ -85,6 +85,15 @@ class Simulator(object):
                 
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)
+    
+    def neighborInject(self):
+        if (self.time % self.adaptationRate) == 0:
+            for nodeID in self.superNodes:
+                node = self.nodes[nodeID]
+                if len(node.tasks) < self.sybilThreshold and self.canSybil(nodeID):
+                    pass
+                
+                    
     
     def performWork(self, workMeasurement = None):
         """
@@ -259,6 +268,7 @@ class SimpleNode(object):
 
 s = Simulator()
 for networkSize in variables.networkSizes:
-    for _ in range(variables.trials):
-        s.setupSimulation(numNodes=networkSize)
-        s.simulate()    
+    for jobSize in variables.jobSizes:
+        for _ in range(variables.trials):
+            s.setupSimulation(numNodes=networkSize, numTasks=jobSize )
+            s.simulate()    

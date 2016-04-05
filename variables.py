@@ -10,7 +10,7 @@ adaptationRates = [1, 5, 10]
 sybilThresholds = [0, 0.01, 0.1, 0.25] 
 maxSybils = [1,5,10,50]
 
-strategies = ["base", "random", "randomInjection", "neighbors"]
+strategies = ["base", "churn", "randomInjection", "neighbors"]
 homogeneity = ["equal", "strength", "sybil"]
 
 
