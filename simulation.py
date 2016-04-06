@@ -5,7 +5,7 @@ import variables
 import statistics
 import matplotlib.pyplot as plt
 import datetime
-from variables import churnRates, adaptationRates
+
 
 
 print("Begin")
@@ -310,11 +310,11 @@ class SimpleNode(object):
 
 s = Simulator()
 print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-
-for networkSize in variables.networkSizes:
-    for jobSize in variables.jobSizes:
-        for churn in variables.churnRates:
-            for strategy in variables.strategies:                   
+for strategy in variables.strategies:   
+    for networkSize in variables.networkSizes[4:5]:
+        for jobSize in variables.jobSizes[5:6]:
+            for churn in variables.churnRates:
+                
                 times = []
                 for _ in range(variables.trials):
                     s.setupSimulation(strategy=strategy,numNodes=networkSize, numTasks=jobSize, churnRate =churn)
@@ -342,5 +342,5 @@ for networkSize in variables.networkSizes:
                     times.append(numTicks)
                 ticks =  sum(times)/len(times)
                 with open("averages.txt", 'a') as averages:
-                    averages.write(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks) + "\n")
+                    averages.write(strategy + "\t\t" +str(networkSize) + "\t\t" + str(jobSize) + "\t\t" + str(churn) + "\t\t" + str(ticks) + "\n")
                 #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
