@@ -5,7 +5,7 @@ import variables
 import statistics
 import matplotlib.pyplot as plt
 import datetime
-from variables import churnRates
+from variables import churnRates, adaptationRates
 
 
 print("Begin")
@@ -34,6 +34,7 @@ class Simulator(object):
         self.maxSybil = maxSybil
         self.sybilThreshold = int((self.numTasks/self.numNodes) * sybilThreshold)
         self.numSuccessors = numSuccessors
+        self.homogeneity = homogeneity
         
         self.perfectTime = self.numTasks/self.numNodes
         
@@ -47,6 +48,7 @@ class Simulator(object):
             self.nodeIDs.append(id)
             self.superNodes.append(id)
         self.addToPool(self.numNodes)
+        
         self.nodeIDs = sorted(self.nodeIDs)
         self.superNodes = sorted(self.superNodes)
         
@@ -74,13 +76,15 @@ class Simulator(object):
             id, _  = self.whoGetsFile(task)
             self.nodes[id].addTask(task) 
     
-    def doTick(self, workMeasurement =None):
+    def doTick(self):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
-        # self.randomInject()
-        #self.neighborInject()
+        if self.strategy == "randomInjection":
+            self.randomInject()
+        elif self.strategy == "neighbors":
+            self.neighborInject()
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
-        workThisTick = self.performWork(workMeasurement)
+        workThisTick = self.performWork()
         self.time += 1
         #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
@@ -133,20 +137,19 @@ class Simulator(object):
             
         return random.randint(a, b)
     
-    def performWork(self, workMeasurement = None):
+    def performWork(self):
         """
         equal = default = None: each supernode does one task, regardless of of num of sybils
         strength = each supernode does strength number of tasks
         sybil = node and sybil does one task per tick
         """
-        
+        workMeasurement = self.homogeneity
         numCompleted = 0
         population = None
         if workMeasurement is None or workMeasurement == "equal" or workMeasurement == 'default':
             population =  self.superNodes
         elif workMeasurement == 'strength' or workMeasurement == 'sybil':
             population = self.nodeIDs
-        
         for n in population:
             workDone = self.nodes[n].doWork()
             if workDone:  # if the node finished a task
@@ -273,9 +276,9 @@ class Simulator(object):
             self.clearSybils(key)
         return tasks
     
-    def simulate(self,  workMeasurement = None):
+    def simulate(self):
         while(self.numDone < self.numTasks):
-            self.doTick(workMeasurement)
+            self.doTick()
             
         #print(str(self.numTasks) + " done in " + str(self.time) + " ticks.")
         #print(self.perfectTime)
@@ -308,36 +311,36 @@ class SimpleNode(object):
 s = Simulator()
 print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
 
-    
-for networkSize in variables.networkSizes[4:5]:
-    for jobSize in variables.jobSizes[5:7]:
+for networkSize in variables.networkSizes:
+    for jobSize in variables.jobSizes:
         for churn in variables.churnRates:
-            times = []
-            for _ in range(variables.trials):
-                s.setupSimulation(strategy=None,numNodes=networkSize, numTasks=jobSize, churnRate =churn)
-                loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
-                #print(sorted(loads))
-                medianNumStartingTasks = statistics.median_low(loads)
-                # variance
-                # varience over time
-                """
-                x = s.nodeIDs
-                y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
-                plt.plot(x,y, 'ro')
-                plt.show()
-                """
-            
-                numTicks, hardestWorker= s.simulate()
-                idealTime = jobSize/networkSize
-                slowness  = numTicks/idealTime
-                averageWorkPerTick = jobSize/numTicks
-                results = "{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
-                with open("results.txt", 'a') as f:
-                    f.write(results)
-                    f.write("\n")
-                print(results)
-                times.append(numTicks)
-            ticks =  sum(times)/len(times)
-            with open("averages.txt", 'a') as averages:
-                averages.write(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks) + "\n")
-            #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
+            for strategy in variables.strategies:                   
+                times = []
+                for _ in range(variables.trials):
+                    s.setupSimulation(strategy=strategy,numNodes=networkSize, numTasks=jobSize, churnRate =churn)
+                    loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
+                    #print(sorted(loads))
+                    medianNumStartingTasks = statistics.median_low(loads)
+                    # variance
+                    # variance over time
+                    """
+                    x = s.nodeIDs
+                    y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
+                    plt.plot(x,y, 'ro')
+                    plt.show()
+                    """
+                
+                    numTicks, hardestWorker= s.simulate()
+                    idealTime = jobSize/networkSize
+                    slowness  = numTicks/idealTime
+                    averageWorkPerTick = jobSize/numTicks
+                    results = "{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
+                    with open("results.txt", 'a') as f:
+                        f.write(results)
+                        f.write("\n")
+                    print(results)
+                    times.append(numTicks)
+                ticks =  sum(times)/len(times)
+                with open("averages.txt", 'a') as averages:
+                    averages.write(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks) + "\n")
+                #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
