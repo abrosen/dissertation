@@ -6,10 +6,6 @@ import statistics
 import matplotlib.pyplot as plt
 import datetime
 
-
-
-print("Begin")
-
 maxSybils  = 10
 
 
@@ -308,39 +304,3 @@ class SimpleNode(object):
 
 
 
-s = Simulator()
-print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-for strategy in variables.strategies:   
-    for networkSize in variables.networkSizes[4:5]:
-        for jobSize in variables.jobSizes[5:6]:
-            for churn in variables.churnRates:
-                
-                times = []
-                for _ in range(variables.trials):
-                    s.setupSimulation(strategy=strategy,numNodes=networkSize, numTasks=jobSize, churnRate =churn)
-                    loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
-                    #print(sorted(loads))
-                    medianNumStartingTasks = statistics.median_low(loads)
-                    # variance
-                    # variance over time
-                    """
-                    x = s.nodeIDs
-                    y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
-                    plt.plot(x,y, 'ro')
-                    plt.show()
-                    """
-                
-                    numTicks, hardestWorker= s.simulate()
-                    idealTime = jobSize/networkSize
-                    slowness  = numTicks/idealTime
-                    averageWorkPerTick = jobSize/numTicks
-                    results = "{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(networkSize, jobSize, churn, numTicks, slowness,  medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
-                    with open("results.txt", 'a') as f:
-                        f.write(results)
-                        f.write("\n")
-                    print(results)
-                    times.append(numTicks)
-                ticks =  sum(times)/len(times)
-                with open("averages.txt", 'a') as averages:
-                    averages.write(strategy + "\t\t" +str(networkSize) + "\t\t" + str(jobSize) + "\t\t" + str(churn) + "\t\t" + str(ticks) + "\n")
-                #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
