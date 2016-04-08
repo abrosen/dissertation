@@ -5,27 +5,41 @@ import statistics
 s = Simulator()
 
 def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors):
-    times = []    
+    times = []
+    inputs = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}".format(
+        strategy, homogeneity, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors)
+    with open("results.txt", 'a') as f:
+            f.write(inputs)
+            f.write("____________________")
+            f.write("\n")
+    print(inputs)
+    print("____________________")
     for _ in range(variables.trials):
-        s.setupSimulation(strategy, homogeneity, numNodes=networkSize, numTasks=jobSize, churnRate =churn, adaptationRate= adaptationRate)
+        s.setupSimulation(strategy, homogeneity, numNodes=networkSize, 
+            numTasks=jobSize, churnRate =churn, adaptationRate= adaptationRate, 
+            maxSybil=maxSybil, sybilThreshold=sybilThreshold, numSuccessors=numSuccessors)
+        
         loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
         #print(sorted(loads))
         medianNumStartingTasks = statistics.median_low(loads)
         # variance
         # variance over time
+        
+        
+        
+        
         """
         x = s.nodeIDs
         y = [len(s.nodes[q].tasks) for q in s.nodeIDs]
         plt.plot(x,y, 'ro')
         plt.show()
         """
-    
         numTicks, hardestWorker= s.simulate()
         idealTime = jobSize/networkSize
         slownessFactor  = numTicks/idealTime
         averageWorkPerTick = jobSize/numTicks
-        results = "{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\t\t{5}\t\t{6}\t\t{7}".format(
-        networkSize, jobSize, churn,  numTicks,  slownessFactor, medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
+        results = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
+        numTicks, idealTime, slownessFactor, medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
         with open("results.txt", 'a') as f:
             f.write(results)
             f.write("\n")

@@ -1,9 +1,6 @@
 import bisect
 import builder
 import random
-import variables
-import statistics
-import matplotlib.pyplot as plt
 import datetime
 
 maxSybils  = 10
