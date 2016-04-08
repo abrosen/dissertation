@@ -10,6 +10,12 @@ def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate
         strategy, homogeneity, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors)
     with open("results.txt", 'a') as f:
             f.write(inputs)
+            f.write("\n")
+            f.write("____________________")
+            f.write("\n")
+    with open("averages.txt", 'a') as f:
+            f.write(inputs)
+            f.write("\n")
             f.write("____________________")
             f.write("\n")
     print(inputs)
@@ -47,13 +53,22 @@ def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate
         times.append(numTicks)
     ticks =  sum(times)/len(times)
     with open("averages.txt", 'a') as averages:
-        averages.write(strategy + "\t\t" +str(networkSize) + "\t\t" + str(jobSize) + "\t\t" + str(churn) + "\t\t" + str(ticks) + "\n")
+        averages.write(strategy + "\t"+ homogeneity  +"\t"+str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks) + "\n")
     #TODO graphs of graphs with sybil injections
     
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
+def runRandomInject():
+    for workMeasurement in variables.homogeneity:
+        for adaptationRate  in variables.adaptationRates:
+            for maxSybil in variables.maxSybils:
+                for threshold in variables.sybilThresholds:
+                    runTrials("randomInjection", workMeasurement, 1000, 100000, 0, adaptationRate, maxSybil, threshold, -1)
 
-assert(False)
+def testChurn():
+    for churn in variables.churnRates:
+        runTrials("churn", "equal", 1000, 100000, churn, -1, -1, -1,-1)
+            
 #write a method to just check churn vs the random injection at 1000 100000 
 
 def runFullExperiment():
@@ -82,4 +97,4 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    runFullExperiment()
+    testChurn()
