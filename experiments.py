@@ -53,6 +53,8 @@ def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
 
+assert(False)
+#write a method to just check churn vs the random injection at 1000 100000 
 
 def runFullExperiment():
     for strategy in variables.strategies: 
