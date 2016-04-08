@@ -199,6 +199,10 @@ class Simulator(object):
         return len(self.sybils[superNode]) < self.nodes[superNode].strength
     
     def addSybil(self, superNode, sybilID = None):
+        
+        # TODO: check if work actual gets taken
+        # check insert worker
+        assert(False)
         if sybilID is None:
             sybilID =  next(builder.generateFileIDs())
         if superNode not in self.sybils:
@@ -227,8 +231,11 @@ class Simulator(object):
             self.nodes[joiningID] = node
             bisect.insort(self.superNodes, joiningID)
         
+        
         tasks = succ.tasks[:]
         succ.tasks = []
+        assert(False)
+        # assert tasks actually has tasks if it had tasks to begin wiht
         
         for task in tasks:
             if node.id < succ.id:
@@ -237,6 +244,8 @@ class Simulator(object):
                 else:
                     succ.addTask(task)
             else:
+                assert(False)
+                # check logic here
                 if task > succ.id and  task < node.id:
                     node.addTask(task)
                 else:
@@ -248,6 +257,9 @@ class Simulator(object):
             del(self.nodes[s])
             self.numSybils -= 1
             self.nodeIDs.remove(s)
+            
+            # make sure this gets taken care 
+        assert(False)
         self.sybils[superNode] = []
     
     def addToPool(self, num):

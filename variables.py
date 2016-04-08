@@ -5,7 +5,7 @@ homogeneity = ["equal", "strength", "sybil"]
 
 
 
-networkSizes = [10, 50, 100, 500, 1000, 2500, 5000, 10000]
+networkSizes = [10, 50, 100, 500, 1000, 5000, 10000]
 jobSizes = [100, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 10000000]
 churnRates = [0, 0.00001, 0.0001, 0.001, 0.01]
 adaptationRates = [1, 5, 10]
