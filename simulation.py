@@ -143,6 +143,8 @@ class Simulator(object):
             population =  self.superNodes
         elif self.workMeasurement == 'perSybil':
             population = self.nodeIDs
+        else:
+            assert(False)
         for n in population:
             if self.workMeasurement == "perStrength":
                 for _ in range(self.nodes[n].strength):

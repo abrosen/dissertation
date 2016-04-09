@@ -78,6 +78,9 @@ def runFullExperiment():
                             sybilThresholds = [-1]
                             maxSybils = [1]
                             numSuccessorOptions = [-1]
+                            """
+                            I could swap theses out for continues at the bottom
+                            """
                             if strategy == "randomInjection" or strategy == "neighbors":
                                 rates = variables.adaptationRates
                                 thresholds = variables.sybilThresholds
@@ -88,6 +91,8 @@ def runFullExperiment():
                                 for maxSybil in maxSybils:
                                     for sybilThreshold in sybilThresholds:
                                         for numSuccessors in numSuccessorOptions:
+                                            if strategy =="churn" and workMeasurement=="perSybil":
+                                                continue
                                             runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                             
                             
