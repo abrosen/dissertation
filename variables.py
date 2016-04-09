@@ -1,11 +1,20 @@
 # integrated variables 
 trials = 1
 strategies = [ "churn", "randomInjection", "neighbors"]
-homogeneity = ["equal", "strength", "sybil"]
-"""
+homogeneity = ["equal", "randomUniform", "randomGauss" ]
+workPerTick = ["one", "perSybil", "perStrength"]
 
-Equal: Each supernode performs a single task each tick
-Strength: Task Each supernode has a random number of sybils
+"""
+workMeasurement:
+one:
+sybil
+strength
+
+
+homogeneity:
+equal: Nodes have the exact same capablities for creating sybils
+randomUniform: Nodes have a random uniform  strength
+randomGauss: Nodes have a random 
 
 """
 
