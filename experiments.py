@@ -48,7 +48,7 @@ def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate
         times.append(numTicks)
     ticks =  sum(times)/len(times)
     with open("averages.txt", 'a') as averages:
-        averages.write(strategy + "\t"+ homogeneity  +"\t"+str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks) + "\n")
+        averages.write(strategy + "\t"+ homogeneity  +"\t"+str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t"+ str(maxSybil) + "\t" + str(ticks) + "\n")
     #TODO graphs of graphs with sybil injections
     
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))

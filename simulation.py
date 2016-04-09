@@ -66,8 +66,8 @@ class Simulator(object):
      
     def reallocateTasks(self, tasks):
         for task in tasks:
-            id, _  = self.whoGetsFile(task)
-            self.nodes[id].addTask(task) 
+            index, _  = self.whoGetsFile(task)
+            self.nodes[index].addTask(task) 
     
     def doTick(self):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
@@ -216,13 +216,13 @@ class Simulator(object):
         self.insertWorker(sybilID, self.nodes[sybilID])
         
     def insertWorker(self, joiningID, node = None):
-        index  = bisect.bisect_left(self.nodeIDs, joiningID)
-        succ = None
+        index  = bisect.bisect(self.nodeIDs, joiningID)
+        succID = None
         if index == len(self.nodeIDs): 
-            succ =  self.nodes[self.nodeIDs[0]]
+            succID = self.nodeIDs[0]
         else:
             succID = self.nodeIDs[index]
-            succ =  self.nodes[succID]                
+        succ =  self.nodes[succID]                
  
         # assert(j not in self.nodeIDs)
         
@@ -241,24 +241,27 @@ class Simulator(object):
         
         # assert tasks actually has tasks if it had tasks to begin wiht
         """
+        This won't work because it will look at ALL work, including the sybilled work
+        and view them as the only two in the network
         for task in tasks:
-            if node.id < succ.id:
-                if task <= node.id:
-                    
+            if joiningID < succID:
+                if task <= joiningID:      
                     node.addTask(task)
                 else:
                     succ.addTask(task)
             else:
-                if task > succ.id and task < node.id:
+                if task > succID and task < joiningID:
                     node.addTask(task)
                 else:
-                    succ.addTask(task)"""
+                    succ.addTask(task)
+        """
         self.reallocateTasks(tasks)
         nodeEnd = len(node.tasks)
         succEnd = len(succ.tasks)
         
         #print("Node/Successor has " + str(nodeStart)+"/" + str(succStart)  + " tasks;  took " + str(succStart - succEnd ) )
-        assert(succStart == (succEnd + (nodeEnd - nodeStart))   )
+        assert(succStart - succEnd ==  nodeEnd -  nodeStart)
+        
     def clearSybils(self, superNode):
         
         for s in self.sybils[superNode]:
