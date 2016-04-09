@@ -2,6 +2,13 @@
 trials = 1
 strategies = [ "churn", "randomInjection", "neighbors"]
 homogeneity = ["equal", "strength", "sybil"]
+"""
+
+Equal: Each supernode performs a single task each tick
+Strength: Task Each supernode has a random number of sybils
+
+"""
+
 
 
 
