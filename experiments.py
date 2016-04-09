@@ -13,11 +13,6 @@ def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate
             f.write("\n")
             f.write("____________________")
             f.write("\n")
-    with open("averages.txt", 'a') as f:
-            f.write(inputs)
-            f.write("\n")
-            f.write("____________________")
-            f.write("\n")
     print(inputs)
     print("____________________")
     for _ in range(variables.trials):
@@ -58,7 +53,7 @@ def runTrials(strategy, homogeneity, networkSize, jobSize, churn, adaptationRate
     
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
-def runRandomInject():
+def testRandomInject():
     for workMeasurement in variables.homogeneity:
         for adaptationRate  in variables.adaptationRates:
             for maxSybil in variables.maxSybils:
@@ -97,4 +92,5 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    testChurn()
+    #testChurn()
+    testRandomInject()

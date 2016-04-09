@@ -1,0 +1,162 @@
+churn	equal	1000	100000	0	-1	-1	-1	-1
+____________________
+churn	equal	1000	100000	0	809.0
+churn	equal	1000	100000	1e-05	-1	-1	-1	-1
+____________________
+churn	equal	1000	100000	1e-05	793.3333333333334
+churn	equal	1000	100000	0.0001	-1	-1	-1	-1
+____________________
+churn	equal	1000	100000	0.0001	648.6666666666666
+churn	equal	1000	100000	0.001	-1	-1	-1	-1
+____________________
+churn	equal	1000	100000	0.001	540.0
+churn	equal	1000	100000	0.01	-1	-1	-1	-1
+____________________
+churn	equal	1000	100000	0.01	327.6666666666667
+randomInjection	equal	1000	100000	0	1	1	0	-1
+____________________
+randomInjection	equal	1000	100000	0	819.6666666666666
+randomInjection	equal	1000	100000	0	1	1	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	772.3333333333334
+randomInjection	equal	1000	100000	0	1	1	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	765.3333333333334
+randomInjection	equal	1000	100000	0	1	1	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	717.0
+randomInjection	equal	1000	100000	0	1	5	0	-1
+____________________
+randomInjection	equal	1000	100000	0	699.3333333333334
+randomInjection	equal	1000	100000	0	1	5	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	751.3333333333334
+randomInjection	equal	1000	100000	0	1	5	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	707.3333333333334
+randomInjection	equal	1000	100000	0	1	5	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	701.6666666666666
+randomInjection	equal	1000	100000	0	1	10	0	-1
+____________________
+randomInjection	equal	1000	100000	0	718.6666666666666
+randomInjection	equal	1000	100000	0	1	10	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	797.6666666666666
+randomInjection	equal	1000	100000	0	1	10	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	720.3333333333334
+randomInjection	equal	1000	100000	0	1	10	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	704.3333333333334
+randomInjection	equal	1000	100000	0	1	50	0	-1
+____________________
+randomInjection	equal	1000	100000	0	710.6666666666666
+randomInjection	equal	1000	100000	0	1	50	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	763.6666666666666
+randomInjection	equal	1000	100000	0	1	50	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	771.6666666666666
+randomInjection	equal	1000	100000	0	1	50	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	768.3333333333334
+randomInjection	equal	1000	100000	0	5	1	0	-1
+____________________
+randomInjection	equal	1000	100000	0	674.6666666666666
+randomInjection	equal	1000	100000	0	5	1	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	690.0
+randomInjection	equal	1000	100000	0	5	1	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	724.6666666666666
+randomInjection	equal	1000	100000	0	5	1	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	699.6666666666666
+randomInjection	equal	1000	100000	0	5	5	0	-1
+____________________
+randomInjection	equal	1000	100000	0	782.3333333333334
+randomInjection	equal	1000	100000	0	5	5	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	655.6666666666666
+randomInjection	equal	1000	100000	0	5	5	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	738.3333333333334
+randomInjection	equal	1000	100000	0	5	5	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	706.3333333333334
+randomInjection	equal	1000	100000	0	5	10	0	-1
+____________________
+randomInjection	equal	1000	100000	0	845.0
+randomInjection	equal	1000	100000	0	5	10	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	759.3333333333334
+randomInjection	equal	1000	100000	0	5	10	0.1	-1
+____________________
+randomInjection	equal	1000	100000	0	719.0
+randomInjection	equal	1000	100000	0	5	10	0.25	-1
+____________________
+randomInjection	equal	1000	100000	0	668.6666666666666
+randomInjection	equal	1000	100000	0	5	50	0	-1
+____________________
+randomInjection	equal	1000	100000	0	763.0
+randomInjection	equal	1000	100000	0	5	50	0.01	-1
+____________________
+randomInjection	equal	1000	100000	0	776.6666666666666
+randomInjection	equal	1000	100000	0	679.0
+randomInjection	equal	1000	100000	0	830.0
+randomInjection	equal	1000	100000	0	679.0
+randomInjection	equal	1000	100000	0	122.0
+randomInjection	equal	1000	100000	0	115.0
+randomInjection	equal	1000	100000	0	122.0
+randomInjection	equal	1000	100000	0	115.0
+randomInjection	equal	1000	100000	0	117.0
+randomInjection	equal	1000	100000	0	122.0
+randomInjection	equal	1000	100000	0	115.0
+randomInjection	equal	1000	100000	0	117.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	116.0
+randomInjection	equal	1000	100000	0	125.0
+randomInjection	equal	1000	100000	0	121.0
+__
+__
+randomInjection	equal	1000	100000	0	122.0
+randomInjection	equal	1000	100000	0	115.0
+randomInjection	equal	1000	100000	0	117.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	116.0
+randomInjection	equal	1000	100000	0	124.0
+randomInjection	equal	1000	100000	0	123.0
+randomInjection	equal	1000	100000	0	118.0
+randomInjection	equal	1000	100000	0	125.0
+randomInjection	equal	1000	100000	0	124.0
+randomInjection	equal	1000	100000	0	118.0
+randomInjection	equal	1000	100000	0	123.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	126.0
+randomInjection	equal	1000	100000	0	122.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	120.0
+randomInjection	equal	1000	100000	0	124.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	119.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	152.0
+randomInjection	equal	1000	100000	0	153.0
+randomInjection	equal	1000	100000	0	156.0
+randomInjection	equal	1000	100000	0	138.0
+randomInjection	equal	1000	100000	0	152.0
+randomInjection	equal	1000	100000	0	150.0
+randomInjection	equal	1000	100000	0	124.0
+randomInjection	equal	1000	100000	0	124.0
+randomInjection	equal	1000	100000	0	123.0
+randomInjection	equal	1000	100000	0	118.0
+randomInjection	equal	1000	100000	0	125.0
+randomInjection	equal	1000	100000	0	124.0
+randomInjection	equal	1000	100000	0	118.0
+randomInjection	equal	1000	100000	0	123.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	126.0
+randomInjection	equal	1000	100000	0	122.0
+randomInjection	equal	1000	100000	0	121.0
+randomInjection	equal	1000	100000	0	120.0

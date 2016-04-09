@@ -4,7 +4,7 @@ import random
 import datetime
 
 maxSybils  = 10
-
+assert(False)
 
 class Simulator(object):
     def __init__(self):
@@ -79,7 +79,7 @@ class Simulator(object):
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork()
         self.time += 1
-        #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
+        print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
     
     def randomInject(self):
@@ -202,7 +202,7 @@ class Simulator(object):
         
         # TODO: check if work actual gets taken
         # check insert worker
-        assert(False)
+        #assert(False)
         if sybilID is None:
             sybilID =  next(builder.generateFileIDs())
         if superNode not in self.sybils:
@@ -231,26 +231,33 @@ class Simulator(object):
             self.nodes[joiningID] = node
             bisect.insort(self.superNodes, joiningID)
         
+        nodeStart = len(node.tasks)
+        succStart = len(succ.tasks)
+        
         
         tasks = succ.tasks[:]
         succ.tasks = []
-        assert(False)
-        # assert tasks actually has tasks if it had tasks to begin wiht
         
+        # assert tasks actually has tasks if it had tasks to begin wiht
+        """
         for task in tasks:
             if node.id < succ.id:
                 if task <= node.id:
+                    
                     node.addTask(task)
                 else:
                     succ.addTask(task)
             else:
-                assert(False)
-                # check logic here
-                if task > succ.id and  task < node.id:
+                if task > succ.id and task < node.id:
                     node.addTask(task)
                 else:
-                    succ.addTask(task)
- 
+                    succ.addTask(task)"""
+        self.reallocateTasks(tasks)
+        nodeEnd = len(node.tasks)
+        succEnd = len(succ.tasks)
+        
+        #print("Node/Successor has " + str(nodeStart)+"/" + str(succStart)  + " tasks;  took " + str(succStart - succEnd ) )
+        assert(succStart == (succEnd + (nodeEnd - nodeStart))   )
     def clearSybils(self, superNode):
         
         for s in self.sybils[superNode]:
@@ -259,7 +266,7 @@ class Simulator(object):
             self.nodeIDs.remove(s)
             
             # make sure this gets taken care 
-        assert(False)
+        #assert(False)
         self.sybils[superNode] = []
     
     def addToPool(self, num):

@@ -1,5 +1,5 @@
 # integrated variables 
-trials = 20
+trials = 1
 strategies = [ "churn", "randomInjection", "neighbors"]
 homogeneity = ["equal", "strength", "sybil"]
 
@@ -11,14 +11,14 @@ churnRates = [0, 0.00001, 0.0001, 0.001, 0.01]
 adaptationRates = [1, 5, 10]
 sybilThresholds = [0, 0.01, 0.1, 0.25] 
 
+maxSybils = [1,5,10,50]
+successors = [5,10,20]
+
 # unintegrated variables
 
 
 
 
-
-maxSybils = [1,5,10,50]
-successors = [5,10,20]
 
 
 
