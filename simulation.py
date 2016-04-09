@@ -2,7 +2,6 @@ import bisect
 import builder
 import random
 import datetime
-
 #maxSybils  = 10
 #assert(False)
 
@@ -10,7 +9,7 @@ class Simulator(object):
     def __init__(self):
         pass
        
-    def setupSimulation(self, strategy= None, homogeneity= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1, numSuccessors=5):
+    def setupSimulation(self, strategy= None, homogeneity= None, workMeasurement=None ,  numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1, numSuccessors=5):
         self.strategy = strategy
         
         self.nodeIDs = []   # the network topology
@@ -28,6 +27,7 @@ class Simulator(object):
         self.sybilThreshold = int((self.numTasks/self.numNodes) * sybilThreshold)
         self.numSuccessors = numSuccessors
         self.homogeneity = homogeneity
+        self.workMeasurement = workMeasurement
         
         self.perfectTime = self.numTasks/self.numNodes
         
@@ -47,7 +47,7 @@ class Simulator(object):
         
         #print("Creating Nodes")
         for id in self.superNodes:
-            n = SimpleNode(id,self.maxSybil)
+            n = SimpleNode(id, self.maxSybil, self.homogeneity)
             self.nodes[id] = n
             
         #print("Creating Tasks")
@@ -137,18 +137,26 @@ class Simulator(object):
         strength = each supernode does strength number of tasks
         sybil = node and sybil does one task per tick
         """
-        workMeasurement = self.homogeneity
         numCompleted = 0
         population = None
-        if workMeasurement is None or workMeasurement == "equal" or workMeasurement == 'default':
+        if self.workMeasurement == "one" or self.workMeasurement == 'perStrength':
             population =  self.superNodes
-        elif workMeasurement == 'strength' or workMeasurement == 'sybil':
+        elif self.workMeasurement == 'perSybil':
             population = self.nodeIDs
         for n in population:
-            workDone = self.nodes[n].doWork()
-            if workDone:  # if the node finished a task
-                self.numDone += 1
-                numCompleted += 1
+            if self.workMeasurement == "perStrength":
+                for _ in range(self.nodes[n].strength):
+                    workDone = self.nodes[n].doWork()
+                    if workDone:  # if the node finished a task
+                        self.numDone += 1
+                        numCompleted += 1
+                    else:
+                        break
+            else:
+                workDone = self.nodes[n].doWork()
+                if workDone:  # if the node finished a task
+                    self.numDone += 1
+                    numCompleted += 1
         return numCompleted
         
         #for n in self.sybilIDs:
@@ -228,7 +236,7 @@ class Simulator(object):
         
         self.nodeIDs.insert(index, joiningID)         
         if node is None:
-            node = SimpleNode(joiningID, self.maxSybil)
+            node = SimpleNode(joiningID, self.maxSybil, self.homogeneity)
             self.nodes[joiningID] = node
             bisect.insort(self.superNodes, joiningID)
         
@@ -305,9 +313,13 @@ class Simulator(object):
     
 
 class SimpleNode(object):
-    def __init__(self, id, strength = 1):
+    def __init__(self, id, strength, homogeneity):
         self.id = id
         self.strength = strength  #random.randint(1, maxSybils )
+        if homogeneity ==  "randomUniform":
+            self.strength = random.randint(1, strength)
+        elif homogeneity ==  "randomGauss":
+            pass
         self.tasks = []
         self.done = 0
     
@@ -317,6 +329,7 @@ class SimpleNode(object):
             self.done += 1
             return True
         return False
+        
     
     def addTask(self,task):
         self.tasks.append(task)

@@ -1,7 +1,7 @@
 # integrated variables 
 trials = 1
 strategies = [ "churn", "randomInjection", "neighbors"]
-homogeneity = ["equal", "randomUniform", "randomGauss" ]
+homogeneity = ["equal", "randomUniform"] #"randomGauss" ]
 workPerTick = ["one", "perSybil", "perStrength"]
 
 """
