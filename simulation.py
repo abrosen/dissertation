@@ -3,8 +3,8 @@ import builder
 import random
 import datetime
 
-maxSybils  = 10
-assert(False)
+#maxSybils  = 10
+#assert(False)
 
 class Simulator(object):
     def __init__(self):
@@ -47,7 +47,7 @@ class Simulator(object):
         
         #print("Creating Nodes")
         for id in self.superNodes:
-            n = SimpleNode(id)
+            n = SimpleNode(id,self.maxSybil)
             self.nodes[id] = n
             
         #print("Creating Tasks")
@@ -93,6 +93,7 @@ class Simulator(object):
                     self.clearSybils(nodeID)
     
     def neighborInject(self):
+        assert(False)
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
@@ -227,7 +228,7 @@ class Simulator(object):
         
         self.nodeIDs.insert(index, joiningID)         
         if node is None:
-            node = SimpleNode(joiningID)
+            node = SimpleNode(joiningID, self.maxSybil)
             self.nodes[joiningID] = node
             bisect.insort(self.superNodes, joiningID)
         
@@ -301,9 +302,9 @@ class Simulator(object):
     
 
 class SimpleNode(object):
-    def __init__(self, id):
+    def __init__(self, id, strength = 1):
         self.id = id
-        self.strength = maxSybils #random.randint(1, maxSybils )
+        self.strength = strength  #random.randint(1, maxSybils )
         self.tasks = []
         self.done = 0
     
