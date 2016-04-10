@@ -1,13 +1,15 @@
 from simulation import Simulator
 import variables
 import statistics
+import random
 
 s = Simulator()
+seed = 12345
 
 def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     times = []
-    inputs = "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
-        strategy, homogeneity, workPerTick, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors)
+    inputs = "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\{}".format(
+        strategy, homogeneity, workPerTick, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors, seed)
     with open("results.txt", 'a') as f:
             f.write(inputs)
             f.write("\n")
@@ -16,6 +18,8 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
     print(inputs)
     print("____________________")
     for _ in range(variables.trials):
+        random.seed(seed)
+        
         s.setupSimulation(strategy= strategy, homogeneity=homogeneity, workMeasurement= workPerTick,numNodes=networkSize, 
             numTasks=jobSize, churnRate =churn, adaptationRate= adaptationRate, 
             maxSybil=maxSybil, sybilThreshold=sybilThreshold, numSuccessors=numSuccessors)
@@ -46,11 +50,11 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
             f.write("\n")
         print(results)
         times.append(numTicks)
+        seed += 1
     ticks =  sum(times)/len(times)
     with open("averages.txt", 'a') as averages:
-        averages.write(strategy + "\t"+ homogeneity  +"\t"+str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t"+ str(maxSybil) + "\t" + str(ticks) + "\n")
+        averages.write(strategy + "\t"+ homogeneity  +"\t"+str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t"+ str(maxSybil) + "\t" + str(ticks) + str(seed-variables.trials)+"\n")
     #TODO graphs of graphs with sybil injections
-    
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
 def testRandomInject():
