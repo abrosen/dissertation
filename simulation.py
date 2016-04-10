@@ -84,6 +84,8 @@ class Simulator(object):
             self.randomInject()
         elif self.strategy == "neighbors":
             self.neighborInject()
+        elif self.strategy == "invite":
+            self.inviteSybil()
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork()
@@ -146,7 +148,7 @@ class Simulator(object):
                 if len(node.tasks) >= self.perfectTime - self.sybilThreshold:   # If I need help
                     optimalHelper = None
                     helperLoad = float("inf")
-                    for predIndex in range(index-1 , index-1 -self.numSuccessors):
+                    for predIndex in range(index-1 , index-1 -self.numSuccessors, -1):
                         predID = self.nodeIDs[predIndex]
                         predNode= self.nodes[predID]
                         if (len(predNode.tasks) <= self.sybilThreshold) and  len(predNode.tasks) < helperLoad  and self.canSybil(nodeID):

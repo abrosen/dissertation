@@ -112,11 +112,16 @@ def testNeighbor():
                     for numSuccessor in variables.successors:
                         runTrials("neighbors", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, numSuccessor)
 
-
-       
-#write a method to just check churn vs the random injection at 1000 100000 
+def testInvite():
+    for homogeneity in variables.homogeneity:
+        for adaptationRate  in variables.adaptationRates:
+            for maxSybil in variables.maxSybils:
+                for threshold in variables.sybilThresholds:
+                    for numSuccessor in variables.successors:
+                        runTrials("invite", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, numSuccessor)
 
 def runFullExperiment():
+    numExperiments = 0
     for strategy in variables.strategies: 
         for homogeneity in variables.homogeneity:
             for workMeasurement in variables.workPerTick:
@@ -130,11 +135,11 @@ def runFullExperiment():
                             """
                             I could swap theses out for continues at the bottom
                             """
-                            if strategy == "randomInjection" or strategy == "neighbors":
+                            if strategy == "randomInjection" or strategy == "neighbors" or  strategy == "invite":
                                 adaptationRates = variables.adaptationRates
                                 sybilThresholds = variables.sybilThresholds
                                 maxSybils = variables.maxSybils
-                                if strategy == "neighbors":
+                                if strategy == "neighbors" or strategy == "invite":
                                     numSuccessorOptions = variables.successors
                             for adaptationRate in adaptationRates:
                                 for maxSybil in maxSybils:
@@ -143,12 +148,15 @@ def runFullExperiment():
                                             if strategy =="churn" and workMeasurement=="perSybil":
                                                 continue
                                             runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
-                                            
+                                            numExperiments +=1
+    print(numExperiments*variables.trials)
                             
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
     #testPerStrength()
-    testChurn()
-    testRandomInject()
-    testNeighbor()
+    runFullExperiment()
+    #testChurn()
+    #testInvite()
+    #testRandomInject()
+    #testNeighbor()
