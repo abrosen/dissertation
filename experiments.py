@@ -6,10 +6,11 @@ import random
 s = Simulator()
 seed = 12345
 
-def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
+def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
+    global seed
     times = []
-    inputs = "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\{}".format(
-        strategy, homogeneity, workPerTick, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors, seed)
+    inputs = "{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}".format(
+        strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors, seed)
     with open("results.txt", 'a') as f:
             f.write(inputs)
             f.write("\n")
@@ -20,7 +21,7 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
     for _ in range(variables.trials):
         random.seed(seed)
         
-        s.setupSimulation(strategy= strategy, homogeneity=homogeneity, workMeasurement= workPerTick,numNodes=networkSize, 
+        s.setupSimulation(strategy= strategy, homogeneity=homogeneity, workMeasurement= workMeasurement,numNodes=networkSize, 
             numTasks=jobSize, churnRate =churn, adaptationRate= adaptationRate, 
             maxSybil=maxSybil, sybilThreshold=sybilThreshold, numSuccessors=numSuccessors)
         
@@ -43,7 +44,7 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
         
         slownessFactor  = numTicks/idealTime
         averageWorkPerTick = jobSize/numTicks
-        results = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
+        results = "{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}".format(
         numTicks, idealTime, slownessFactor, medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
         with open("results.txt", 'a') as f:
             f.write(results)
@@ -60,7 +61,8 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
 
 def testPerStrength():
     for strategy in variables.strategies:
-        pass
+        for homogeneity in variables.homogeneity:
+            runTrials(strategy, homogeneity, "perStrength", 1000, 100000, 0, 5, 5, 0.1, 5)
     
 def testRandomInject():
     for homogeneity in variables.homogeneity:
@@ -108,5 +110,6 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    testChurn()
-    testRandomInject()
+    testPerStrength()
+    #testChurn()
+    #testRandomInject()
