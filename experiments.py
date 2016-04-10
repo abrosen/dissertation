@@ -29,7 +29,7 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
         medianNumStartingTasks = statistics.median_low(loads)
         # variance
         # variance over time
-        
+        idealTime = s.perfectTime
         
         
         
@@ -40,7 +40,7 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
         plt.show()
         """
         numTicks, hardestWorker= s.simulate()
-        idealTime = jobSize/networkSize
+        
         slownessFactor  = numTicks/idealTime
         averageWorkPerTick = jobSize/numTicks
         results = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
@@ -57,6 +57,11 @@ def runTrials(strategy, homogeneity, workPerTick, networkSize, jobSize, churn, a
     #TODO graphs of graphs with sybil injections
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
+
+def testPerStrength():
+    for strategy in variables.strategies:
+        pass
+    
 def testRandomInject():
     for homogeneity in variables.homogeneity:
         for workMeasurement in variables.workPerTick:

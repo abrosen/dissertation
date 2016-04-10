@@ -31,6 +31,8 @@ class Simulator(object):
         
         self.perfectTime = self.numTasks/self.numNodes
         
+            
+        
         self.numDone = 0
         self.time = 0
         self.numSybils = 0
@@ -46,9 +48,16 @@ class Simulator(object):
         self.superNodes = sorted(self.superNodes)
         
         #print("Creating Nodes")
+        
+        expectedWorkPerTick = 0
         for id in self.superNodes:
             n = SimpleNode(id, self.maxSybil, self.homogeneity)
             self.nodes[id] = n
+            if workMeasurement == "perStrength":
+                expectedWorkPerTick += n.strength
+        
+        if workMeasurement == "perStrength":
+            self.perfectTime = self.numTasks/expectedWorkPerTick
             
         #print("Creating Tasks")
         for key in [next(builder.generateFileIDs()) for _ in range(self.numTasks)]:
