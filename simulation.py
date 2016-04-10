@@ -102,11 +102,10 @@ class Simulator(object):
                     self.clearSybils(nodeID)
     
     def neighborInject(self):
-        assert(False)
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
-                if len(node.tasks) <= self.sybilThreshold and self.canSybil(nodeID):
+                if (len(node.tasks) <= self.sybilThreshold) and self.canSybil(nodeID):
                     indexOfSybiler = self.nodeIDs.index(nodeID)
                     firstNeighbor = (indexOfSybiler + 1) % len(self.nodeIDs)
                     lastNeighbor = (indexOfSybiler + 1 + self.numSuccessors) % len(self.nodeIDs)
@@ -128,7 +127,8 @@ class Simulator(object):
                     self.addSybil(nodeID, sybilID)
                     #assert((a < sybilID and sybilID < b) or  ()  )
                     
-                    
+                if nodeID in self.sybils and len(node.tasks) == 0:
+                    self.clearSybils(nodeID)
                     
     def mash(self, a:int, b :int) -> int:
         if b < a:
