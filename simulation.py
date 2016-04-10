@@ -2,15 +2,14 @@ import bisect
 import builder
 import random
 import datetime
-
-maxSybils  = 10
-
+#maxSybils  = 10
+#assert(False)
 
 class Simulator(object):
     def __init__(self):
         pass
        
-    def setupSimulation(self, strategy= None, homogeneity= None, numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1, numSuccessors=5):
+    def setupSimulation(self, strategy= None, homogeneity= None, workMeasurement=None ,  numNodes = 100, numTasks = 10000, churnRate = 0.01, adaptationRate = 5, maxSybil = 10, sybilThreshold = 0.1, numSuccessors=5):
         self.strategy = strategy
         
         self.nodeIDs = []   # the network topology
@@ -28,8 +27,11 @@ class Simulator(object):
         self.sybilThreshold = int((self.numTasks/self.numNodes) * sybilThreshold)
         self.numSuccessors = numSuccessors
         self.homogeneity = homogeneity
+        self.workMeasurement = workMeasurement
         
         self.perfectTime = self.numTasks/self.numNodes
+        
+            
         
         self.numDone = 0
         self.time = 0
@@ -46,9 +48,16 @@ class Simulator(object):
         self.superNodes = sorted(self.superNodes)
         
         #print("Creating Nodes")
+        
+        expectedWorkPerTick = 0
         for id in self.superNodes:
-            n = SimpleNode(id)
+            n = SimpleNode(id, self.maxSybil, self.homogeneity)
             self.nodes[id] = n
+            if workMeasurement == "perStrength":
+                expectedWorkPerTick += n.strength
+        
+        if workMeasurement == "perStrength":
+            self.perfectTime = self.numTasks/expectedWorkPerTick
             
         #print("Creating Tasks")
         for key in [next(builder.generateFileIDs()) for _ in range(self.numTasks)]:
@@ -66,8 +75,8 @@ class Simulator(object):
      
     def reallocateTasks(self, tasks):
         for task in tasks:
-            id, _  = self.whoGetsFile(task)
-            self.nodes[id].addTask(task) 
+            index, _  = self.whoGetsFile(task)
+            self.nodes[index].addTask(task) 
     
     def doTick(self):
         # assert(len(self.nodeIDs)  ==  len(set(self.nodeIDs)))
@@ -75,6 +84,8 @@ class Simulator(object):
             self.randomInject()
         elif self.strategy == "neighbors":
             self.neighborInject()
+        elif self.strategy == "invite":
+            self.inviteSybil()
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork()
@@ -96,7 +107,7 @@ class Simulator(object):
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
-                if len(node.tasks) <= self.sybilThreshold and self.canSybil(nodeID):
+                if (len(node.tasks) <= self.sybilThreshold) and self.canSybil(nodeID):
                     indexOfSybiler = self.nodeIDs.index(nodeID)
                     firstNeighbor = (indexOfSybiler + 1) % len(self.nodeIDs)
                     lastNeighbor = (indexOfSybiler + 1 + self.numSuccessors) % len(self.nodeIDs)
@@ -118,8 +129,36 @@ class Simulator(object):
                     self.addSybil(nodeID, sybilID)
                     #assert((a < sybilID and sybilID < b) or  ()  )
                     
+                if nodeID in self.sybils and len(node.tasks) == 0:
+                    self.clearSybils(nodeID)
                     
                     
+    def inviteSybil(self):
+        if (self.time % self.adaptationRate) == 0:
+            for nodeID in self.superNodes:
+                node = self.nodes[nodeID]
+                if nodeID in self.sybils:   # If I have a sybil, I certainly don't want to invite people
+                    if len(node.tasks) == 0:
+                        self.clearSybils(nodeID)
+                    continue
+                index = bisect.bisect_left(self.nodeIDs, nodeID)
+                if index == len(self.nodeIDs):
+                    index = 0
+                assert(self.nodeIDs[index] ==nodeID)
+                if len(node.tasks) >= self.perfectTime - self.sybilThreshold:   # If I need help
+                    optimalHelper = None
+                    helperLoad = float("inf")
+                    for predIndex in range(index-1 , index-1 -self.numSuccessors, -1):
+                        predID = self.nodeIDs[predIndex]
+                        predNode= self.nodes[predID]
+                        if (len(predNode.tasks) <= self.sybilThreshold) and  len(predNode.tasks) < helperLoad  and self.canSybil(nodeID):
+                            optimalHelper = predID
+                            helperLoad = len(predNode.tasks)
+                    if optimalHelper is not None:
+                        sybilID = self.mash(self.nodeIDs[index - 1] , nodeID)
+                        self.addSybil(optimalHelper, sybilID)
+                        
+    
     def mash(self, a:int, b :int) -> int:
         if b < a:
             offset = builder.MAX - a 
@@ -136,18 +175,28 @@ class Simulator(object):
         strength = each supernode does strength number of tasks
         sybil = node and sybil does one task per tick
         """
-        workMeasurement = self.homogeneity
         numCompleted = 0
         population = None
-        if workMeasurement is None or workMeasurement == "equal" or workMeasurement == 'default':
+        if self.workMeasurement == "one" or self.workMeasurement == 'perStrength':
             population =  self.superNodes
-        elif workMeasurement == 'strength' or workMeasurement == 'sybil':
+        elif self.workMeasurement == 'perSybil':
             population = self.nodeIDs
+        else:
+            assert(False)
         for n in population:
-            workDone = self.nodes[n].doWork()
-            if workDone:  # if the node finished a task
-                self.numDone += 1
-                numCompleted += 1
+            if self.workMeasurement == "perStrength":
+                for _ in range(self.nodes[n].strength):
+                    workDone = self.nodes[n].doWork()
+                    if workDone:  # if the node finished a task
+                        self.numDone += 1
+                        numCompleted += 1
+                    else:
+                        break
+            else:
+                workDone = self.nodes[n].doWork()
+                if workDone:  # if the node finished a task
+                    self.numDone += 1
+                    numCompleted += 1
         return numCompleted
         
         #for n in self.sybilIDs:
@@ -202,7 +251,7 @@ class Simulator(object):
         
         # TODO: check if work actual gets taken
         # check insert worker
-        assert(False)
+        #assert(False)
         if sybilID is None:
             sybilID =  next(builder.generateFileIDs())
         if superNode not in self.sybils:
@@ -215,42 +264,52 @@ class Simulator(object):
         self.insertWorker(sybilID, self.nodes[sybilID])
         
     def insertWorker(self, joiningID, node = None):
-        index  = bisect.bisect_left(self.nodeIDs, joiningID)
-        succ = None
+        index  = bisect.bisect(self.nodeIDs, joiningID)
+        succID = None
         if index == len(self.nodeIDs): 
-            succ =  self.nodes[self.nodeIDs[0]]
+            succID = self.nodeIDs[0]
         else:
             succID = self.nodeIDs[index]
-            succ =  self.nodes[succID]                
+        succ =  self.nodes[succID]                
  
         # assert(j not in self.nodeIDs)
         
         self.nodeIDs.insert(index, joiningID)         
         if node is None:
-            node = SimpleNode(joiningID)
+            node = SimpleNode(joiningID, self.maxSybil, self.homogeneity)
             self.nodes[joiningID] = node
             bisect.insort(self.superNodes, joiningID)
+        
+        nodeStart = len(node.tasks)
+        succStart = len(succ.tasks)
         
         
         tasks = succ.tasks[:]
         succ.tasks = []
-        assert(False)
-        # assert tasks actually has tasks if it had tasks to begin wiht
         
+        # assert tasks actually has tasks if it had tasks to begin wiht
+        """
+        This won't work because it will look at ALL work, including the sybilled work
+        and view them as the only two in the network
         for task in tasks:
-            if node.id < succ.id:
-                if task <= node.id:
+            if joiningID < succID:
+                if task <= joiningID:      
                     node.addTask(task)
                 else:
                     succ.addTask(task)
             else:
-                assert(False)
-                # check logic here
-                if task > succ.id and  task < node.id:
+                if task > succID and task < joiningID:
                     node.addTask(task)
                 else:
                     succ.addTask(task)
- 
+        """
+        self.reallocateTasks(tasks)
+        nodeEnd = len(node.tasks)
+        succEnd = len(succ.tasks)
+        
+        #print("Node/Successor has " + str(nodeStart)+"/" + str(succStart)  + " tasks;  took " + str(succStart - succEnd ) )
+        assert(succStart - succEnd ==  nodeEnd -  nodeStart)
+        
     def clearSybils(self, superNode):
         
         for s in self.sybils[superNode]:
@@ -259,8 +318,8 @@ class Simulator(object):
             self.nodeIDs.remove(s)
             
             # make sure this gets taken care 
-        assert(False)
-        self.sybils[superNode] = []
+        #assert(False)
+        del(self.sybils[superNode])
     
     def addToPool(self, num):
         # Adds num nodes to the pool of possible joining nodes
@@ -294,18 +353,23 @@ class Simulator(object):
     
 
 class SimpleNode(object):
-    def __init__(self, id):
+    def __init__(self, id, strength, homogeneity):
         self.id = id
-        self.strength = maxSybils #random.randint(1, maxSybils )
+        self.strength = strength  #random.randint(1, maxSybils )
+        if homogeneity ==  "randomUniform":
+            self.strength = random.randint(1, strength)
+        elif homogeneity ==  "randomGauss":
+            pass
         self.tasks = []
         self.done = 0
     
     def doWork(self):
         if len(self.tasks) > 0:
-            x = self.tasks.pop()
+            self.tasks.pop()
             self.done += 1
             return True
         return False
+        
     
     def addTask(self,task):
         self.tasks.append(task)

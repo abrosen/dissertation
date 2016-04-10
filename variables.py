@@ -1,24 +1,39 @@
 # integrated variables 
-trials = 20
-strategies = [ "churn", "randomInjection", "neighbors"]
-homogeneity = ["equal", "strength", "sybil"]
+trials = 2
+strategies = [ "churn", "randomInjection", "neighbors", "invite"]
+homogeneity = ["equal", "randomUniform"] #"randomGauss" ]
+workPerTick = ["one", "perStrength"]
+
+"""
+workMeasurement:
+one:
+sybil
+strength
+
+
+homogeneity:
+equal: Nodes have the exact same capablities for creating sybils
+randomUniform: Nodes have a random uniform  strength
+randomGauss: Nodes have a random 
+
+"""
 
 
 
-networkSizes = [10, 50, 100, 500, 1000, 5000, 10000]
-jobSizes = [100, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 10000000]
-churnRates = [0, 0.00001, 0.0001, 0.001, 0.01]
-adaptationRates = [1, 5, 10]
-sybilThresholds = [0, 0.01, 0.1, 0.25] 
+
+networkSizes = [1000, 5000, 10000]
+jobSizes = [100000, 500000, 1000000] #10000000
+churnRates = [0, 0.0001, 0.001, 0.01]
+adaptationRates = [5]
+maxSybils = [5,10]
+sybilThresholds = [0, 0.1, 0.25] 
+successors = [5,10]
 
 # unintegrated variables
 
 
 
 
-
-maxSybils = [1,5,10,50]
-successors = [5,10,20]
 
 
 
