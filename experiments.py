@@ -2,7 +2,6 @@ from simulation import Simulator
 import variables
 import statistics
 import random
-from variables import workPerTick
 
 s = Simulator()
 seed = 12345
@@ -16,7 +15,7 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
     workPerTickList = []
     hardestWorkers = []
     
-    inputs = "{:<15} {:<15} {:<15} {:10} {:5d} {:8d} {:8.6f} {:2d} {:3.2f} {:2d} {:6d}".format(
+    inputs = "{:<15} {:<15} {:<15} {:5d} {:8d} {:8.6f} {: 4d} {: 4d} {: 4.2f} {: 4d} {:6d}".format(
         strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors, seed)
     
     with open("results.txt", 'a') as f:
@@ -90,19 +89,31 @@ def testPerStrength():
     for strategy in variables.strategies:
         for homogeneity in variables.homogeneity:
             runTrials(strategy, homogeneity, "perStrength", 1000, 100000, 0, 5, 5, 0.1, 5)
-    
-def testRandomInject():
-    for homogeneity in variables.homogeneity:
-        for workMeasurement in variables.workPerTick:
-            for adaptationRate  in variables.adaptationRates:
-                for maxSybil in variables.maxSybils:
-                    for threshold in variables.sybilThresholds:
-                        runTrials("randomInjection", homogeneity, workMeasurement, 1000, 100000, 0, adaptationRate, maxSybil, threshold, -1)
 
 def testChurn():
     for churn in variables.churnRates:
         runTrials("churn", "equal", "one" ,  1000, 100000, churn, -1, -1, -1,-1)
-            
+     
+
+    
+def testRandomInject():
+    for homogeneity in variables.homogeneity:
+        for adaptationRate  in variables.adaptationRates:
+            for maxSybil in variables.maxSybils:
+                for threshold in variables.sybilThresholds:
+                    runTrials("randomInjection", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, -1)
+
+
+def testNeighbor():
+    for homogeneity in variables.homogeneity:
+        for adaptationRate  in variables.adaptationRates:
+            for maxSybil in variables.maxSybils:
+                for threshold in variables.sybilThresholds:
+                    for numSuccessor in variables.successors:
+                        runTrials("neighbors", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, numSuccessor)
+
+
+       
 #write a method to just check churn vs the random injection at 1000 100000 
 
 def runFullExperiment():
@@ -120,8 +131,8 @@ def runFullExperiment():
                             I could swap theses out for continues at the bottom
                             """
                             if strategy == "randomInjection" or strategy == "neighbors":
-                                rates = variables.adaptationRates
-                                thresholds = variables.sybilThresholds
+                                adaptationRates = variables.adaptationRates
+                                sybilThresholds = variables.sybilThresholds
                                 maxSybils = variables.maxSybils
                                 if strategy == "neighbors":
                                     numSuccessorOptions = variables.successors
@@ -137,6 +148,7 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    testPerStrength()
-    #testChurn()
+    #testPerStrength()
+    testChurn()
     #testRandomInject()
+    testNeighbor()

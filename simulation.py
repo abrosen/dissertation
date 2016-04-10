@@ -336,7 +336,7 @@ class SimpleNode(object):
     
     def doWork(self):
         if len(self.tasks) > 0:
-            x = self.tasks.pop()
+            self.tasks.pop()
             self.done += 1
             return True
         return False
