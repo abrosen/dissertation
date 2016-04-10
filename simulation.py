@@ -88,7 +88,7 @@ class Simulator(object):
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork()
         self.time += 1
-        print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
+        #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
     
     def randomInject(self):

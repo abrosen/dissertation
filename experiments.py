@@ -2,6 +2,7 @@ from simulation import Simulator
 import variables
 import statistics
 import random
+from variables import workPerTick
 
 s = Simulator()
 seed = 12345
@@ -9,15 +10,20 @@ seed = 12345
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
     times = []
-    inputs = "{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}".format(
+    idealTimes = []
+    medianLoads = []
+    stdDevs = []
+    workPerTickList = []
+    hardestWorkers = []
+    
+    inputs = "{:<15} {:<15} {:<15} {:10} {:5d} {:8d} {:8.6f} {:2d} {:3.2f} {:2d} {:6d}".format(
         strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors, seed)
+    
     with open("results.txt", 'a') as f:
             f.write(inputs)
             f.write("\n")
-            f.write("____________________")
-            f.write("\n")
     print(inputs)
-    print("____________________")
+    
     for _ in range(variables.trials):
         random.seed(seed)
         
@@ -28,10 +34,13 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
         loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
         #print(sorted(loads))
         medianNumStartingTasks = statistics.median_low(loads)
+        medianLoads.append(medianNumStartingTasks)
+        stdDevOfLoad = statistics.pstdev(loads)
+        stdDevs.append(stdDevOfLoad)
         # variance
         # variance over time
         idealTime = s.perfectTime
-        
+        idealTimes.append(idealTime)
         
         
         """
@@ -41,20 +50,38 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
         plt.show()
         """
         numTicks, hardestWorker= s.simulate()
+        times.append(numTicks)
+        hardestWorkers.append(hardestWorker)
         
         slownessFactor  = numTicks/idealTime
         averageWorkPerTick = jobSize/numTicks
-        results = "{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}".format(
-        numTicks, idealTime, slownessFactor, medianNumStartingTasks, averageWorkPerTick,  hardestWorker)
+        workPerTickList.append(averageWorkPerTick)
+        
+        results = "{:8d} {:8.3f} {:7.3f} {:6d} {:10.3f} {:10.3f} {:8d}".format(
+        numTicks, idealTime, slownessFactor, medianNumStartingTasks, stdDevOfLoad, averageWorkPerTick,  hardestWorker)
+        
         with open("results.txt", 'a') as f:
             f.write(results)
             f.write("\n")
         print(results)
-        times.append(numTicks)
+        
         seed += 1
-    ticks =  sum(times)/len(times)
+    avgTicks =  sum(times)/len(times)
+    avgIdealTime = sum(idealTimes)/len(idealTimes)
+    avgSlowness = avgTicks/avgIdealTime
+    
+    avgMedianLoad = sum(medianLoads)/len(medianLoads)
+    avgStdDev = sum(stdDevs)/len(stdDevs)
+    
+    avgAvgWorkPerTick = sum(workPerTickList)/len(workPerTickList)
+    avgHardestWork  = sum(hardestWorkers)/len(hardestWorkers)
+    
+    outputs = "{:10.2f} {:8.3f} {:7.3f} {:10.3f} {:10.3f} {:10.2f} {:8.2f}".format(
+        avgTicks, avgIdealTime, avgSlowness, avgMedianLoad, avgStdDev, avgAvgWorkPerTick, avgHardestWork)
+    
+    
     with open("averages.txt", 'a') as averages:
-        averages.write(strategy + "\t"+ homogeneity  +"\t"+str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t"+ str(maxSybil) + "\t" + str(ticks) + str(seed-variables.trials)+"\n")
+        averages.write(inputs + " " + outputs +"\n")
     #TODO graphs of graphs with sybil injections
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
@@ -109,7 +136,7 @@ def runFullExperiment():
                             
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
-    print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
+    #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
     testPerStrength()
     #testChurn()
     #testRandomInject()
