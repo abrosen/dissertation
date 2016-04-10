@@ -130,6 +130,19 @@ class Simulator(object):
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)
                     
+                    
+    def inviteSybil(self):
+        if (self.time % self.adaptationRate) == 0:
+            for nodeID in self.superNodes:
+                node = self.nodes[nodeID]
+                if nodeID in self.sybils:   # If I have a sybil, I certainly don't want to invite people
+                    if len(node.tasks) == 0:
+                        self.clearSybils(nodeID)
+                    continue
+                if len(node.tasks) >= self.perfectTime - self.sybilThreshold:   # If need help
+                    pass
+            
+    
     def mash(self, a:int, b :int) -> int:
         if b < a:
             offset = builder.MAX - a 
@@ -290,7 +303,7 @@ class Simulator(object):
             
             # make sure this gets taken care 
         #assert(False)
-        self.sybils[superNode] = []
+        del(self.sybils[superNode])
     
     def addToPool(self, num):
         # Adds num nodes to the pool of possible joining nodes

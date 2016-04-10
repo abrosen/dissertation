@@ -150,5 +150,5 @@ if __name__ == '__main__':
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
     #testPerStrength()
     testChurn()
-    #testRandomInject()
+    testRandomInject()
     testNeighbor()
