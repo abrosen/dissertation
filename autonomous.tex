@@ -32,24 +32,24 @@ We assume that the network starts our experiments stable and the data necessary 
 
 \subsubsection{Constants}
 
-\begin{enumerate}
-	\item[Time Unit] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
+\begin{description}
+	\item [Time Unit] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
 	If we want to be more concrete, a tick is the amount of time it takes a node to complete one task per sybil and perform the appropriate maintanence.\footnote{The shortest unit of time in the multiverse is the New York Second, defined as the period of time between the traffic lights turning green and the cab behind you honking.\\-- Terry Pratchett}
-	\item[Maintence] We assume the reactive, aggressive backups works.
-	\item[Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.
-\end{enumerate}
+	\item [Maintence] We assume the reactive, aggressive backups works.
+	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.
+\end{description}
 
 \subsubsection{Experimental Variables}
-\begin{enumerate}
-	\item[Churn] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
+\begin{description}
+	\item [Churn] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
 	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
-	\item[Network Size]  How many nodes start in the network.  
+	\item [Network Size]  How many nodes start in the network.  
 		We assume that this can grow during the experiment, either via churn or by creating sybils.
-	\item[Pool Size]  The size of the pool of potentially joining nodes.  Each tick, each node in the pool has a chance to join the network, dictated by the churn rate.
+	\item [Pool Size]  The size of the pool of potentially joining nodes.  Each tick, each node in the pool has a chance to join the network, dictated by the churn rate.
 		Talk about relative equalibrium
-	\item[Size of the job] The size of the job, in tasks.
+	\item [Size of the job] The size of the job, in tasks.
 		This number is typically orders of maginitude greater than the network size.
-\end{enumerate}
+\end{description}
 
 
 
@@ -62,6 +62,11 @@ We use the assumption that
 
 \section{Random Sybil Injection}
 Our second series of experiments focused on nodes with low amounts of work performing a controlled and strategic Sybil attack \cite{sybil} on the network.
+In this experiment, each once each node's workload was at or below a certain threshold, the node would attempt to acquire more work by creating virtual Sybil nodes at random addresses.
 
-No benefit waws shown by increasing maxSybils beyond 10, so we stopped increasing it there.
+
+
+
+No benefit was shown by increasing maxSybils beyond 10, so we stopped increasing it there.
+
 

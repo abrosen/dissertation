@@ -242,7 +242,7 @@ if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
     start = time.time()
-    #runChurnLimitedSize()
+    runChurnLimitedSize()
     #testChurn()
     #runRandomInjectLimitedSize()
     end= time.time()
