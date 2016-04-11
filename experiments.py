@@ -191,7 +191,22 @@ def runNeighborLimitedSize():
                             for numSuccessors in variables.successors:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("randomInjection", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("neighbors", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                numExperiments +=1
+    print(numExperiments*variables.trials)
+    
+def runInviteLimitedSize():
+    numExperiments = 0
+    for homogeneity in variables.homogeneity:
+        for workMeasurement in variables.workPerTick:
+            for churn in variables.churnRates:
+                for adaptationRate in variables.adaptationRates:
+                    for maxSybil in variables.maxSybils:
+                        for sybilThreshold in variables.sybilThresholds:
+                            for numSuccessors in variables.successors:
+                                if workMeasurement=="perSybil":
+                                    continue
+                                runTrials("invite", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
 
@@ -226,10 +241,5 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    #testPerStrength()
-    #runFullExperiment()
-    #testChurn()
-    #testInvite()
-    #testRandomInject()
-    #testNeighbor()
-    runChurn()
+    runChurnLimitedSize()
+    #runRandomInjectLimitedSize()
