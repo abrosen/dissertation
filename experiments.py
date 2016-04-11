@@ -160,7 +160,7 @@ def runChurnLimitedSize():
                             for numSuccessors in numSuccessorOptions:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("churn", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("churn", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
 
@@ -176,7 +176,7 @@ def runRandomInjectLimitedSize():
                             #for numSuccessors in variables.successors:
                             if workMeasurement=="perSybil":
                                 continue
-                            runTrials("randomInjection", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, -1)
+                            runTrials("randomInjection", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, -1)
                             numExperiments +=1
     print(numExperiments*variables.trials)
     
@@ -191,7 +191,7 @@ def runNeighborLimitedSize():
                             for numSuccessors in variables.successors:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("neighbors", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("neighbors", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
     
@@ -206,7 +206,7 @@ def runInviteLimitedSize():
                             for numSuccessors in variables.successors:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("invite", homogeneity, workMeasurement, 1000, 1000000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("invite", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
 
