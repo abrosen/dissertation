@@ -20,7 +20,7 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
     inputs = "{:<15} {:<15} {:<15} {:5d} {:8d} {:8.6f} {: 4d} {: 4d} {: 4.2f} {: 4d} {:6d}".format(
         strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold,numSuccessors, seed)
     
-    with open("results-" +start +  ".txt", 'a') as f:
+    with open("data/results-" +start +  ".txt", 'a') as f:
             f.write(inputs)
             f.write("\n")
     print(inputs)
@@ -61,7 +61,7 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
         results = "{:8d} {:8.3f} {:7.3f} {:6d} {:10.3f} {:10.3f} {:8d}".format(
         numTicks, idealTime, slownessFactor, medianNumStartingTasks, stdDevOfLoad, averageWorkPerTick,  hardestWorker)
         
-        with open("results-"+start +".txt", 'a') as f:
+        with open("data/results-"+start +".txt", 'a') as f:
             f.write(results)
             f.write("\n")
         print(results)
@@ -81,7 +81,7 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
         avgTicks, avgIdealTime, avgSlowness, avgMedianLoad, avgStdDev, avgAvgWorkPerTick, avgHardestWork)
     
     
-    with open("averages-"+ start+" .txt", 'a') as averages:
+    with open("data/averages-"+ start+" .txt", 'a') as averages:
         averages.write(inputs + " " + outputs +"\n")
     #TODO graphs of graphs with sybil injections
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
@@ -241,5 +241,11 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    runChurnLimitedSize()
+    start = time.time()
+    #runChurnLimitedSize()
+    #testChurn()
     #runRandomInjectLimitedSize()
+    end= time.time()
+    
+    print("Time elapsed:" + str(end - start))
+    
