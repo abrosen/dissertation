@@ -6,7 +6,29 @@
 
 %http://michiel.buddingh.eu/distribution-of-hash-values
 
+\section{Introduction}
+Distributed Hash Tables rely on cryptographic hash functions to generate identifiers for both nodes and data.
+The outputs of a cryptographic hash function are assumed to be distributed uniformly at random, but this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
 
+
+\begin{table}
+	\centering
+	\caption{Text goes here}
+	\begin{tabular}{l l l l}
+		Nodes & Tasks & Median Workload & $\sigma$ \\ \hline
+	\end{tabular}
+	\label{tab:medianLoads}
+\end{table}
+
+
+In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
+Some nodes will end up with a lion's share of the keys, while other will have few responsibilities (Table \ref{tab:medianLoads}).
+
+
+
+
+
+\section{Notes}
 The following analysis and simulation relies on an important assumption about DHT behavior often assumed but not necessarily implemented.
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
 Specifically, we will assume  it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly.

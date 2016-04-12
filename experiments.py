@@ -10,8 +10,11 @@ start = str( int( time.time() ) )
 
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
-    
-    
+    """
+    if seed < 13745:
+        seed += variables.trials
+        return
+    """
     times = []
     idealTimes = []
     medianLoads = []
@@ -28,6 +31,7 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
     print(inputs)
     
     for _ in range(variables.trials):
+        
         random.seed(seed)
         
         s.setupSimulation(strategy= strategy, homogeneity=homogeneity, workMeasurement= workMeasurement,numNodes=networkSize, 
@@ -125,6 +129,14 @@ def testInvite():
                         runTrials("invite", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, numSuccessor)
 
 
+def runMedianData():
+    numExperiments = 0
+    for networkSize in variables.networkSizes:
+        for jobSize in variables.jobSizes:
+            runTrials("churn", "equal", "one", networkSize, jobSize, 0, -1, -1, -1, -1)
+            numExperiments +=1
+    print(numExperiments*variables.trials)
+
 def runChurn():
     numExperiments = 0
     for homogeneity in variables.homogeneity:
@@ -183,7 +195,7 @@ def runRandomInjectLimitedSize(numNodes =1000, numTasks = 100000):
                             numExperiments +=1
     print(numExperiments*variables.trials)
     
-def runNeighborLimitedSize():
+def runNeighborLimitedSize(numNodes =1000 , numTasks =100000):
     numExperiments = 0
     for homogeneity in variables.homogeneity:
         for workMeasurement in variables.workPerTick:
@@ -194,7 +206,7 @@ def runNeighborLimitedSize():
                             for numSuccessors in variables.successors:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("neighbors", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("neighbors", homogeneity, workMeasurement, numNodes, numTasks, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
     
@@ -212,6 +224,8 @@ def runInviteLimitedSize():
                                 runTrials("invite", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
+
+
 
 def runFullExperiment():
     numExperiments = 0
@@ -246,9 +260,9 @@ if __name__ == '__main__':
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
 
     startTime = time.time()
-    runChurnLimitedSize()
-    #testChurn()
-    #runRandomInjectLimitedSize()
+    
+    runMedianData()
+    
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
     
