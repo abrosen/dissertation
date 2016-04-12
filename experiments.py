@@ -147,7 +147,7 @@ def runChurn():
     print(numExperiments*variables.trials)
 
 
-def runChurnLimitedSize():
+def runChurnLimitedSize(numNodes = 1000 , numtasks =100000):
     numExperiments = 0
     for homogeneity in variables.homogeneity:
         for workMeasurement in variables.workPerTick:
@@ -162,12 +162,13 @@ def runChurnLimitedSize():
                             for numSuccessors in numSuccessorOptions:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("churn", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("churn", homogeneity, workMeasurement, numNodes, numtasks, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
 
 
-def runRandomInjectLimitedSize():
+
+def runRandomInjectLimitedSize(numNodes =1000, numTasks = 100000):
     numExperiments = 0
     for homogeneity in variables.homogeneity:
         for workMeasurement in variables.workPerTick:
@@ -178,7 +179,7 @@ def runRandomInjectLimitedSize():
                             #for numSuccessors in variables.successors:
                             if workMeasurement=="perSybil":
                                 continue
-                            runTrials("randomInjection", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, -1)
+                            runTrials("randomInjection", homogeneity, workMeasurement, numNodes, numTasks, churn, adaptationRate, maxSybil, sybilThreshold, -1)
                             numExperiments +=1
     print(numExperiments*variables.trials)
     
