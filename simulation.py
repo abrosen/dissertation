@@ -308,8 +308,15 @@ class Simulator(object):
         succEnd = len(succ.tasks)
         
         #print("Node/Successor has " + str(nodeStart)+"/" + str(succStart)  + " tasks;  took " + str(succStart - succEnd ) )
-        assert(succStart - succEnd ==  nodeEnd -  nodeStart)
         
+        """
+        try:
+            assert(succStart - succEnd ==  nodeEnd -  nodeStart)
+        except Exception:
+            print(succStart , succEnd, nodeEnd ,nodeStart)
+            print(succStart - succEnd, nodeEnd -  nodeStart)
+            assert(False)
+        """          
     def clearSybils(self, superNode):
         
         for s in self.sybils[superNode]:
