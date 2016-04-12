@@ -247,7 +247,7 @@ if __name__ == '__main__':
     startTime = time.time()
     runChurnLimitedSize()
     #testChurn()
-    runRandomInjectLimitedSize()
+    #runRandomInjectLimitedSize()
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
     
