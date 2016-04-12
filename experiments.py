@@ -6,11 +6,12 @@ import time
 
 s = Simulator()
 seed = 12345
-start = str(int(time.time()))
-            
+start = str( int( time.time() ) )
+
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
-    global start
+    
+    
     times = []
     idealTimes = []
     medianLoads = []
@@ -242,11 +243,11 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
-    start = time.time()
+    startTime = time.time()
     runChurnLimitedSize()
     #testChurn()
     #runRandomInjectLimitedSize()
     end= time.time()
     
-    print("Time elapsed:" + str(end - start))
+    print("Time elapsed:" + str(end - startTime))
     
