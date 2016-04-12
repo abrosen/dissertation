@@ -52,12 +52,23 @@ We assume that the network starts our experiments stable and the data necessary 
 \end{description}
 
 
+\section{Strategies}
 
-\section{Baseline Readings}
+
 
 \section{Induced Churn}
 In this experiment, we rely solely on churn to perform load balancing.
-We use the assumption that 
+
+In our network model, nodes actively back up their data and tasks to nodes as they enter and leave the network.
+While this model is rarely implemented for DHTs, we have implemented it in ChordReduce\cite{chordreduce} and UrDHT\cite{urdht} and demonstrated that the network is capable from recovering from quite catastrophic failures.
+
+In this model, a node suddenly dying is of minimal impact to the network.
+This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
+
+Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks.
+
+
+We assume that nodes enter and leave the network at the same rate.
 
 
 \section{Random Sybil Injection}
@@ -70,3 +81,5 @@ In this experiment, each once each node's workload was at or below a certain thr
 No benefit was shown by increasing maxSybils beyond 10, so we stopped increasing it there.
 
 
+
+\section{Baseline Readings}
