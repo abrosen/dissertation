@@ -83,7 +83,7 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
         avgTicks, avgIdealTime, avgSlowness, avgMedianLoad, avgStdDev, avgAvgWorkPerTick, avgHardestWork)
     
     
-    with open("data/averages-"+ start+" .txt", 'a') as averages:
+    with open("data/averages-"+ start+".txt", 'a') as averages:
         averages.write(inputs + " " + outputs +"\n")
     #TODO graphs of graphs with sybil injections
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
@@ -243,11 +243,11 @@ def runFullExperiment():
 if __name__ == '__main__':
     print("Welcome to Andrew's Thesis Experiment. \n It's been a while.")
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
+
     startTime = time.time()
     runChurnLimitedSize()
     #testChurn()
-    #runRandomInjectLimitedSize()
+    runRandomInjectLimitedSize()
     end= time.time()
-    
     print("Time elapsed:" + str(end - startTime))
     
