@@ -6,10 +6,11 @@ import time
 
 s = Simulator()
 seed = 12345
-
+start = str(int(time.time()))
+            
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
-    start = str(int(time.time()))
+    global start
     times = []
     idealTimes = []
     medianLoads = []
