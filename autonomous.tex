@@ -197,12 +197,26 @@ As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisi
 
 
 \subsection{Neighbor Injection}
-\textit{Neighbor Injection} also creates Sybils, but in this case
+\textit{Neighbor Injection} also creates Sybils, but in this case, nodes act on a more restricted range in an attempt to limit the network traffic.
+Nodes with \texttt{sybilThreshold} or less tasks attempt to acquire more work by placing a Sybil among it's successors.
+Specifically, it looks for the biggest range among it's successors and creates a Sybil in that range.
+
+This range finding and injection strategy assumes that the node with the largest range of responsibility has.
+The nodes estimate the number of tasks based on the range instead of querying the nodes as that can be done without any communication with the successor nodes.
+
+To avoid constant spamming of a range, once a node creates a Sybil, but does not acquire work, it may be advisable to mark that range as invalid for Sybil nodes so nodes don't keep trying the same range repeatedly. 
+
+We might want to look at changing this strategy to choosing a random id in the neighbor range.
 
 
 \subsection{Invitation}
+The \textit{Invitation }strategy is the reverse of the Sybil injection strategies.
+In  this strategy, nodes with a higher than desired level of work announces it needs help to its predecessors.
+The predecessor with least amount of tasks less than the \texttt{sybilThreshold} creates a Sybil to acquire work from the node(it is possible for a call for help to go unanswered).
 
-In invitation, churn losses can be greatly detrimental
+Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold}.
+
+In invitation, churn losses can be greatly detrimental.
 
 \section{Results Of Experiments}
 \label{sec:autonomous-results}
