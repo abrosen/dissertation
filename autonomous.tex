@@ -157,13 +157,13 @@ We then look a three different strategies for in which nodes take a more tactica
 Specifically, nodes perform a limited and controlled Sybil attack \cite{sybil} on their own network in an effort to acquire work with their virtual nodes.
 Our strategies dictate when and where these Sybil nodes are created.
 
-We discuss the effectiveness of this strategy in Section \ref{sec:autonomous-results}
+We discuss the effectiveness of this strategy in Section \ref{sec:autonomous-results}.
 
 
 
 \subsection{Induced Churn}
-In this strategy, we rely solely on churn to perform load balancing.
-This churn can either be a product of normal network activity or self-induced.\footnote{All distributed systems experience churn, even if it only a matter of hardware failure.}
+Our first strategy, \textit{Induced Churn}, relies solely on churn to perform load balancing.
+This churn can either be a product of normal network activity or self-induced.\footnote{All distributed systems experience churn, even if only as hardware failures.}
 By self-induced churn, we mean that each node generates a random floating point number between 0 and 1.
 If the number is $\leq churnRate$, the node shuts down and leaves the network.
 
@@ -181,21 +181,24 @@ The consequences of this are that a node suddenly dying is of minimal impact to 
 This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
 Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquiring work.
 
-
 This strategy acts as a baseline with which to compare the other strategies, as it is no more than a overcomplicated way of turning machines off and on again. 
 
 
 \subsection{Random Sybil Injection}
-Our second series of experiments focused on nodes with low amounts of work performing a controlled and strategic Sybil attack \cite{sybil} on the network.
-In this experiment, each once each node's workload was at or below a certain threshold, the node would attempt to acquire more work by creating virtual Sybil nodes at random addresses.
+Our second strategy we dubbed \textit{Random Injection}.
+In this strategy, once a node's workload was at or below the \texttt{sybilThreshold}, the node would attempt to acquire more work by creating a Sybil node at a random address.
 
+A node checks its threshold and decides whether or not to make a Sybil every 5 ticks.
+A node cam also have multiple Sybils, up to \texttt{maxSybils} in a homogeneous network or the node's \texttt{strength} in a heterogeneous network.\footnote{No benefit was shown by increasing \texttt{maxSybils} beyond 10.}
+If a node has at least one Sybil, but no work, it has its Sybils quit the network.
+We have the decision to make a Sybil occur every 5 ticks and limit each node to creating a single Sybil a check to avoid overwhelming the network.
 
-
-
-No benefit was shown by increasing maxSybils beyond 10, so we stopped increasing it there.
+As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisingly effective and comes close to ideal runtimes.
 
 
 \subsection{Neighbor Injection}
+\textit{Neighbor Injection} also creates Sybils, but in this case
+
 
 \subsection{Invitation}
 
