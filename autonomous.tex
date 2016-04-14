@@ -70,7 +70,9 @@ During our experiments with ChordReduce, we found that high levels of churn actu
 We hypothesized that the churn was effectively load-balancing the network.
 
 \subsection{Objectives}
-This paper serves to prove our hypothesis that churn can load balance a Distributed Hash Table
+This paper serves to prove our hypothesis that churn can load balance a Distributed Hash Table.
+We also set out to show that we can use this in a highly controlled manner to greater effect.
+We present 3 strategies nodes can use to redistribute the workload in the network that do no require a centralized organizer.
 
 
 \section{Previous Work}
@@ -125,9 +127,9 @@ Incidentally, this time interval $T = T_{detect} + T_{transfer} $
 	\item [Churn] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
 	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
 	\item [Network Size]  How many nodes start in the network.  
-		We assume that this can grow during the experiment, either via churn or by creating sybils.
+		We assume that this can grow during the experiment, either via churn or by creating Sybils.
 	\item [Size of the job] The size of the job, in tasks.
-		This number is typically orders of maginitude greater than the network size.
+		This number is typically a few orders of magnitude greater than the network size.
 \end{description}
 
 We also considered using a variable noted as the \texttt{AdaptationRate}, which was how long it would take
@@ -139,30 +141,34 @@ Preliminary experiments \texttt{AdaptationRate}
 
 \section{Strategies}
 
-For our analysis, we examined four different strategies for nodes to perform autonomous load bal
+For our analysis, we examined four different strategies for nodes to perform autonomous load balancing.
+We first show the effects of churn on the speed of a distributed computation.
+We then look a three different strategies for nodes to create Sybils in the network, allowing for a more tactical approach for creating churn and affecting the runtime.
 
 
 
 \subsection{Induced Churn}
-In this experiment, we rely solely on churn to perform load balancing.
-This churn can either be a product of normal netowrk activity or self-induced.
-Self-induced churn means that each node generates a random floating point number between 0 and 1.
+In this strategy, we rely solely on churn to perform load balancing.
+This churn can either be a product of normal network activity or self-induced.\footnote{All distributed systems experience churn, even if it only a matter of hardware failure.}
+By self-induced churn, we mean that each node generates a random floating point number between 0 and 1.
 If the number is $\leq churnRate$, the node shuts down and leaves the network.
 
 Similarly, we have a pool of waiting nodes the same size as the network.
 When they generate an appropriate random number, they join the network.
-
-In our network model, nodes actively back up their data and tasks to nodes as they enter and leave the network.
-While this model is rarely implemented for DHTs, we have implemented it in ChordReduce\cite{chordreduce} and UrDHT\cite{urdht} and demonstrated that the network is capable from recovering from quite catastrophic failures.
-
-In this model, a node suddenly dying is of minimal impact to the network.
-This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
-
-Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks.
-
-
-
 We assume that nodes enter and leave the network at the same rate.
+
+
+As we have previously discussed, nodes in our network model actively back up their data and tasks to the a number of successors in case of failure.
+In addition, when a node joins, it acquires all the work it is responsible for.
+While this model is rarely implemented for DHTs, it is discussed \cite{kademlia} and often assumed to be the way DHTs operate. 
+We have implemented it in ChordReduce\cite{chordreduce} and UrDHT\cite{urdht} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling ludicrous amounts of churn.
+
+The consequences of this are that a node suddenly dying is of minimal impact to the network.
+This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
+Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquiring work.
+
+
+
 
 
 \subsection{Random Sybil Injection}
