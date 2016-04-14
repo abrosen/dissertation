@@ -2,7 +2,7 @@
 \label{chapter:auto-balance}
 
 
-%TODO CITE BELOW FOR NON UNIFORM DISTRBUTION
+
 
 %http://michiel.buddingh.eu/distribution-of-hash-values
 
@@ -23,6 +23,7 @@ The outputs of a cryptographic hash function are assumed to be distributed unifo
 
 In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
 Some nodes will end up with a lion's share of the keys, while other will have few responsibilities (Table \ref{tab:medianLoads}).
+
 
 
 
@@ -58,7 +59,8 @@ We assume that the network starts our experiments stable and the data necessary 
 	\item [Time Unit] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
 	If we want to be more concrete, a tick is the amount of time it takes a node to complete one task per sybil and perform the appropriate maintanence.\footnote{The shortest unit of time in the multiverse is the New York Second, defined as the period of time between the traffic lights turning green and the cab behind you honking.\\-- Terry Pratchett}
 	\item [Maintence] We assume the reactive, aggressive backups works.
-	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.
+	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.  
+	Keys will be drawn randomly from this hash function.
 \end{description}
 
 \subsubsection{Experimental Variables}
@@ -76,10 +78,18 @@ We assume that the network starts our experiments stable and the data necessary 
 
 \section{Strategies}
 
+For our analysis, we examined four different strategies for nodes to perform autonomous load bal
 
 
-\section{Induced Churn}
+
+\subsection{Induced Churn}
 In this experiment, we rely solely on churn to perform load balancing.
+This churn can either be a product of normal netowrk activity or self-induced.
+Self-induced churn means that each node generates a random floating point number between 0 and 1.
+If the number is $\leq churnRate$, the node shuts down and leaves the network.
+
+Similarly, we have a pool of waiting nodes the same size as the network.
+When they generate an appropriate random number, they join the network.
 
 In our network model, nodes actively back up their data and tasks to nodes as they enter and leave the network.
 While this model is rarely implemented for DHTs, we have implemented it in ChordReduce\cite{chordreduce} and UrDHT\cite{urdht} and demonstrated that the network is capable from recovering from quite catastrophic failures.
@@ -90,10 +100,11 @@ This is because a node's successor will quickly detect the loss of the node and 
 Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks.
 
 
+
 We assume that nodes enter and leave the network at the same rate.
 
 
-\section{Random Sybil Injection}
+\subsection{Random Sybil Injection}
 Our second series of experiments focused on nodes with low amounts of work performing a controlled and strategic Sybil attack \cite{sybil} on the network.
 In this experiment, each once each node's workload was at or below a certain threshold, the node would attempt to acquire more work by creating virtual Sybil nodes at random addresses.
 
@@ -101,6 +112,8 @@ In this experiment, each once each node's workload was at or below a certain thr
 
 
 No benefit was shown by increasing maxSybils beyond 10, so we stopped increasing it there.
+
+
 
 
 
