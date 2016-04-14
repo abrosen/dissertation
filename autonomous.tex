@@ -74,6 +74,7 @@ This paper serves to prove our hypothesis that churn can load balance a Distribu
 We also set out to show that we can use this in a highly controlled manner to greater effect.
 We present 3 strategies nodes can use to redistribute the workload in the network that do no require a centralized organizer.
 
+We also want to show how distributed computing can be performed in a heterogeneous environment.
 
 \section{Previous Work}
 
@@ -85,7 +86,7 @@ We designed ChordReduce to ensure that no single node is a point of failure and 
 \section{How Work Is Distributed in DHTs: A Visual Guide}
 In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
 
-\section{The Simulation}
+\section{Simulation}
 
 %We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
 
@@ -112,18 +113,25 @@ Incidentally, this time interval $T = T_{detect} + T_{transfer} $
 
 \subsection{The Parameters}
 
-\subsubsection{Constants}
+Our simulations relied on a great number of parameters and variables.
+We present each of them below.
+
+\subsubsection{Constants and Terminology}
 
 \begin{description}
-	\item [Time Unit] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
-	If we want to be more concrete, a tick is the amount of time it takes a node to complete one task per sybil and perform the appropriate maintanence.\footnote{The shortest unit of time in the multiverse is the New York Second, defined as the period of time between the traffic lights turning green and the cab behind you honking.\\-- Terry Pratchett}
-	\item [Maintence] We assume the reactive, aggressive backups works.
+	\item [Tick] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
+	We consider the tick the amount of time it takes a node to complete one task per sybil and perform the appropriate maintanence.\footnote{If we need to be more concrete, define a tick as a New York Second ``defined as the period of time between the traffic lights turning green and the cab behind you honking.''\\-- Terry Pratchett}
+	\item [Maintence] We assume nodes use the active, aggressive strategy from ChordReduce and  UrDHT \cite{chordreduce} \cite{urdht}.
+	Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately . 
+	We assume that a tick
+	\item [Task] A distributed computing job is defined in 
 	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.  
-	Keys will be drawn randomly from this hash function.
+	Keys for  will be drawn randomly from this hash function.
 \end{description}
 
 \subsubsection{Experimental Variables}
 \begin{description}
+	\item [Strategy] Which of the strategies (discussed in Section \ref{sec:strategies}) the trial uses for load balancing.
 	\item [Churn] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
 	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
 	\item [Network Size]  How many nodes start in the network.  
@@ -140,10 +148,16 @@ Preliminary experiments \texttt{AdaptationRate}
 
 
 \section{Strategies}
+\label{sec:strategies}
 
 For our analysis, we examined four different strategies for nodes to perform autonomous load balancing.
 We first show the effects of churn on the speed of a distributed computation.
-We then look a three different strategies for nodes to create Sybils in the network, allowing for a more tactical approach for creating churn and affecting the runtime.
+We then look a three different strategies for in which nodes take a more tactical approach for creating churn and affecting the runtime.
+
+Specifically, nodes perform a limited and controlled Sybil attack \cite{sybil} on their own network in an effort to acquire work with their virtual nodes.
+Our strategies dictate when and where these Sybil nodes are created.
+
+We discuss the effectiveness of this strategy in Section \ref{sec:autonomous-results}
 
 
 
@@ -168,7 +182,7 @@ This is because a node's successor will quickly detect the loss of the node and 
 Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquiring work.
 
 
-
+This strategy acts as a baseline with which to compare the other strategies, as it is no more than a overcomplicated way of turning machines off and on again. 
 
 
 \subsection{Random Sybil Injection}
@@ -188,3 +202,5 @@ No benefit was shown by increasing maxSybils beyond 10, so we stopped increasing
 In invitation, churn losses can be greatly detrimental
 
 \section{Results Of Experiments}
+\label{sec:autonomous-results}
+
