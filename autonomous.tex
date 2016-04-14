@@ -58,7 +58,9 @@ The next big quake affecting the the San Andreas fault line is a matter of when,
 Thus, centralized systems with single points of failure become a riskier option and decentralized, distributed systems the safer choice.
 
 
-Our previous work in ChordReduce \cite{chordreduce} focused on creating a system
+Our previous work in ChordReduce \cite{chordreduce} focused on creating a decentralized distributed computing framework based off of the Chord distributed hash table (DHT) and MapReduce.
+Chord (and all DHTs) have the qualities we desire for distributed computing: scalability, fault tolerance, and load-balancing.
+
 
 \subsection{Objectives}
 
@@ -75,7 +77,7 @@ The following analysis and simulation relies on an important assumption about DH
 
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
 Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
-We have demonstrated the effectiveness and viability of implementing an active backup strategy in other work \cite{chordreduce} \cite{brendanBackup} \cite{urdht}.
+We have demonstrated the effectiveness and viability of implementing an active backup strategy in other work \cite{chordreduce} \cite{urdht}.
 
 
 Another assumption is that nodes do not have control in choosing their IDs from the range of hash values.
