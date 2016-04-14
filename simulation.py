@@ -140,8 +140,7 @@ class Simulator(object):
                 if nodeID in self.sybils:   # If I have a sybil, I certainly don't want to invite people
                     if len(node.tasks) == 0:
                         self.clearSybils(nodeID)
-                    continue
-                
+                    #continue
                 # grab the index of the node and check with assert
                 index = bisect.bisect_left(self.nodeIDs, nodeID)
                 if index == len(self.nodeIDs):
