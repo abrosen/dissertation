@@ -121,27 +121,40 @@ We present each of them below.
 \begin{description}
 	\item [Tick] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
 	We consider the tick the amount of time it takes a node to complete one task per sybil and perform the appropriate maintanence.\footnote{If we need to be more concrete, define a tick as a New York Second ``defined as the period of time between the traffic lights turning green and the cab behind you honking.''\\-- Terry Pratchett}
-	\item [Maintence] We assume nodes use the active, aggressive strategy from ChordReduce and  UrDHT \cite{chordreduce} \cite{urdht}.
+	\item [Maintenance] We assume nodes use the active, aggressive strategy from ChordReduce and  UrDHT \cite{chordreduce} \cite{urdht}.
 	Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately . 
 	We assume that a tick
-	\item [Task] A distributed computing job is defined in 
+	\item [Task] A distributed computing job is defined in tasks.
+	Each task has a key that corresponds to the key of a file or chunk of a file stored on the network.
+	We assume that it takes a tick for a node to consume a task.
 	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.  
 	Keys for  will be drawn randomly from this hash function.
 \end{description}
 
 \subsubsection{Experimental Variables}
 \begin{description}
-	\item [Strategy] Which of the strategies (discussed in Section \ref{sec:strategies}) the trial uses for load balancing.
-	\item [Churn] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
-	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
+	\item [Strategy] We use several different strategies (discussed in Section \ref{sec:strategies})  for balancing the load  of tasks among the nodes.
+	None of the strategies require centralized data.
+	\item [Homogeneity]  This variable controls whether the network is homogeneous or not.
+	In a homogeneous network, each node has the same strength, which dictates how much work is consumed per a tick and how many Sybils it can create.
+	In a heterogeneous network, each node has a strength chosen uniformly at random from 1 to \texttt{maxSybils}.
+	\item [Work Measurement] This variable dictates how much work is consumed in a tick.
+	Nodes each consume a single task per a tick or their strength's worth of tasks per a tick.
 	\item [Network Size]  How many nodes start in the network.  
 		We assume that this can grow during the experiment, either via churn or by creating Sybils.
-	\item [Size of the job] The size of the job, in tasks.
+	\item [Number of Tasks] We measure the size of of a job in tasks.
 		This number is typically a few orders of magnitude greater than the network size.
+	\item [Churn Rate] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
+		Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
+	\item [Max Sybils] \texttt{maxSybils} is the maximum number of Sybils a node can create.
+	\item [Sybil Threshold] The \texttt{sybilThreshold} calculates the amount of tasks a node must have before it can create a Sybil.
+	\item [Successors] The number of successors each node keeps track of.  
+	Nodes also keep track of the same number of predecessors.
+		
 \end{description}
 
-We also considered using a variable noted as the \texttt{AdaptationRate}, which was how long it would take
-Preliminary experiments \texttt{AdaptationRate} 
+We also considered using a variable noted as the \texttt{AdaptationRate}, which was the interval at which nodes decided whether or not to create a Sybil.
+Preliminary experiments  showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
 
 \subsubsection{Outputs}
 
