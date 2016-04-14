@@ -8,32 +8,77 @@
 
 \section{Introduction}
 Distributed Hash Tables rely on cryptographic hash functions to generate identifiers for both nodes and data.
-The outputs of a cryptographic hash function are assumed to be distributed uniformly at random, but this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
+Ideally, inputing random numbers into a cryptographic hash function should produce a uniformly distributed output.
+However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
 
 
 \begin{table}
 	\centering
-	\caption{Text goes here}
-	\begin{tabular}{l l l l}
+	\caption{The median distribution of tasks among nodes.  We can see the standard deviation is a particularly useless measurement in this scenario.}
+	\begin{tabular}{r r r r}
 		Nodes & Tasks & Median Workload & $\sigma$ \\ \hline
+		1000  & 100000 & 69.410  & 137.27  \\
+		
+		1000 & 500000 & 346.570  &  499.169 \\
+		1000 &1000000 & 692.300  &  996.982 \\
+		
+		5000 & 100000  & 13.810 & 20.477 \\ 
+		5000 & 500000  & 69.280 & 100.344 \\ 
+		5000 & 1000000 &138.360 & 200.564 \\ 
+		
+		10000 & 100000 & 7.000   &  10.492 \\
+		10000 & 500000 & 34.550  &   50.366 \\
+		10000 & 1000000& 69.180  &  100.319 \\
 	\end{tabular}
 	\label{tab:medianLoads}
 \end{table}
 
 
+
+
 In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
 Some nodes will end up with a lion's share of the keys, while other will have few responsibilities (Table \ref{tab:medianLoads}).
 
+This makes it especially disheartening to try and ensure as even a load as possible.
+We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objects behind creating a fully decentralized and distributed system.
+
+Therefore, if we want to create strategies to act against the inequity of the load distribution, we need a strategy that individual nodes can act upon autonomously.
+These strategies need to make decisions that a node can make at a local level, using only information about their own load and the topology they can see.
 
 
+\subsection{Motivation}
+The primary motivation for us is creating a new viable type of platform for distributed computing.
+Most distributed computing paradigms, such as Hadoop \cite{hadoop}, assume that the computations occur in a centralized environments.
+One enormous benefit is a centralized system has much greater control in ensuring load-balancing.
+
+However, in an increasingly global world where computation is king and the Internet is increasingly an integral part of everyday life, single points of failure failures quickly become more and more risky.
+Users expect their apps to work regardless of any power outage affecting an entire region.
+Customers expect their services to still be provided regardless of any.
+The next big quake affecting the the San Andreas fault line is a matter of when, not if.
+Thus, centralized systems with single points of failure become a riskier option and decentralized, distributed systems the safer choice.
 
 
+Our previous work in ChordReduce \cite{chordreduce} focused on creating a system
 
-\section{Notes}
+\subsection{Objectives}
+
+
+\section{How Work Is Distributed in DHTs: A Visual Guide}
+In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
+
+\section{The Simulation}
+
+%We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
+
+We assume that the network starts our experiments stable and the data necessary already present on the nodes and backed-up.
 The following analysis and simulation relies on an important assumption about DHT behavior often assumed but not necessarily implemented.
+
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
-Specifically, we will assume  it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly.
-Another assumption is that nodes do note have control in choosing their IDs from the range of hash values.
+Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
+We have demonstrated the effectiveness and viability of implementing an active backup strategy in other work \cite{chordreduce} \cite{brendanBackup} \cite{urdht}.
+
+
+Another assumption is that nodes do not have control in choosing their IDs from the range of hash values.
 
 Smaller chunking results in more files spread throughout the  network and a greater chance of the data being evenly spread across the network 
 
@@ -45,11 +90,6 @@ Where $ r $ is the failure rate over that time interval and $s$ is the number no
 Incidentally, this time interval $T = T_{detect} + T_{transfer} $
 
 
-\section{The Simulation}
-
-We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
-
-We assume that the network starts our experiments stable and the data necessary already present on the nodes and backed-up.
 
 \subsection{The Parameters}
 
@@ -69,11 +109,15 @@ We assume that the network starts our experiments stable and the data necessary 
 	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
 	\item [Network Size]  How many nodes start in the network.  
 		We assume that this can grow during the experiment, either via churn or by creating sybils.
-	\item [Pool Size]  The size of the pool of potentially joining nodes.  Each tick, each node in the pool has a chance to join the network, dictated by the churn rate.
-		Talk about relative equalibrium
 	\item [Size of the job] The size of the job, in tasks.
 		This number is typically orders of maginitude greater than the network size.
 \end{description}
+
+We also considered using a variable noted as the \texttt{AdaptationRate}, which was how long it would take
+Preliminary experiments \texttt{AdaptationRate} 
+
+\subsubsection{Outputs}
+
 
 
 \section{Strategies}
@@ -114,7 +158,8 @@ In this experiment, each once each node's workload was at or below a certain thr
 No benefit was shown by increasing maxSybils beyond 10, so we stopped increasing it there.
 
 
+\subsection{Neighbor Injection}
 
+\subsection{Invitation}
 
-
-\section{Baseline Readings}
+\section{Results Of Experiments}
