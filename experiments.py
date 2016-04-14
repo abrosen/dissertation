@@ -210,7 +210,7 @@ def runNeighborLimitedSize(numNodes =1000 , numTasks =100000):
                                 numExperiments +=1
     print(numExperiments*variables.trials)
     
-def runInviteLimitedSize():
+def runInviteLimitedSize(numNodes = 1000, numTasks= 100000):
     numExperiments = 0
     for homogeneity in variables.homogeneity:
         for workMeasurement in variables.workPerTick:
@@ -221,7 +221,7 @@ def runInviteLimitedSize():
                             for numSuccessors in variables.successors:
                                 if workMeasurement=="perSybil":
                                     continue
-                                runTrials("invite", homogeneity, workMeasurement, 1000, 100000, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                runTrials("invite", homogeneity, workMeasurement,numNodes, numTasks , churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
                                 numExperiments +=1
     print(numExperiments*variables.trials)
 
@@ -261,7 +261,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runMedianData()
+    runInviteLimitedSize(20,2000)
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
