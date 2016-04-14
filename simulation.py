@@ -131,36 +131,51 @@ class Simulator(object):
                     
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)
+    
+    def neighborSmart(self):
+        if (self.time % self.adaptationRate) == 0:
+            for nodeID in self.superNodes:
+                node = self.nodes[nodeID]
+                if (len(node.tasks) <= self.sybilThreshold) and self.canSybil(nodeID):
+                    indexOfSybiler = self.nodeIDs.index(nodeID)
+                    
+                    
+                if nodeID in self.sybils and len(node.tasks) == 0:
+                    self.clearSybils(nodeID)
+    
                     
                     
     def inviteSybil(self):
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
-                if nodeID in self.sybils:   # If I have a sybil, I certainly don't want to invite people
-                    if len(node.tasks) == 0:
-                        self.clearSybils(nodeID)
-                    #continue
-                # grab the index of the node and check with assert
-                index = bisect.bisect_left(self.nodeIDs, nodeID)
-                if index == len(self.nodeIDs):
-                    index = 0
-                assert(self.nodeIDs[index] ==nodeID)
-                
                 
                 if len(node.tasks) >= self.perfectTime - self.sybilThreshold:   # If I need help
+                
+                    # grab the index of the node and check with assert
+                    index = bisect.bisect_left(self.nodeIDs, nodeID)
+                    if index == len(self.nodeIDs):
+                        index = 0
+                    assert(self.nodeIDs[index] ==nodeID)
+                    
                     optimalHelper = None
-                    helperLoad = float("inf")
+                    helperLoad = self.sybilThreshold
                     for predIndex in range(index-1 , index-1 -self.numSuccessors, -1):
+                        if predIndex <= len(self.nodeIDs):
+                            break
+                        
                         predID = self.nodeIDs[predIndex]
                         predNode= self.nodes[predID]
-                        if (len(predNode.tasks) <= self.sybilThreshold) and  len(predNode.tasks) < helperLoad  and self.canSybil(predID):
+                        if (len(predNode.tasks) <= helperLoad) and self.canSybil(predID):
                             optimalHelper = predID
                             helperLoad = len(predNode.tasks)
+                    
                     if optimalHelper is not None:
-                        sybilID = self.mash(self.nodeIDs[index - 1] , nodeID)
+                        sybilID = self.mash(self.nodeIDs[index - 1], nodeID)
                         self.addSybil(optimalHelper, sybilID)
-                        
+                
+                if nodeID in self.sybils and len(node.tasks) == 0:
+                    self.clearSybils(nodeID)        
     
     def mash(self, a:int, b :int) -> int:
         if b < a:
