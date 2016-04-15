@@ -11,7 +11,7 @@ start = str( int( time.time() ) )
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
     """
-    if seed < 13745:
+    if seed < 21845:
         seed += variables.trials
         return
     """
@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runInviteLimitedSize(100, 10000)
+    runRandomInjectLimitedSize(1000, 1000000)
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
