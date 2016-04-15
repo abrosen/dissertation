@@ -89,6 +89,8 @@ class Simulator(object):
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
         workThisTick = self.performWork()
+        if workThisTick == 0:
+            assert(False)
         self.time += 1
         #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
     
@@ -197,8 +199,8 @@ class Simulator(object):
         population = None
         if self.workMeasurement == "one" or self.workMeasurement == 'perStrength':
             population =  self.superNodes
-        elif self.workMeasurement == 'perSybil':
-            population = self.nodeIDs
+        #elif self.workMeasurement == 'perSybil':
+        #    population = self.nodeIDs
         else:
             assert(False)
         for n in population:
@@ -210,11 +212,13 @@ class Simulator(object):
                         numCompleted += 1
                     else:
                         break
-            else:
+            elif self.workMeasurement == "one":
                 workDone = self.nodes[n].doWork()
                 if workDone:  # if the node finished a task
                     self.numDone += 1
                     numCompleted += 1
+            else:
+                assert(False)
         return numCompleted
         
         #for n in self.sybilIDs:
