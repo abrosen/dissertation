@@ -14,7 +14,7 @@
 \usepackage{algpseudocode}
 \usepackage[font=footnotesize]{caption}
 
-\title{UrDHT: A Unified Model for Distributed Hash Tables}
+\title{Autonomous Load Balancing in Distributed Hash Tables Using Churn and The Sybil Attack}
 
 
 
@@ -44,20 +44,25 @@ Foobar
 \end{abstract}
 
 \begin{IEEEkeywords}
-	Peer-to-Peer Networks;  Distributed Hash Tables; Self-Organizing Networks; Load-Balancing;
+	Distributed Computing; Decentralized Systems; Peer-to-Peer Networks;  Distributed Hash Tables; Self-Organizing Networks; Load-Balancing; Sybil Attack;
 	
 \end{IEEEkeywords}
 
 \section{Introduction}
 
-\subsection{2-4 sentences telling people what you will talk about in the paper}
+%\subsection{2-4 sentences telling people what you will talk about in the paper}
 
-\subsection{What are DHTs}
-Distributed Hash Tables are 
+%\subsection{What are DHTs}
+Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
+DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the incredibly popular BitTorrent \cite{bittorrent}.
+DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing \cite{chordreduce}.
 
+Our previous research \cite{chordreduce} examined using a DHT as the organizing mechanism for a distributed platform.
+This enabled us to create an exceptionally fault tolerant distributed computing platform that was easy to setup and could be run in a completely decentralized P2P environment.
 
-\subsection{What is the significance of the hash function }
-One of key components of a Distributed Hash Table is a cryptographic hash function, most commonly \cite{sha1}.
+% Copy into disseration start here
+%\subsection{What is the significance of the hash function }
+One of key components of a Distributed Hash Table is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
 Distributed Hash Tables rely on this cryptographic hash function to generate identifiers for data stored on the network.
 The cryptographic hash of the filename or other identifier for the data is used as the location of the file or data in the network.
 It can also be used to generate the identifiers for nodes in the network.
