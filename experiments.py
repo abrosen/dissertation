@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runRandomInjectLimitedSize(1000, 1000000)
+    runInviteLimitedSize(100, 1000)
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))

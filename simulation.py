@@ -106,6 +106,7 @@ class Simulator(object):
                     self.clearSybils(nodeID)
     
     def neighborInject(self):
+        assert(False) # make sure I'm trying to from the correct gap
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
@@ -125,8 +126,8 @@ class Simulator(object):
                             boundaryB = j
                     
                     # TODO Unsimplify.  Right now we just cheat and generate a number rather than hashing
-                    a = (self.nodeIDs[boundaryA]+1) % builder.MAX 
-                    b = (self.nodeIDs[boundaryB] -1) % builder.MAX
+                    a = (self.nodeIDs[boundaryA]) % builder.MAX 
+                    b = (self.nodeIDs[boundaryB]) % builder.MAX
                     sybilID = self.mash(a, b)
                     self.addSybil(nodeID, sybilID)
                     #assert((a < sybilID and sybilID < b) or  ()  )
@@ -142,12 +143,32 @@ class Simulator(object):
                     indexOfSybiler = self.nodeIDs.index(nodeID)
                     
                     
+                    largestLoad = float("-inf")
+                    busiestNodeID = None
+                    busiestNodeIndex = None
+                    
+                    for i in range(indexOfSybiler + 1, indexOfSybiler + 1 + self.numSuccessors):
+                        i =  i % len(self.nodeIDs)
+                        succID = self.nodeIDs[i]
+                        succ = self.nodes[succID]
+                        if len(succ.tasks) > largestLoad:
+                            busiestNodeID = succID
+                            busiestNodeIndex = i
+                            largestLoad  =  len(succ.tasks)
+                    
+                    
+                    if largestLoad > len(node.tasks):
+                        leftID = self.nodeIDs[busiestNodeIndex -1]
+                        sybilID = self.mash(leftID, busiestNodeID)
+                        self.addSybil(nodeID, sybilID)
+                        
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)
     
                     
                     
     def inviteSybil(self):
+        assert(False) # make sure I'm trying to from the correct gap
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
@@ -180,6 +201,11 @@ class Simulator(object):
                     self.clearSybils(nodeID)        
     
     def mash(self, a:int, b :int) -> int:
+        if abs(b - a) <= 2:
+            return a
+        a = (a + 1) % builder.MAX
+        b = (b - 1) % builder.MAX
+        
         if b < a:
             offset = builder.MAX - a 
             b =  b + offset 
