@@ -49,7 +49,19 @@ Foobar
 \end{IEEEkeywords}
 
 \section{Introduction}
-Distributed Hash Tables rely on cryptographic hash functions to generate identifiers for both nodes and data.
+
+\subsection{2-4 sentences telling people what you will talk about in the paper}
+
+\subsection{What are DHTs}
+Distributed Hash Tables are 
+
+
+\subsection{What is the significance of the hash function }
+One of key components of a Distributed Hash Table is a cryptographic hash function, most commonly \cite{sha1}.
+Distributed Hash Tables rely on this cryptographic hash function to generate identifiers for data stored on the network.
+The cryptographic hash of the filename or other identifier for the data is used as the location of the file or data in the network.
+It can also be used to generate the identifiers for nodes in the network.
+
 Ideally, inputing random numbers into a cryptographic hash function should produce a uniformly distributed output.
 However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
 
@@ -114,9 +126,12 @@ We hypothesized that the churn was effectively load-balancing the network.
 \subsection{Objectives}
 This paper serves to prove our hypothesis that churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
-We present 3 strategies nodes can use to redistribute the workload in the network that do no require a centralized organizer.
+We present three strategies that nodes can use to redistribute the workload in the network.
+None of these require a centralized organizer.
 
 We also want to show how distributed computing can be performed in a heterogeneous environment.
+
+%\subsection{Summary}
 
 \section{Previous Work}
 
