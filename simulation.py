@@ -83,7 +83,7 @@ class Simulator(object):
         if self.strategy == "randomInjection":
             self.randomInject()
         elif self.strategy == "neighbors":
-            self.neighborInject()
+            self.neighborSmart()
         elif self.strategy == "invite":
             self.inviteSybil()
         if not self.churnRate == 0:
