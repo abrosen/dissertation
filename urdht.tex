@@ -198,7 +198,7 @@ DGVH selects nearby nodes that would correspond to points connected to it within
 Our previous implementation relied on a midpoint function \cite{dgvh}.
 We have refined our heuristic to render a midpoint function unnecessary.
 
-The heuristic is described in Algorithm \ref{alg:dgvh}.
+The heuristic is described in Algorithm \ref{alg:dgvh} in Chapter \ref{chapter:dgvh}.
 Every maintenance cycle, nodes exchange their peer lists with their short peers.
 A node creates a list of candidates by combining their peer lists with their neighbor's peer lists.\footnote{In our previous paper, nodes exchange short peer lists with a single peer. Calls to DGVH in this paper use both short and long peer information from all of their short peers.}
 Sort the list of peers from closest to furthest distance.
@@ -211,37 +211,37 @@ The resulting short peers are a subset of the node's actual Delaunay neighbors.
 A crucial feature is that this subset guarantees that DGVH will form a routable mesh.
 
 
-\begin{algorithm} % make smaller
-	\caption{Distributed Greedy Voronoi Heuristic}
-	\label{alg:dgvh}
-%	\algsetup{linenosize=\tiny}
-	\small
-	\begin{algorithmic}[1]  % the numberis how many lines
-		\State Given node $n$ and its list of $candidates$.
-		\State Given the minimum $table\_size$
-		\State $short\_peers \leftarrow$ empty set% that will contain $n$'s one-hop peers
-		\State $long\_peers \leftarrow$ empty set %that will contain $n$'s peers further than one hop.
-		\State Sort $candidates$ in ascending order by each node's \texttt{distance} to $n$
-		\State Remove the first member of $candidates$ and add it to $short\_peers$
-		\ForAll {$c$ in $candidates$}
-			\If{any node in $short\_peers$ is closer to $c$ than $n$}
-				\State Reject $c$ as a peer
-			\Else
-				\State Remove $c$ from $candidates$
-				\State Add $c$ to $short\_peers$
-			\EndIf
-		\EndFor
-		\While{$|short\_peers| < table\_size $ and $ |candidates| >0$}
-			\State Remove the first entry $c$ from $candidates$
-			\State Add $c$ to $short\_peers$
-		\EndWhile
-		\State Add $candidates$ to the set of $long\_peers$	
-		\State \texttt{handleLongPeers}($long\_peers$)
-		%\IF{$|long\_peers| > table\_size^2$}
-		%	\State $long\_peers \leftarrow$ random subset of $long\_peers$ of size $table\_size^2$
-		%\ENDIF
-	\end{algorithmic}
-\end{algorithm} 
+%\begin{algorithm} % make smaller
+%	\caption{Distributed Greedy Voronoi Heuristic}
+%	\label{alg:dgvh}
+%%	\algsetup{linenosize=\tiny}
+%	\small
+%	\begin{algorithmic}[1]  % the numberis how many lines
+%		\State Given node $n$ and its list of $candidates$.
+%		\State Given the minimum $table\_size$
+%		\State $short\_peers \leftarrow$ empty set% that will contain $n$'s one-hop peers
+%		\State $long\_peers \leftarrow$ empty set %that will contain $n$'s peers further than one hop.
+%		\State Sort $candidates$ in ascending order by each node's \texttt{distance} to $n$
+%		\State Remove the first member of $candidates$ and add it to $short\_peers$
+%		\ForAll {$c$ in $candidates$}
+%			\If{any node in $short\_peers$ is closer to $c$ than $n$}
+%				\State Reject $c$ as a peer
+%			\Else
+%				\State Remove $c$ from $candidates$
+%				\State Add $c$ to $short\_peers$
+%			\EndIf
+%		\EndFor
+%		\While{$|short\_peers| < table\_size $ and $ |candidates| >0$}
+%			\State Remove the first entry $c$ from $candidates$
+%			\State Add $c$ to $short\_peers$
+%		\EndWhile
+%		\State Add $candidates$ to the set of $long\_peers$	
+%		\State \texttt{handleLongPeers}($long\_peers$)
+%		%\IF{$|long\_peers| > table\_size^2$}
+%		%	\State $long\_peers \leftarrow$ random subset of $long\_peers$ of size $table\_size^2$
+%		%\ENDIF
+%	\end{algorithmic}
+%\end{algorithm} 
 
 
 Candidates are gathered via a gossip protocol as well as notifications from other peers.
