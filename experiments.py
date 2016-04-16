@@ -78,14 +78,14 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
     avgSlowness = avgTicks/avgIdealTime
     
     avgMedianLoad = sum(medianLoads)/len(medianLoads)
-    stdOfMedians = statistics.pstdev(medianLoads)
+    #stdOfMedians = statistics.pstdev(medianLoads)
     avgStdDev = sum(stdDevs)/len(stdDevs)
     
     avgAvgWorkPerTick = sum(workPerTickList)/len(workPerTickList)
     avgHardestWork  = sum(hardestWorkers)/len(hardestWorkers)
     
-    outputs = "{:10.2f} {:8.3f} {:7.3f} {:10.3f} {:10.3f} {:10.3f} {:10.2f} {:8.2f}".format(
-        avgTicks, avgIdealTime, avgSlowness, avgMedianLoad, stdOfMedians, avgStdDev, avgAvgWorkPerTick, avgHardestWork)
+    outputs = "{:10.2f} {:8.3f} {:7.3f} {:10.3f} {:10.3f} {:10.2f} {:8.2f}".format(
+        avgTicks, avgIdealTime, avgSlowness, avgMedianLoad, avgStdDev, avgAvgWorkPerTick, avgHardestWork)
     
     
     with open("data/working/averages"+ start+".txt", 'a') as averages:
