@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runInviteLimitedSize(100, 10000)
+    runNeighborLimitedSize(100, 10000)
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
