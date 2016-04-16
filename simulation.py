@@ -106,7 +106,6 @@ class Simulator(object):
                     self.clearSybils(nodeID)
     
     def neighborInject(self):
-        assert(False) # make sure I'm trying to from the correct gap
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
@@ -168,7 +167,7 @@ class Simulator(object):
                     
                     
     def inviteSybil(self):
-        assert(False) # make sure I'm trying to from the correct gap
+        # make sure I'm trying to from the correct gap
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
