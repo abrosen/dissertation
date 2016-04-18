@@ -28,7 +28,8 @@ def drawGraph(nodes, tasks):
 def drawAverageChurn(filename):
     data =  open("data/done/"+filename+".txt")
     for line in data:
-        print(line)
+        line = line.split()
+        print(line[11], line[13])
 
 
 drawAverageChurn("averagesChurn1k1m")
