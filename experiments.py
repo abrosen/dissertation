@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runNeighborLimitedSize(100, 10000)
+    runChurnLimitedSize()
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
