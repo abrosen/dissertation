@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import random
+import statistics
 from simulation import Simulator
 
 from builder import generateFileIDs, MAX
@@ -79,7 +80,7 @@ def plotLoads():
     s = Simulator()
     seed = 500
     loads = []
-    for _ in range(10):
+    for _ in range(2):
         random.seed(seed)
         s.setupSimulation(numNodes=1000,numTasks=100000)
         loads = loads + [len(x.tasks) for x in s.nodes.values()]
@@ -87,6 +88,7 @@ def plotLoads():
     n, bins, patches = plt.hist(loads, 150, normed =1 )
     plt.xlabel('Tasks Per Node')
     plt.ylabel('Probability')
+    plt.axvline(statistics.median_low(loads), color='r', linestyle='--')
     plt.show()
 
 plotLoads()   
