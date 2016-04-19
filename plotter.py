@@ -87,7 +87,7 @@ def plotLoads():
     n, bins, patches = plt.hist(loads, 150, normed =1 )
     plt.xlabel('Tasks Per Node')
     plt.ylabel('Probability')
-    plt.show()      
+    plt.show()
 
 plotLoads()   
 #drawAverageChurn("averagesChurn1k1m")
