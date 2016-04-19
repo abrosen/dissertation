@@ -45,7 +45,7 @@ def drawAverageChurn(filename):
         current["times"].append(slownessFactor)
     for result in results:
         print(result["times"][0])
-        plt.plot(result["rates"], result["times"], "-")
+        plt.plot(result["rates"], result["times"], "o")
     plt.show()    
 
 def drawRandomInjectionChurn(filename):
@@ -72,4 +72,4 @@ def drawRandomInjectionChurn(filename):
     plt.show()    
     
     
-drawAverageChurn("averagesChurn1k1m")
+drawAverageChurn("averagesChurnDataPoints")

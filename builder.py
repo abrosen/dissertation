@@ -9,13 +9,14 @@ MAX = 2**BASE
 
 random.seed(12345)
 
+
 def createStaticIDs(size):
     """
     This creates |size| IDs
     The output will be the same each time we run this. 
     """
-    
-    population = sorted([int(sha1(bytes(str( random.random()), "UTF-8")).hexdigest(), 16) 
+
+    population = sorted([int(sha1(bytes(str(random.random()), "UTF-8")).hexdigest(), 16)
                          % MAX for x in range(size)])
     return population
 
@@ -27,57 +28,25 @@ def generateFileIDs():
         yield int(sha1(bytes(str(x), "UTF-8")).hexdigest(), 16) % MAX
 
 
-class DHTNode(object):
-    def __init__(self,hashkey: int):
-        self.id  = hashkey  # hashkey int from SHA1
-        self.files = {}     # files[hashkey] = value , collisions overwrite (S.O.P.)
-        self.backups = {}   # Original Owner -> {files})
-                            # or should it just be like files
-                            # or above + add another mapping  
-        
-        self.shortPeers =  []
-        self.longPeers = [] # assumptions: lazy update for long peers to start 
-                            # (eg find new one only when an error occurs)
-                            # unless protocol specifies otherwise
-        print("DONE")
-        self.tasks = []
-        self.backTask = {}  # Tasks that other nodes have been assigned.    
-        
-    def store(self, key: int, value: int):
-        self.files[key] = value
-        # do backup 
-        
-    def backup(self, key: int, value:int)-> None:
-        self.backups[key] = [value]
-        
-    def becomeOwner(self, key:int):
-        self.files
-        del self.backups[key]
-    
-    def relinquishOwnership(self, key:int):
-        pass
-
 if __name__ == '__main__':
     xs = []
-    ys = [] 
+    ys = []
     fx = []
     fy = []
     for _ in range(10):
         n = next(generateFileIDs())
-        x = math.sin(2*math.pi*n/ MAX)
-        y = math.cos(2*math.pi*n/ MAX)
+        x = math.sin(2 * math.pi * n / MAX)
+        y = math.cos(2 * math.pi * n / MAX)
         xs.append(x)
         ys.append(y)
-    
+
     for _ in range(100):
         n = next(generateFileIDs())
-        x = math.sin(2*math.pi*n/ MAX)
-        y = math.cos(2*math.pi*n/ MAX)
+        x = math.sin(2 * math.pi * n / MAX)
+        y = math.cos(2 * math.pi * n / MAX)
         fx.append(x)
         fy.append(y)
     #plt.axes([-1.0,1.0,-1.0,1.0] )
-    plt.plot(xs,ys, 'ro')
-    plt.plot(fx,fy, 'bo')
+    plt.plot(xs, ys, 'ro')
+    plt.plot(fx, fy, 'bo')
     plt.show()
-    
-    
