@@ -284,6 +284,8 @@ To avoid constant spamming of a range, once a node creates a Sybil, but does not
 We might want to look at changing this strategy to choosing a random id in the neighbor range.
 
 
+
+
 \subsection{Invitation}
 The \textit{Invitation }strategy is the reverse of the Sybil injection strategies.
 In  this strategy, nodes with a higher than desired level of work announces it needs help to its predecessors.
@@ -294,6 +296,17 @@ Nodes determine whether or not they are overburdened using the \texttt{sybilThre
 In invitation, churn losses can be greatly detrimental.
 
 \section{Results Of Experiments}
+
+
+\subsection{Churn}
+
+Our results showed that churn has an impact on the network's computation, and this effect is more pronounced with higher rates of churn.
+
+\subsection{Random Injection}
+
+The strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
+
+
 \label{sec:autonomous-results}
 \bibliography{notes,dht,mapreduce,voronoi,dns,botnets,bitcoin,mine}
 \bibliographystyle{IEEEtran}
