@@ -94,6 +94,18 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
 
+def collectStartingMedians():
+    global seed
+    for _ in range(100000):
+        random.seed(seed)
+        s.setupSimulation(numNodes=1000,numTasks=100000)
+        loads = [len(x.tasks) for x in s.nodes.values()]  #this won't work once the network starts growing
+        #print(sorted(loads))
+        median = statistics.median_low(loads)
+        with open("data/working/medians.txt", 'a') as medians:
+            medians.write(str(median) + "\n")        
+        seed +=1
+
 def testPerStrength():
     for strategy in variables.strategies:
         for homogeneity in variables.homogeneity:
@@ -262,7 +274,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runChurnLimitedSize()
+    collectStartingMedians()
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
