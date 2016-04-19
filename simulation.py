@@ -2,6 +2,7 @@ import bisect
 import builder
 import random
 import datetime
+import statistics
 #maxSybils  = 10
 #assert(False)
 
@@ -404,7 +405,19 @@ class Simulator(object):
         return self.time, maxNode.done
         # print(len(maxNode.done))
     
-    
+    def simulateLoad(self):
+        medians = []
+        means = []
+        maxs = []
+        devs = []
+        for time in range(1,31):
+            self.doTick()
+            loads = [len(x.tasks) for x in self.nodes.values()]
+            means.append(statistics.mean(loads))
+            medians.append(statistics.median(loads))
+            maxs.append(max(loads))
+            devs.append(statistics.pstdev(loads))
+        return medians, means, maxs, devs
 
 class SimpleNode(object):
     def __init__(self, id, strength, homogeneity):
