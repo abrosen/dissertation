@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import math
+import random
+from simulation import Simulator
+
 from builder import generateFileIDs, MAX
 
 def drawGraph(nodes, tasks):
@@ -70,6 +73,19 @@ def drawRandomInjectionChurn(filename):
         print(result["times"][0])
         plt.plot(result["rates"], result["times"], "-")
     plt.show()    
-    
-    
-drawAverageChurn("averagesChurn1k1m")
+
+
+def plotLoads():
+    s = Simulator()
+    seed = 500
+    loads = []
+    for _ in range(10):
+        random.seed(seed)
+        s.setupSimulation(numNodes=1000,numTasks=100000)
+        loads = loads + [len(x.tasks) for x in s.nodes.values()]
+        seed += 1
+    plt.hist(loads,200)
+    plt.show()      
+
+plotLoads()   
+#drawAverageChurn("averagesChurn1k1m")
