@@ -27,9 +27,49 @@ def drawGraph(nodes, tasks):
 
 def drawAverageChurn(filename):
     data =  open("data/done/"+filename+".txt")
+    results = []
+    current = {}
+    
     for line in data:
-        line = line.split()
-        print(line[11], line[13])
+        line = line.split() 
+        churnRate =  float(line[5])
+        slownessFactor =  float(line[13])
+        if churnRate == 0:
+            current = {}
+            current["homogeneity"] = line[1]
+            current["workMeasurement"] = line[2]
+            current["rates"] = []
+            current["times"] = []
+            results.append(current)
+        current["rates"].append(churnRate)
+        current["times"].append(slownessFactor)
+    for result in results:
+        print(result["times"][0])
+        plt.plot(result["rates"], result["times"], "-")
+    plt.show()    
 
-
+def drawRandomInjectionChurn(filename):
+    data =  open("data/done/"+filename+".txt")
+    results = []
+    current = {}
+    
+    for line in data:
+        line = line.split() 
+        churnRate =  float(line[5])
+        slownessFactor =  float(line[13])
+        if churnRate == 0:
+            current = {}
+            current["homogeneity"] = line[1]
+            current["workMeasurement"] = line[2]
+            current["rates"] = []
+            current["times"] = []
+            results.append(current)
+        current["rates"].append(churnRate)
+        current["times"].append(slownessFactor)
+    for result in results:
+        print(result["times"][0])
+        plt.plot(result["rates"], result["times"], "-")
+    plt.show()    
+    
+    
 drawAverageChurn("averagesChurn1k1m")
