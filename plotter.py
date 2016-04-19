@@ -84,7 +84,9 @@ def plotLoads():
         s.setupSimulation(numNodes=1000,numTasks=100000)
         loads = loads + [len(x.tasks) for x in s.nodes.values()]
         seed += 1
-    plt.hist(loads,200)
+    n, bins, patches = plt.hist(loads, 150, normed =1 )
+    plt.xlabel('Tasks Per Node')
+    plt.ylabel('Probability')
     plt.show()      
 
 plotLoads()   
