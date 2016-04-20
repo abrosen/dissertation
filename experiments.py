@@ -104,6 +104,7 @@ def collectStartingMedians():
         median = statistics.median_low(loads)
         with open("data/working/medians.txt", 'a') as medians:
             medians.write(str(median) + "\n")        
+        print(median)
         seed +=1
 
 def testPerStrength():
