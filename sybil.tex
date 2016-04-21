@@ -504,8 +504,4 @@ The load could be defined by the size of the region or by the volume of traffic.
 A network implementing this load-balancing strategy would be self-adaptive.
 Nodes in this type of self-adaptive network would have a limited number of virtual nodes to mash.
 This limit would protect nodes from becoming overloaded themselves and ensure network stability.
-%The only cost would be that node would have to keep track of the keys it can inject, which we mentioned was only 320 kilobytes of data.
-%This could be integrated into a distributed key allocation system, so that a node can bind these keys to itself, but only use a small portion of the keys alloted to it to aid with load-balancing.
-
-We have shown that node injection via mashing is both practical and feasible for a Sybil attack on a hash-based P2P network.
-In addition, we have shown that mashing can be used for both malicious and beneficial purposes.
+We discuss how we can implement this in Chapter \ref{chapter:auto-balance}.
