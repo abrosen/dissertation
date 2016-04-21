@@ -107,42 +107,6 @@ def collectStartingMedians():
         print(median)
         seed +=1
 
-def testPerStrength():
-    for strategy in variables.strategies:
-        for homogeneity in variables.homogeneity:
-            runTrials(strategy, homogeneity, "perStrength", 1000, 100000, 0, 5, 5, 0.1, 5)
-
-def testChurn():
-    for churn in variables.churnRates:
-        runTrials("churn", "equal", "one" ,  1000, 100000, churn, -1, -1, -1,-1)
-     
-
-    
-def testRandomInject():
-    for homogeneity in variables.homogeneity:
-        for adaptationRate  in variables.adaptationRates:
-            for maxSybil in variables.maxSybils:
-                for threshold in variables.sybilThresholds:
-                    runTrials("randomInjection", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, -1)
-
-
-def testNeighbor():
-    for homogeneity in variables.homogeneity:
-        for adaptationRate  in variables.adaptationRates:
-            for maxSybil in variables.maxSybils:
-                for threshold in variables.sybilThresholds:
-                    for numSuccessor in variables.successors:
-                        runTrials("neighbors", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, numSuccessor)
-
-def testInvite():
-    for homogeneity in variables.homogeneity:
-        for adaptationRate  in variables.adaptationRates:
-            for maxSybil in variables.maxSybils:
-                for threshold in variables.sybilThresholds:
-                    for numSuccessor in variables.successors:
-                        runTrials("invite", homogeneity, "one", 1000, 100000, 0, adaptationRate, maxSybil, threshold, numSuccessor)
-
-
 def runMedianData():
     numExperiments = 0
     for networkSize in variables.networkSizes:

@@ -413,8 +413,8 @@ class Simulator(object):
         for time in range(1,31):
             self.doTick()
             loads = [len(x.tasks) for x in self.nodes.values()]
-            means.append(statistics.mean(loads))
             medians.append(statistics.median(loads))
+            means.append(statistics.mean(loads))
             maxs.append(max(loads))
             devs.append(statistics.pstdev(loads))
         return medians, means, maxs, devs
