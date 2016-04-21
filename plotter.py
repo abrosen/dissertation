@@ -75,6 +75,19 @@ def drawRandomInjectionChurn(filename):
         plt.plot(result["rates"], result["times"], "-")
     plt.show()    
 
+def testInjectionSteps():
+    s =  Simulator()
+    s.setupSimulation(strategy = 'randomInjections',workMeasurement="one", numNodes=1000, numTasks=100000)
+    loads, medians, means, maxs, devs = s.simulateLoad()
+    for i in range(0,len(loads),5):
+        x = loads[i]
+        plt.hist(x, 150, normed =1 )
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Probability')
+        plt.axvline(medians[i], color='r', linestyle='--')
+        plt.axvline(means[i], color='k', linestyle='--')
+        plt.show()
+
 def plotLoads():
     s = Simulator()
     seed = 500
@@ -90,5 +103,5 @@ def plotLoads():
     plt.axvline(statistics.median_low(loads), color='r', linestyle='--')
     plt.show()
 
-plotLoads()   
+testInjectionSteps()
 #drawAverageChurn("averagesChurn1k1m")

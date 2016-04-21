@@ -406,18 +406,20 @@ class Simulator(object):
         # print(len(maxNode.done))
     
     def simulateLoad(self):
+        loadsList = []
         medians = []
         means = []
         maxs = []
         devs = []
-        for time in range(1,31):
+        for time in range(1,51):
             self.doTick()
             loads = [len(x.tasks) for x in self.nodes.values()]
+            loadsList.append(loads)
             medians.append(statistics.median(loads))
             means.append(statistics.mean(loads))
             maxs.append(max(loads))
             devs.append(statistics.pstdev(loads))
-        return medians, means, maxs, devs
+        return loadsList, medians, means, maxs, devs
 
 class SimpleNode(object):
     def __init__(self, id, strength, homogeneity):

@@ -93,6 +93,15 @@ def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, chur
     #TODO graphs of graphs with sybil injections
     #print(str(networkSize) + "\t" + str(jobSize) + "\t" + str(churn) + "\t" + str(ticks))
 
+def testChurnSteps():
+    s =  Simulator()
+    s.setupSimulation(strategy = 'churn', workMeasurement="one", numNodes=1000, numTask=100000, churnRate=0.001)
+    loads, medians, means, maxs, devs = s.simulateLoad()
+    print(medians)
+    print(devs)
+    
+    
+    
 
 def collectStartingMedians():
     global seed
@@ -106,6 +115,7 @@ def collectStartingMedians():
             medians.write(str(median) + "\n")        
         print(median)
         seed +=1
+
 
 def runMedianData():
     numExperiments = 0
@@ -238,8 +248,6 @@ if __name__ == '__main__':
     #print("Nodes \t\t Tasks \t\t Churn \t\t Time  \t\t Compare  \t\t medianStart \t\t avgWork \t\t mostWork")
 
     startTime = time.time()
-    
-    collectStartingMedians()
     
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
