@@ -167,7 +167,6 @@ The base greedy algorithm is always the same regardless of the implementation.
 With the components of a DHT defined above, we can now show the relationship between DHTs and the primal-dual problems of Delaunay Triangulation and Voronoi Tessellation.
 An example Delaunay Triangulation and Voronoi Tessellation is show in Figure \ref{fig:voro-ex}.
 
-%TODO A one-dimensional voronoi fig as example
 We can map a given node's ID to a point in a space and the set of short peers to the Delaunay Triangulation.
 This would make the range of keys a node is responsible correspond to the node's Voronoi region.
 Long peers serve as shortcuts across the mesh formed by Delaunay Triangulation.
@@ -673,7 +672,6 @@ These present challenges not seen with UrDHT.
 
 The T-Man\cite{jelasity2005t} and Vicinity \cite{voulgaris2005epidemic} protocols both present gossip-based methods for organizing overlay networks.
 The idea behind T-Man is similar to UrDHT, but again it focuses on overlays in general, while UrDHT applies specifically to DHTs.
-% T-man boasts the topology can change at run-time as the needs demand. 
 The ranking function is similar to the metrics used by UrDHT using DGVH, but DGVH guarantees full connectivity in all cases and is based on the inherent relationship between Voronoi Tessellations, Delaunay Triangulations, and DHTs.
 
 UrDHT uses a gossiping protocol similar to the ones presented by T-Man and Vicinity due to they gossip protocol's ability to rapidly adjust changes in the topology.
@@ -713,4 +711,11 @@ Nodes would respond to changes in latency and the network by rejoining the netwo
 This approach would maintain the decentralized strengths of DHTs, while reducing overall delay and communication costs.
 
 
-\section{Remarks}
+
+%
+%\section{Remarks}
+%
+%UrDHT was a software implementation of many ideas we had when working on distributed hash tables.
+%DGVH was implemented as part of UrDHT
+%
+%Unlike many DHTs, which leave fault tolerance as a problem for the implementations, UrDHT treats fault tolerance as an indispensable feature and it is crucial to specify exactly how it should work. 

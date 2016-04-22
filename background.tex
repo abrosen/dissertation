@@ -7,6 +7,11 @@ This will provide context for our completed and future work.
 DHTs have been a vibrant area of research for the past decade, with several of the concepts dating further back \cite{bittorrent} \cite{kademlia}  \cite{can} \cite{ratnasamy2002ght} \cite{prr} \cite{chord} \cite{pastry}.
 Numerous DHTs have been developed over the years and each of the major topologies have had multiple implementation and derivatives.
 This is partly because the process of designing DHTs involves making trade-offs in maintenance schemes, topology, and memory, with no choice being strictly better than any other.
+
+In practice, only two DHTs see heavy use.
+Chord \cite{chord} is heavily favored in academia, due to it's simplicity and being once of the earlier DHTs implemented.\footnote{We personally believe the ability to easily draw or visualize Chord ring is a significant factor in its popularity, but we have no means of testing this easily.}
+Kademlia \cite{kademlia} is used for most real-world applications, most significantly BitTorrent \cite{bittorrent}.
+
 %\section{What is a Distributed Hash Table?}
 
 
@@ -143,8 +148,8 @@ It is notable due its straightforward routing, its rules which make ownership of
 
 
 % Should I put this in?
-Chord is extremely well known in Computer Science, and was awarded the prestigious 2011 SIGCOMM Test of Time Award \cite{zave2012using}.
-However, recent research has demonstrated that there have been no correct implementations of Chord in over a decade \cite{zave2012using}.
+Chord is extremely well known in Computer Science, and was awarded the prestigious 2011 SIGCOMM Test of Time Award.
+However, recent research has demonstrated that there have been no correct implementations of Chord in over a decade, and many of  the properties  Chord claimed to be invariants could break under certain trivial conditions \cite{zave2012using}.
 
 
 
