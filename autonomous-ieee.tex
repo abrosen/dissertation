@@ -307,7 +307,21 @@ In invitation, churn losses can be greatly detrimental.
 
 \subsection{Churn}
 
-Our results showed that churn has an impact on the network's computation, and this effect is more pronounced with higher rates of churn.
+Our results showed that churn has a profound and significant impact on the network's computation, and this effect is more pronounced with higher rates of churn .
+
+
+Figure \ref{fig:churnVsTime} plots the runtime of the distributed computation against the level of churn in the network.
+This DHT contained 1000 nodes and 100000 tasks.
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{figs/churnVsTime}
+\caption{This graph shows the effect churn has on runtime in a distributed computation.
+Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
+Neither the homogeneity of the network nor work measurement affected the runtime.}
+\label{fig:churnVsTime}
+\end{figure}
+
 
 \subsection{Random Injection}
 
