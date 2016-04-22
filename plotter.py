@@ -50,9 +50,9 @@ def drawAverageChurn(filename):
     for result in results:
         print(result["times"][0])
         plt.plot(result["rates"], result["times"], "o")
-    plt.show()    
+        plt.show()    
 
-def drawRandomInjectionChurn(filename):
+def drawRandomInjection(filename):
     data =  open("data/done/"+filename+".txt")
     results = []
     current = {}
@@ -72,7 +72,7 @@ def drawRandomInjectionChurn(filename):
         current["times"].append(slownessFactor)
     for result in results:
         print(result["times"][0])
-        plt.plot(result["rates"], result["times"], "-")
+        plt.plot(result["rates"], result["times"], "o")
     plt.show()    
 
 def testInjectionSteps():
@@ -114,9 +114,9 @@ def plotLoads():
     s = Simulator()
     seed = 500
     loads = []
-    for _ in range(2):
+    for _ in range(20):
         random.seed(seed)
-        s.setupSimulation(numNodes=100,numTasks=100000)
+        s.setupSimulation(numNodes=1000,numTasks=1000000)
         loads = loads + [len(x.tasks) for x in s.nodes.values()]
         seed += 1
     n, bins, patches = plt.hist(loads, 150, normed =1 )
@@ -125,5 +125,8 @@ def plotLoads():
     plt.axvline(statistics.median_low(loads), color='r', linestyle='--')
     plt.show()
 
-compareChurnInjection()
-#drawAverageChurn("averagesChurn1k1m")
+
+plotLoads()
+#compareChurnInjection()
+#drawAverageChurn("averagesChurnDataPoints")
+#drawRandomInjection("averagesRandomInject1k1m")

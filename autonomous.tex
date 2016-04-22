@@ -14,7 +14,7 @@ However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cry
 
 \begin{table}
 	\centering
-	\caption{The median distribution of tasks among nodes.  We can see the standard deviation is a particularly useless measurement in this scenario.}
+	\caption{The median distribution of tasks (or files) among nodes.  We can see the standard deviation is fairly close to the expected mean workload ($\frac{tasks}{nodes}$).}
 	\begin{tabular}{r r r r}
 		Nodes & Tasks & Median Workload & $\sigma$ \\ \hline
 		1000 & 100000 & 69.410   &  137.27  \\
@@ -33,6 +33,14 @@ However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cry
 \end{table}
 
 
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{figs/workloadDistribution}
+\caption[foo]{The probability distribution of workload in a DHT with 1000 nodes and 1,000,000 tasks or files.  The vertical dashed line designates the median.}
+\label{fig:workloadDistribution}
+\end{figure}
 
 
 In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
@@ -154,7 +162,7 @@ We present each of them below.
 \end{description}
 
 We also considered using a variable noted as the \texttt{AdaptationRate}, which was the interval at which nodes decided whether or not to create a Sybil.
-Preliminary experiments  showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
+Preliminary experiments demonstrated \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
 
 \subsubsection{Outputs}
 
