@@ -411,14 +411,14 @@ class Simulator(object):
         means = []
         maxs = []
         devs = []
-        for time in range(1,51):
-            self.doTick()
+        for _ in range(1,51):
             loads = [len(x.tasks) for x in self.nodes.values()]
             loadsList.append(loads)
             medians.append(statistics.median(loads))
             means.append(statistics.mean(loads))
             maxs.append(max(loads))
             devs.append(statistics.pstdev(loads))
+            self.doTick()
         return loadsList, medians, means, maxs, devs
 
 class SimpleNode(object):

@@ -79,14 +79,36 @@ def testInjectionSteps():
     s =  Simulator()
     s.setupSimulation(strategy = 'randomInjections',workMeasurement="one", numNodes=1000, numTasks=100000)
     loads, medians, means, maxs, devs = s.simulateLoad()
-    for i in range(0,len(loads),5):
+    for i in range(0,len(loads), 5):
         x = loads[i]
-        plt.hist(x, 150, normed =1 )
+        plt.hist(x, 100, normed =1 )
         plt.xlabel('Tasks Per Node')
         plt.ylabel('Probability')
         plt.axvline(medians[i], color='r', linestyle='--')
         plt.axvline(means[i], color='k', linestyle='--')
+        #plt.ylim(0, 0.05)
         plt.show()
+
+
+def compareChurnInjection():
+    s =  Simulator()
+    random.seed(125)
+    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0.01)
+    loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
+    random.seed(125)
+    s=Simulator()
+    s.setupSimulation(strategy = 'randomInjections',workMeasurement="one", numNodes=1000, numTasks=100000, churnRate=0)    
+    loads2 = s.simulateLoad()[0]
+    for i in range(0,len(loads1), 5):
+        x1= loads1[i]
+        x2 =loads2[i]
+        colors = ["blue", "red"]
+        plt.hist([x1,x2], 100, normed =1, color=colors )
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Probability')
+        #plt.ylim(0, 0.05)
+        plt.show()
+
 
 def plotLoads():
     s = Simulator()
@@ -103,5 +125,5 @@ def plotLoads():
     plt.axvline(statistics.median_low(loads), color='r', linestyle='--')
     plt.show()
 
-testInjectionSteps()
+compareChurnInjection()
 #drawAverageChurn("averagesChurn1k1m")
