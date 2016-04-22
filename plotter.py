@@ -94,7 +94,7 @@ def plotLoads():
     loads = []
     for _ in range(2):
         random.seed(seed)
-        s.setupSimulation(numNodes=1000,numTasks=100000)
+        s.setupSimulation(numNodes=100,numTasks=100000)
         loads = loads + [len(x.tasks) for x in s.nodes.values()]
         seed += 1
     n, bins, patches = plt.hist(loads, 150, normed =1 )
