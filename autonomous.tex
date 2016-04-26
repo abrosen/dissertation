@@ -66,19 +66,26 @@ We hypothesized that the churn was effectively load-balancing the network.
 \subsection{Objectives}
 This paper serves to prove our hypothesis that churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
-We present three strategies that nodes can use to redistribute the workload in the network.
-None of these require a centralized organizer.
+
+We present three additional strategies that nodes can use to redistribute the workload in the network.
+Each of these three strategies relies on nodes creating virtual nodes, and so that they are represented multiple times in the network.
+The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.
+
+This tactic is the same one used in the Sybil \cite{sybil} attack, but limited in scope and performed for altruistic and beneficent reasons, rather than malicious ones.
+Consequently, we'll call our virtual nodes in this scenario Sybils for clarity and brevity.
+None of the strategies require a centralized organizer, merely a way for a node to check the amount of files or tasks it and its Sybils are responsible for.
+
 
 We also want to show how distributed computing can be performed in a heterogeneous environment.
-
+We want to see if our strategies result in similar speedups in both homogeneous and heterogeneous environments.
 %\subsection{Summary}
 
-\section{Previous Work}
-
-
-ChordReduce \cite{chordreduce} is designed as a more abstract framework for MapReduce, able to run on any arbitrary distributed configuration.
-ChordReduce leverages the features of distributed hash tables to handle distributed file storage, fault tolerance, and lookup.
-We designed ChordReduce to ensure that no single node is a point of failure and that there is no need for any node to coordinate the efforts of other nodes during processing.
+%\section{Previous Work}
+%
+%
+%ChordReduce \cite{chordreduce} is designed as a more abstract framework for MapReduce, able to run on any arbitrary distributed configuration.
+%ChordReduce leverages the features of distributed hash tables to handle distributed file storage, fault tolerance, and lookup.
+%We designed ChordReduce to ensure that no single node is a point of failure and that there is no need for any node to coordinate the efforts of other nodes during processing.
 
 \section{How Work Is Distributed in DHTs: A Visual Guide}
 %In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
@@ -128,22 +135,23 @@ We assume that the network starts our experiments stable and the data necessary 
 The following analysis and simulation relies on an important assumption about DHT behavior often assumed but not necessarily implemented.
 
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
-Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
+%Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
 We have demonstrated the effectiveness and viability of implementing an active backup strategy in other work \cite{chordreduce} \cite{urdht}.
 
 
 Another assumption is that nodes do not have control in choosing their IDs from the range of hash values.
+This means that if nodes want to want to 
 
 
-Smaller chunking results in more files spread throughout the  network and a greater chance of the data being evenly spread across the network 
+Smaller chunking results in more files spread throughout the network and a greater chance of the data being evenly spread across the network 
 
-The chances of a critical failure happening within a time interval $ T $ is the chances of some chain or cluster of nodes responsible for a single record dying within $ T $:
-
-$$r^{s}$$
-
-Where $ r $ is the failure rate over that time interval and $s$ is the number nodes storing that record, either as a primary system, or a backup.
-Incidentally, this time interval $T = T_{detect} + T_{transfer} $
-
+%The chances of a critical failure happening within a time interval $ T $ is the chances of some chain or cluster of nodes responsible for a single record dying within $ T $:
+%
+%$$r^{s}$$
+%
+%Where $ r $ is the failure rate over that time interval and $s$ is the number nodes storing that record, either as a primary system, or a backup.
+%Incidentally, this time interval $T = T_{detect} + T_{transfer} $
+%
 
 
 \subsection{The Parameters}
