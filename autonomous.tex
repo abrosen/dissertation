@@ -7,44 +7,30 @@
 %http://michiel.buddingh.eu/distribution-of-hash-values
 
 \section{Introduction}
-Distributed Hash Tables rely on cryptographic hash functions to generate identifiers for both nodes and data.
+
+%\subsection{2-4 sentences telling people what you will talk about in the paper}
+
+%\subsection{What are DHTs}
+Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
+DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the incredibly popular BitTorrent \cite{bittorrent}.
+DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing \cite{chordreduce}.
+
+Our previous research \cite{chordreduce} examined using a DHT as the organizing mechanism for a distributed platform.
+This enabled us to create an exceptionally fault tolerant distributed computing platform that was easy to setup and could be run in a completely decentralized P2P environment.
+
+% Copy into disseration start here
+%\subsection{What is the significance of the hash function }
+One of key components of a Distributed Hash Table is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
+Distributed Hash Tables rely on this cryptographic hash function to generate identifiers for data stored on the network.
+The cryptographic hash of the filename or other identifier for the data is used as the location of the file or data in the network.
+It can also be used to generate the identifiers for nodes in the network.
+
 Ideally, inputing random numbers into a cryptographic hash function should produce a uniformly distributed output.
 However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
 
-
-\begin{table}
-	\centering
-	\caption{The median distribution of tasks (or files) among nodes.  We can see the standard deviation is fairly close to the expected mean workload ($\frac{tasks}{nodes}$).}
-	\begin{tabular}{r r r r}
-		Nodes & Tasks & Median Workload & $\sigma$ \\ \hline
-		1000 & 100000 & 69.410   &  137.27  \\
-		1000 & 500000 & 346.570  &  499.169 \\
-		1000 &1000000 & 692.300  &  996.982 \\
-		
-		5000 & 100000  & 13.810 & 20.477 \\ 
-		5000 & 500000  & 69.280 & 100.344 \\ 
-		5000 & 1000000 &138.360 & 200.564 \\ 
-		
-		10000 & 100000 & 7.000   &  10.492 \\
-		10000 & 500000 & 34.550  &   50.366 \\
-		10000 & 1000000& 69.180  &  100.319 \\
-	\end{tabular}
-	\label{tab:medianLoads}
-\end{table}
-
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.7\linewidth]{figs/workloadDistribution}
-\caption[foo]{The probability distribution of workload in a DHT with 1000 nodes and 1,000,000 tasks or files.  The vertical dashed line designates the median.}
-\label{fig:workloadDistribution}
-\end{figure}
-
-
 In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
 Some nodes will end up with a lion's share of the keys, while other will have few responsibilities (Table \ref{tab:medianLoads}).
+
 
 This makes it especially disheartening to try and ensure as even a load as possible.
 We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objects behind creating a fully decentralized and distributed system.
@@ -80,9 +66,12 @@ We hypothesized that the churn was effectively load-balancing the network.
 \subsection{Objectives}
 This paper serves to prove our hypothesis that churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
-We present 3 strategies nodes can use to redistribute the workload in the network that do no require a centralized organizer.
+We present three strategies that nodes can use to redistribute the workload in the network.
+None of these require a centralized organizer.
 
 We also want to show how distributed computing can be performed in a heterogeneous environment.
+
+%\subsection{Summary}
 
 \section{Previous Work}
 
@@ -92,7 +81,43 @@ ChordReduce leverages the features of distributed hash tables to handle distribu
 We designed ChordReduce to ensure that no single node is a point of failure and that there is no need for any node to coordinate the efforts of other nodes during processing.
 
 \section{How Work Is Distributed in DHTs: A Visual Guide}
-In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
+%In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
+
+As we have previously mentioned, many DHTs use a cryptographic hash function to choose keys for nodes and data.
+However, no cryptographic hash function can uniformly distribute it's outputs across its range. 
+
+\begin{table}
+	\centering
+	\caption{The median distribution of tasks (or files) among nodes.  We can see the standard deviation is fairly close to the expected mean workload ($\frac{tasks}{nodes}$). Each row is the average of 100 trials.}
+	\begin{tabular}{r r r r}
+		Nodes & Tasks & Median Workload & $\sigma$ \\ \hline
+		1000 & 100000 & 69.410   &  137.27  \\
+		1000 & 500000 & 346.570  &  499.169 \\
+		1000 &1000000 & 692.300  &  996.982 \\
+		
+		5000 & 100000  & 13.810 & 20.477 \\ 
+		5000 & 500000  & 69.280 & 100.344 \\ 
+		5000 & 1000000 &138.360 & 200.564 \\ 
+		
+		10000 & 100000 & 7.000   &  10.492 \\
+		10000 & 500000 & 34.550  &   50.366 \\
+		10000 & 1000000& 69.180  &  100.319 \\
+	\end{tabular}
+	\label{tab:medianLoads}
+\end{table}
+
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figs/workloadDistribution}
+	\caption[foo]{The probability distribution of workload in a DHT with 1000 nodes and 1,000,000 tasks or files.  The vertical dashed line designates the median.  Keys were generated by feeding random numbers into the SHA1 hash function \cite{sha1}, a favorite for many distributed hash tables.}
+	\label{fig:workloadDistribution}
+\end{figure}
+
+
+
 
 \section{Simulation}
 
@@ -126,18 +151,18 @@ We present each of them below.
 
 \subsubsection{Constants and Terminology}
 
-\begin{description}
+\begin{enumerate}
 	\item [Tick] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
-	We consider the tick the amount of time it takes a node to complete one task per sybil and perform the appropriate maintanence.\footnote{If we need to be more concrete, define a tick as a New York Second ``defined as the period of time between the traffic lights turning green and the cab behind you honking.''\\-- Terry Pratchett}
+	We consider the tick the amount of time it takes a node to complete one task per Sybil and perform the appropriate maintenance.\footnote{If we need to be more concrete, define a tick as a New York Second ``defined as the period of time between the traffic lights turning green and the cab behind you honking.''\\-- Terry Pratchett}
 	\item [Maintenance] We assume nodes use the active, aggressive strategy from ChordReduce and  UrDHT \cite{chordreduce} \cite{urdht}.
 	Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately . 
 	We assume that a tick
-	\item [Task] A distributed computing job is defined in tasks.
+	\item[Task] A distributed computing job is defined in tasks.
 	Each task has a key that corresponds to the key of a file or chunk of a file stored on the network.
 	We assume that it takes a tick for a node to consume a task.
 	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.  
 	Keys for  will be drawn randomly from this hash function.
-\end{description}
+\end{enumerate}
 
 \subsubsection{Experimental Variables}
 \begin{description}
@@ -149,20 +174,20 @@ We present each of them below.
 	\item [Work Measurement] This variable dictates how much work is consumed in a tick.
 	Nodes each consume a single task per a tick or their strength's worth of tasks per a tick.
 	\item [Network Size]  How many nodes start in the network.  
-		We assume that this can grow during the experiment, either via churn or by creating Sybils.
+	We assume that this can grow during the experiment, either via churn or by creating Sybils.
 	\item [Number of Tasks] We measure the size of of a job in tasks.
-		This number is typically a few orders of magnitude greater than the network size.
+	This number is typically a few orders of magnitude greater than the network size.
 	\item [Churn Rate] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
-		Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
+	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
 	\item [Max Sybils] \texttt{maxSybils} is the maximum number of Sybils a node can create.
 	\item [Sybil Threshold] The \texttt{sybilThreshold} calculates the amount of tasks a node must have before it can create a Sybil.
 	\item [Successors] The number of successors each node keeps track of.  
 	Nodes also keep track of the same number of predecessors.
-		
+	
 \end{description}
 
 We also considered using a variable noted as the \texttt{AdaptationRate}, which was the interval at which nodes decided whether or not to create a Sybil.
-Preliminary experiments demonstrated \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
+Preliminary experiments  showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
 
 \subsubsection{Outputs}
 
@@ -222,12 +247,12 @@ As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisi
 Nodes with \texttt{sybilThreshold} or less tasks attempt to acquire more work by placing a Sybil among it's successors.
 Specifically, it looks for the biggest range among it's successors and creates a Sybil in that range.
 
-This range finding and injection strategy assumes that the node with the largest range of responsibility has.
-The nodes estimate the number of tasks based on the range instead of querying the nodes as that can be done without any communication with the successor nodes.
+This range strategy of finding the largest range and injecting assumes that the node with the largest range of responsibility will have been allocated the most work.
+This is a sensible assumption since the larger the range of a node's responsibility, the more \textit{potential} tasks it can receive. 
+We compare this estimation strategy to actually querying the neighbor and asking how many tasks they have.
+An estimation, if accurate, would be preferable to querying the nodes as an estimation can be done without any communication with the successor nodes.
 
 To avoid constant spamming of a range, once a node creates a Sybil, but does not acquire work, it may be advisable to mark that range as invalid for Sybil nodes so nodes don't keep trying the same range repeatedly. 
-
-We might want to look at changing this strategy to choosing a random id in the neighbor range.
 
 
 \subsection{Invitation}
@@ -242,3 +267,29 @@ In invitation, churn losses can be greatly detrimental.
 \section{Results Of Experiments}
 \label{sec:autonomous-results}
 
+
+
+\subsection{Churn}
+
+
+Our results confirmed our hypothesis from ChordReduce \cite{chordreduce}.
+Churn has a profound and significant impact on the network's computation, and this effect is more pronounced with higher rates of churn.
+Figure \ref{fig:churnVsTime} plots the runtime of the distributed computation against the level of churn in the network.
+This DHT contained 1000 nodes and 100000 tasks.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{figs/churnVsTime}
+	\caption{This graph shows the effect churn has on runtime in a distributed computation.
+		Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
+		Neither the homogeneity of the network nor work measurement affected the runtime.}
+	\label{fig:churnVsTime}
+\end{figure}
+
+
+We note the significantly diminishing returns that occur after a churn rate of 0.01.
+One facet not captured by our simulations, but would have a significant effect after 
+
+\subsection{Random Injection}
+
+The strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
