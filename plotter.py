@@ -37,6 +37,7 @@ def drawAverageChurn(filename):
     for line in data:
         line = line.split() 
         churnRate =  float(line[5])
+        work =  float(line[-2])
         slownessFactor =  float(line[13])
         if churnRate == 0:
             current = {}
@@ -44,9 +45,11 @@ def drawAverageChurn(filename):
             current["workMeasurement"] = line[2]
             current["rates"] = []
             current["times"] = []
+            current["work"] =  []
             results.append(current)
         current["rates"].append(churnRate)
         current["times"].append(slownessFactor)
+        current["work"].append(work)
     for result in results:
         print(result["times"][0])
         plt.plot(result["rates"], result["times"], "o-")
@@ -55,6 +58,13 @@ def drawAverageChurn(filename):
         plt.ylim(1,8)
         plt.xlim(0,0.1)  
         plt.show()    
+        
+        plt.plot(result["rates"], result["work"], "o-")
+        plt.xlabel("Churn Per Tick")
+        plt.ylabel("Avg Work Per Tick")
+        plt.xlim(0,0.1)  
+        plt.show()
+
 
 def drawRandomInjection(filename):
     data =  open("data/done/"+filename+".txt")
@@ -113,6 +123,16 @@ def compareChurnInjection():
         #plt.ylim(0, 0.05)
         plt.show()
 
+def printTimeDiffs(fileA,fileB):
+    naiveData = open("data/done/"+fileA+".txt")
+    smartData = open("data/done/"+fileB+".txt") 
+    diffs = []
+    for line1, line2 in zip(naiveData, smartData):
+        a = float(line1.split()[13])
+        b = float(line2.split()[13])
+        print(a,b,a-b)
+        diffs.append(a-b)
+    print(sum(diffs)/len(diffs))
 
 def plotLoads():
     s = Simulator()
@@ -134,3 +154,4 @@ def plotLoads():
 #compareChurnInjection()
 drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
+#printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
