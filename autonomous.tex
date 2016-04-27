@@ -172,7 +172,7 @@ We present each of them below.
 
 \subsubsection{Constants and Terminology}
 
-First, we'll define informally define the vocabulary we use to discuss our simulations,
+First, we'll define informally define the vocabulary we use to discuss our simulations.
 
 \begin{description}
 	\item [Tick] In a simulation, normal measurements of time such as a second are completely arbitrary.  
@@ -204,19 +204,23 @@ While we believed the overall strategy would result in largest differences in ru
 	Each node can either consume a single task per a tick or their strength's worth of tasks per a tick.
 	\item [Network Size]  How many nodes start in the network.  
 	We assume that this can grow during the experiment, either via churn or by creating Sybils.
+	We discuss how this works in Sections \ref{sec:strat-churn} and \ref{sec:strat-randomInject}.
 	\item [Number of Tasks] We measure the size of of a job in tasks.
 	This number is typically a few orders of magnitude greater than the network size.
-	\item [Churn Rate] Measured in ticks, this can be self induced or a result of actual turbulence in the network.
+	\item [Churn Rate] The churn rate is a float between 0 and 1.
+	This represents both the chance each individual node has of leaving (or joining) the network each tick.
+	It also corresponded to the fraction of nodes we expect to leave the network each tick.
+	Churn can be self induced or a result of actual turbulence in the network.
 	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
-	\item [Max Sybils] \texttt{maxSybils} is the maximum number of Sybils a node can create.
-	\item [Sybil Threshold] The \texttt{sybilThreshold} calculates the amount of tasks a node must have before it can create a Sybil.
+	\item [Max Sybils] \texttt{maxSybils} is the maximum number of Sybils a node can have at once.
+	\item [Sybil Threshold] The \texttt{sybilThreshold} dictates the number of tasks a node must have before it can create a Sybil.
 	\item [Successors] The number of successors each node keeps track of.  
 	Nodes also keep track of the same number of predecessors.
 	
 \end{description}
 
 We also considered using a variable noted as the \texttt{AdaptationRate}, which was the interval at which nodes decided whether or not to create a Sybil.
-Preliminary experiments  showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
+Preliminary experiments showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
 
 \subsubsection{Outputs}
 The most important output was the number of ticks it took for the experiment to complete.
@@ -241,11 +245,12 @@ We then look a three different strategies for in which nodes take a more tactica
 Specifically, nodes perform a limited and controlled Sybil attack \cite{sybil} on their own network in an effort to acquire work with their virtual nodes.
 Our strategies dictate when and where these Sybil nodes are created.
 
-We discuss the effectiveness of each of the strategies in Section \ref{sec:autonomous-results} and present results .... .
+We discuss the effectiveness of each of the strategies and present the results of our simulations in Section \ref{sec:autonomous-results}.
 
 
 
 \subsection{Induced Churn}
+\label{sec:strat-churn}
 Our first strategy, \textit{Induced Churn}, relies solely on churn to perform load balancing.
 This churn can either be a product of normal network activity or self-induced.\footnote{All distributed systems experience churn, even if only as hardware failures.}
 By self-induced churn, we mean that each node generates a random floating point number between 0 and 1.
@@ -269,7 +274,8 @@ This strategy acts as a baseline with which to compare the other strategies, as 
 All strategies below are attempts to do better than random chance.
 However, this strategy also serves to confirm the speedup phenomenon we observed in our previous work on a distributed, decentralized MapReduce framework \cite{chordreduce},
 
-\subsection{Random Sybil Injection}
+\subsection{Random Injection}
+\label{sec:strat-randomInject}
 Our second strategy we dubbed \textit{Random Injection}.
 In this strategy, once a node's workload was at or below the \texttt{sybilThreshold}, the node would attempt to acquire more work by creating a Sybil node at a random address.
 
@@ -282,6 +288,7 @@ As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisi
 
 
 \subsection{Neighbor Injection}
+\label{sec:strat-neighbor}
 \textit{Neighbor Injection} also creates Sybils, but in this case, nodes act on a more restricted range in an attempt to limit the network traffic.
 Nodes with \texttt{sybilThreshold} or less tasks attempt to acquire more work by placing a Sybil among it's successors.
 Specifically, it looks for the biggest range among it's successors and creates a Sybil in that range.
