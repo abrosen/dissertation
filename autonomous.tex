@@ -272,19 +272,21 @@ Conversely, a node joining in this model can be a potential boon to the network 
 
 This strategy acts as a baseline with which to compare the other strategies, as it is no more than a overcomplicated way of turning machines off and on again. 
 All strategies below are attempts to do better than random chance.
-However, this strategy also serves to confirm the speedup phenomenon we observed in our previous work on a distributed, decentralized MapReduce framework \cite{chordreduce},
+However, this strategy also serves to confirm the speedup phenomenon we observed in our previous work on a distributed, decentralized MapReduce framework \cite{chordreduce}.
 
 \subsection{Random Injection}
 \label{sec:strat-randomInject}
 Our second strategy we dubbed \textit{Random Injection}.
 In this strategy, once a node's workload was at or below the \texttt{sybilThreshold}, the node would attempt to acquire more work by creating a Sybil node at a random address.
 
-A node checks its threshold and decides whether or not to make a Sybil every 5 ticks.
+A node compares its workload to the \texttt{sybilThreshold} and decides whether or not to make a Sybil.
+This check occurs every 5 ticks.
 A node cam also have multiple Sybils, up to \texttt{maxSybils} in a homogeneous network or the node's \texttt{strength} in a heterogeneous network.\footnote{No benefit was shown by increasing \texttt{maxSybils} beyond 10.}
 If a node has at least one Sybil, but no work, it has its Sybils quit the network.
-We have the decision to make a Sybil occur every 5 ticks and limit each node to creating a single Sybil a check to avoid overwhelming the network.
+We limit each node to creating a single Sybil during this decision to avoid overwhelming the network.
 
-As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisingly effective and comes close to ideal runtimes.
+%As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisingly effective and comes close to ideal runtimes.
+
 
 
 \subsection{Neighbor Injection}
@@ -302,18 +304,22 @@ To avoid constant spamming of a range, once a node creates a Sybil, but does not
 
 
 \subsection{Invitation}
-The \textit{Invitation }strategy is the reverse of the Sybil injection strategies.
+The \textit{Invitation} strategy is the reverse of the Sybil injection strategies.
 In  this strategy, nodes with a higher than desired level of work announces it needs help to its predecessors.
-The predecessor with least amount of tasks less than the \texttt{sybilThreshold} creates a Sybil to acquire work from the node(it is possible for a call for help to go unanswered).
-
+The predecessor with least amount of tasks less than or equal to the \texttt{sybilThreshold} creates a Sybil to acquire work from the node.
+It is possible for an invitation to get more work to be refused by anyone if no  predecessor is at the \texttt{sybilThreshold} or each predecessor has too many Sybils.
 Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold}.
 
-In invitation, churn losses can be greatly detrimental.
+
 
 \section{Results Of Experiments}
 \label{sec:autonomous-results}
 
+We now briefly summarize the results of our simulation before discussing each more in depth below.
+
+
 All the raw data can be found online \cite{simulation-data}.
+
 
 \subsection{Churn}
 
@@ -354,7 +360,7 @@ The strategy of having under-utilized nodes randomly create Sybil nodes works ph
 
 \subsection{Invitation}
 
-
+In invitation, churn losses can be greatly detrimental.
 
 \section{Future Work}
 
