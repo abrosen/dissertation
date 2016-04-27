@@ -131,15 +131,20 @@ However, no cryptographic hash function can uniformly distribute it's outputs ac
 
 %We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
 
+
+We will be simulating our strategies on a Chord distributed hash table \cite{chord}, although it is fairly straightforward to implement our strategies for other, more complex DHTs.
+Nodes in a Chord ring are given an ID, drawn from a cryptographic hash function, typically SHA1 \cite{sha1}.
+Any data in the network is given a key in a similar manner.
+Nodes are responsible for all the keys between their predecessor's ID and their own.
+
 We assume that the network starts our experiments stable and the data necessary already present on the nodes and backed-up.
 The following analysis and simulation relies on an important assumption about DHT behavior often assumed but not necessarily implemented.
-
 
 
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
 %Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
 We have demonstrated the effectiveness and viability of implementing an active backup strategy in other work \cite{chordreduce} \cite{urdht}.
-
+As previously mentioned, we also assume nodes have the ability to examine the amount of work they have and know how many tasks or pieces of data exist for a particular job.
 
 Another assumption is that nodes do not have control in choosing their IDs from the range of hash values.
 This means that nodes cannot automatically change their spacing to ensure they are all evenly spread out across the network.
@@ -167,28 +172,36 @@ We present each of them below.
 
 \subsubsection{Constants and Terminology}
 
+First, we'll define informally define the vocabulary we use to discuss our simulations,
+
 \begin{description}
-	\item [Tick] In a simulation, normal measurements of time such as a second are arbitrary, so we be using the abstract \textit{tick} to measure time.  
-	We consider the tick the amount of time it takes a node to complete one task per Sybil and perform the appropriate maintenance.\footnote{If we need to be more concrete, define a tick as a New York Second, which is ``the period of time between the traffic lights turning green and the cab behind you honking.''\\-- Terry Pratchett}
-	\item [Maintenance] We assume nodes use the active, aggressive strategy from ChordReduce and  UrDHT \cite{chordreduce} \cite{urdht}.
-	Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately . 
-	We assume that a tick
-	\item[Task] A distributed computing job is defined in tasks.
+	\item [Tick] In a simulation, normal measurements of time such as a second are completely arbitrary.  
+	We will be using an abstract \textit{tick} to measure time.  
+	We consider the tick the amount of time it takes a node to complete one task (or more depending on our variables, see below) and perform the appropriate maintenance to keep the network consistent and healthy.\footnote{If we need to be more concrete, define a tick as a New York Second, which is ``the period of time between the traffic lights turning green and the cab behind you honking.''\\-- Terry Pratchett}
+	\item [Maintenance] We assume nodes use the active, aggressive strategy from ChordReduce and UrDHT \cite{chordreduce} \cite{urdht}.
+	Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately. 
+	We assume that a tick is enough time to accomplish at least one maintenance cycle.
+	\item[Task] We measure the size of a distributed computing job in tasks.
 	Each task has a key that corresponds to the key of a file or chunk of a file stored on the network.
-	We assume that it takes a tick for a node to consume a task.
-	\item [Hash Functions] We will be using SHA-1 \cite{sha1}, a 160-bit hash function.  
-	Keys for  will be drawn randomly from this hash function.
+	We assume that it takes a tick for a node to consume at least one task.
+	\item [IDs and Keys] 
+	We will be using SHA-1 \cite{sha1}, a 160-bit hash function, to generate node IDs and keys for tasks.  
+	We assume each task's key corresponds to some piece of data with the same key, a scheme we used in  our previous work on ChordReduce \cite{chordreduce}.
 \end{description}
 
 \subsubsection{Experimental Variables}
+We tested a number of strategies and variables that could affect each strategy.
+While we believed the overall strategy would result in largest differences in runtime, we wanted to see what effects, if any, each of the variables would have on a particular strategy.
+
 \begin{description}
-	\item [Strategy] We use several different strategies (discussed in Section \ref{sec:strategies})  for balancing the load  of tasks among the nodes.
-	None of the strategies require centralized data.
+	\item [Strategy] We use several different strategies, each discussed in Section \ref{sec:strategies}: churn, random injection, neighbor injection, and invitation.
+	Each of these strategies differs in how nodes attempt  to autonomous balance the workload of the network.
+	None of the strategies require centralized organization.
 	\item [Homogeneity]  This variable controls whether the network is homogeneous or not.
 	In a homogeneous network, each node has the same strength, which dictates how much work is consumed per a tick and how many Sybils it can create.
 	In a heterogeneous network, each node has a strength chosen uniformly at random from 1 to \texttt{maxSybils}.
 	\item [Work Measurement] This variable dictates how much work is consumed in a tick.
-	Nodes each consume a single task per a tick or their strength's worth of tasks per a tick.
+	Each node can either consume a single task per a tick or their strength's worth of tasks per a tick.
 	\item [Network Size]  How many nodes start in the network.  
 	We assume that this can grow during the experiment, either via churn or by creating Sybils.
 	\item [Number of Tasks] We measure the size of of a job in tasks.
@@ -236,12 +249,12 @@ We discuss the effectiveness of each of the strategies in Section \ref{sec:auton
 Our first strategy, \textit{Induced Churn}, relies solely on churn to perform load balancing.
 This churn can either be a product of normal network activity or self-induced.\footnote{All distributed systems experience churn, even if only as hardware failures.}
 By self-induced churn, we mean that each node generates a random floating point number between 0 and 1.
-If the number is $\leq churnRate$, the node shuts down and leaves the network.
+If the number is $\leq churnRate$, the node shuts down and leaves the network and gets added to the pool of nodes waiting to join.
 
-Similarly, we have a pool of waiting nodes the same size as the network.
-When they generate an appropriate random number, they join the network.
+Similarly, we have a pool of waiting nodes that begins the same initial size as the network.
+When they generate an appropriate random number, they join the network and leave the waiting pool.
 We assume that nodes enter and leave the network at the same rate.
-
+Because the initial size of the network and the pool of waiting nodes is the same and nodes move between one another at the same random rate, the size of either does not fluctuate wildly.
 
 As we have previously discussed, nodes in our network model actively back up their data and tasks to the a number of successors in case of failure.
 In addition, when a node joins, it acquires all the work it is responsible for.
@@ -253,7 +266,8 @@ This is because a node's successor will quickly detect the loss of the node and 
 Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquiring work.
 
 This strategy acts as a baseline with which to compare the other strategies, as it is no more than a overcomplicated way of turning machines off and on again. 
-
+All strategies below are attempts to do better than random chance.
+However, this strategy also serves to confirm the speedup phenomenon we observed in our previous work on a distributed, decentralized MapReduce framework \cite{chordreduce},
 
 \subsection{Random Sybil Injection}
 Our second strategy we dubbed \textit{Random Injection}.
