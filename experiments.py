@@ -151,7 +151,8 @@ def runChurnLimitedSize(numNodes = 1000 , numtasks =100000):
     numExperiments = 0
     for homogeneity in variables.homogeneity:
         for workMeasurement in variables.workPerTick:
-            for churn in [0, 0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005,  0.01, 0.025, 0.05, 0.075, 0.1]: # variables.churnRates
+            #[0, 0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005,  0.01, 0.025, 0.05, 0.075, 0.1]: # 
+            for churn in variables.churnRates:
                 adaptationRates = [-1]
                 sybilThresholds = [-1]
                 maxSybils = [1]
