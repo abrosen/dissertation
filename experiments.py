@@ -251,7 +251,7 @@ if __name__ == '__main__':
     startTime = time.time()
     
     #runNeighborLimitedSize(1000, 1000000)
-    runChurnLimitedSize(100, 10000)
+    runChurnLimitedSize(10, 1000)
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
     
