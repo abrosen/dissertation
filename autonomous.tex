@@ -364,13 +364,29 @@ Network runtime is affected by scaling.
 \subsection{Random Injection}
 
 The strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
+%specifics
 
-Ratios seem to have similar runtimes.
+
+Ratios seem to have similar runtimes, but smaller networks run slightly faster.
 smaller network faster
 0.086 1h100k 1k1m 
-0.
+0.28 1h10k 
 
-Churn had no positive impact on the runtime factor and at higher levels could begin having an extremely minor impact when churn is at 0.01 per tick, increasing the aaverage runtime factor by approximately 0.06 
+
+However, the larger ratio networks handled heterogeniety much better, with the worst heterogenous run time being 1.955, compared to 4.052 on  the smaller ratio networks
+
+
+Sybil Threshold had an effect in homogeneous networks but no effect in heterogeneous networks.
+In our 1k100k and 1h1k experiment, a homogenous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
+The effect was more pronounced when networks could complete a number of tasks equal to their strength each tick, reducing the runtime factor by at least 0.2.
+
+
+However, we saw no corresponding speedup in the 1k1m and 1h100k networks.
+We also found the \texttt{sybilThreshold} had no discernible effect on the runtime of heterogeneous networks.
+This suggests the effect of a particular \texttt{sybilThreshold} is tied to the ratio of nodes to tasks and that the larger the ratio, the less room there is to improve.
+
+
+Churn had no positive impact on the runtime factor and at higher levels could begin having an extremely minor impact when churn is at 0.01 per tick, increasing the average runtime factor by approximately 0.06 
 \subsection{Neighbor Injection}
 
 
