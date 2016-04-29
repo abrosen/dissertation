@@ -130,9 +130,9 @@ def printTimeDiffs(fileA,fileB):
     for line1, line2 in zip(naiveData, smartData):
         a = float(line1.split()[13])
         b = float(line2.split()[13])
-        print(a,b,a-b)
+        #print(a,b,a-b)
         diffs.append(a-b)
-    print(sum(diffs)/len(diffs))
+    print("A is this much slower than B:\t" + str(sum(diffs)/len(diffs)))
 
 def plotLoads():
     s = Simulator()
@@ -152,6 +152,8 @@ def plotLoads():
 
 #plotLoads()
 #compareChurnInjection()
-drawAverageChurn("averagesChurnDataPoints")
+#drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
-#printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
+printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
+printTimeDiffs("averagesChurn1k1m", "averagesChurn1h1m")
+printTimeDiffs("averagesChurn1k1m", "averagesChurn1k100k")
