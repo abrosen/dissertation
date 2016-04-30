@@ -121,7 +121,7 @@ def compareChurnInjection():
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
         plt.legend(loc=0)
-        plt.title('Churn vs Random Injection at tick ' + str(i))
+        plt.title('Churn vs Random Injection at Tick ' + str(i))
 
         plt.xlabel('Tasks Per Node')
         plt.ylabel('Probability')
@@ -145,7 +145,7 @@ def compareChurnStable():
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
         plt.legend(loc=0)
-        plt.title('Churn vs No Strategy at tick ' + str(i))
+        plt.title('Churn vs No Strategy at Tick ' + str(i))
         
         plt.xlabel('Tasks Per Node')
         plt.ylabel('Probability')
@@ -169,7 +169,7 @@ def compareInjectionStable():
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
         plt.legend(loc=0)
-        plt.title('RandomInjection vs No Strategy at tick ' + str(i))
+        plt.title('RandomInjection vs No Strategy at Tick ' + str(i))
         
         
         plt.xlabel('Tasks Per Node')
@@ -206,8 +206,8 @@ def plotLoads():
 
 #drawGraph(10, 100)
 #plotLoads()
-compareChurnInjection()
-#compareChurnStable()
+#compareChurnInjection()
+compareChurnStable()
 #compareInjectionStable()
 #drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")

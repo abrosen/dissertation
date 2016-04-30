@@ -331,6 +331,9 @@ We now briefly summarize the results of our simulation before discussing each mo
 First, we confirmed that churn, even at low levels, can speed up the execution of a distributed computation by dynamically load balancing the network.
 However, our best strategy was random injection, which managed to have a runtime factor which approached close to 1.
 
+All examples are compared against against a baseline network of the same size and initial configuration of nodes. 
+The only difference is that the baseline never uses a strategy or experiences any churn.
+
 All the raw data can be found online \cite{simulation-data}.
 Files are sorted by the strategy used, the network size,  and number of tasks and include the both the results of each individual run and the averages of each 100 trials for a particular set of variables.
 Each trial is linked with a seed for the pseudorandom number generator and can be fully reproduced.
@@ -338,11 +341,34 @@ Each trial is linked with a seed for the pseudorandom number generator and can b
 
 \subsection{Churn}
 
-
 Our results confirmed our hypothesis from ChordReduce \cite{chordreduce}.
 Churn has a profound and significant impact on the network's computation, and this effect is more pronounced with higher rates of churn.
-We show this in Figure \ref{fig:churnVsTime}, which plots the runtime of the distributed computation against the level of churn in the network.
-This particular network contained 1000 nodes and 100000 tasks.
+Our results in Table \ref{tab:ChurnRuntimesHomogenious} show the effects of churn in networks of varying sizes and loads on the runtime factor.
+
+
+
+\begin{table}[h]
+	
+	\centering
+	\caption[Churn Runtimes in a homogenious network]{Average runtime factor of networks of varying sizes and number of tasks, each using the Churn strategy to load-balance.  The networks are homogeneous and each node consumes one task per tick.}
+	\begin{tabular}{|r || r | r | r | r |}
+		\hline
+		Churn Rate & $ 10^{3}$ nodes, $ 10^{5}$ tasks & $ 10^{3}$ nodes, $ 10^{6}$ tasks & $ 100$ nodes, $ 10^{4}$ tasks & $ 100$ nodes, $ 10^{6}$ tasks \\ \hline
+		0      & 7.476   &  7.467 &  5.043& 5.016 \\\hline
+		0.0001 & 7.122   &  5.732 &  4.934 & 3.077 \\\hline
+		0.001  & 6.047   &  3.674 &  4.391& 1.863\\\hline
+		0.01  &  3.721   &  2.104 &  3.076& 1.309\\\hline
+		
+	\end{tabular}
+	\label{tab:ChurnRuntimesHomogenious}
+\end{table}
+
+
+
+
+
+We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks.
+The results of this are shown on Figure \ref{fig:churnVsTime}, which plots the runtime of the distributed computation against the level of churn in the network.
 
 
 \begin{figure}
@@ -369,9 +395,41 @@ Also graph average work per tick (Figure \ref{fig:churnVsWork})
 \end{figure}
 
 
+
+
+The runtime for heterogeneous versus homogeneous networks had no significant difference.
+
+
 How did scaling affect the network?  
+The variable that most affected the base runtime factor for Churn (and for networks with no strategy) is not
+
 Network runtime is affected by scaling.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
+\caption[Workload for churn at tick 0]{Foo}
+
+\label{fig:ChurnStableHist0}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
+\caption[Workload for churn at tick 5]{Bar}
+
+\label{fig:ChurnStableHist5}
+\end{figure}
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
+	\caption[Workload for churn at tick 35]{Baz}
+	\label{fig:ChurnStableHist35}
+\end{figure}
 
 \subsection{Random Injection}
 
@@ -385,11 +443,11 @@ smaller network faster
 0.28 1h10k 
 
 
-However, the larger ratio networks handled heterogeniety much better, with the worst heterogenous run time being 1.955, compared to 4.052 on  the smaller ratio networks
+However, the larger ratio networks handled heterogeneity much better, with the worst heterogeneous run time being 1.955, compared to 4.052 on  the smaller ratio networks
 
 
 Sybil Threshold had an effect in homogeneous networks but no effect in heterogeneous networks.
-In our 1k100k and 1h1k experiment, a homogenous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
+In our 1k100k and 1h1k experiment, a homogeneous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
 The effect was more pronounced when networks could complete a number of tasks equal to their strength each tick, reducing the runtime factor by at least 0.2.
 
 
