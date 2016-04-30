@@ -419,7 +419,7 @@ The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig
 
 \begin{figure}
 \centering
-\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
+\includegraphics[width=0.7\linewidth]{figs/churnStableHist0}
 \caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.}
 
 \label{fig:churnStableHist0}
@@ -428,7 +428,7 @@ The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig
 
 \begin{figure}
 \centering
-\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
+\includegraphics[width=0.7\linewidth]{figs/churnStableHist5}
 \caption[Workload for churn at tick 5]{This is the distribution of the workloads at the beginning of tick 5.  We can see the network using 0.01 churn has fewer nodes with less work and more nodes with a greater workload.}
 
 \label{fig:churnStableHist5}
@@ -438,15 +438,15 @@ The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
+	\includegraphics[width=0.7\linewidth]{figs/churnStableHist35}
 	\caption[Workload for churn at tick 35]{After 35 ticks, the effects of churn on the workload distribution become more pronounced.  More nodes have consumed all their tasks and are simply idling, but significantly less in the network using churn.}
 	\label{fig:churnStableHist35}
 \end{figure}
 
 \subsection{Random Injection}
 
-The strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
-%specifics
+We found that the strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
+
 
 
 Ratios seem to have similar runtimes, but smaller networks run slightly faster.
