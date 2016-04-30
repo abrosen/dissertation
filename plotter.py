@@ -26,7 +26,7 @@ def drawGraph(nodes, tasks):
         fy.append(y)
     #plt.axes([-1.0,1.0,-1.0,1.0] )
     plt.plot(xs,ys, 'ro')
-    plt.plot(fx,fy, 'bo')
+    plt.plot(fx,fy, 'b+')
     plt.show()
 
 def drawAverageChurn(filename):
@@ -150,6 +150,7 @@ def plotLoads():
     plt.show()
 
 
+drawGraph(10, 100)
 #plotLoads()
 #compareChurnInjection()
 #drawAverageChurn("averagesChurnDataPoints")
@@ -157,6 +158,6 @@ def plotLoads():
 #printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
 #printTimeDiffs("averagesChurn1k1m", "averagesChurn1h1m")
 #printTimeDiffs("averagesChurn1k1m", "averagesChurn1k100k")
-printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1k100k")
-printTimeDiffs("averagesRandomInjection1h100k", "averagesRandomInjection1k1m")
-printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1h100k")
+#printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1k100k")
+#printTimeDiffs("averagesRandomInjection1h100k", "averagesRandomInjection1k1m")
+#printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1h100k")
