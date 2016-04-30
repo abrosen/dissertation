@@ -375,7 +375,7 @@ We tested this network with a wider variety of churn rates.
 The results of this are shown on Figure \ref{fig:churnVsTime}, which plots the runtime of the distributed computation against the level of churn in the network.
 
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/churnVsTime}
 	\caption[Churn vs Runtime factor]{This graph shows the effect churn has on runtime in a distributed computation.
@@ -391,7 +391,12 @@ The makes any amount of churn after a certain point prohibitively expensive.
 What this point is requires implementation on a real network.
 
 This speedup is reflected in the average number of tasks consumed in a tick, shown in Figure \ref{fig:churnVsWork}.
-\begin{figure}
+In a stable network with no churn, we would expect a good portion of the network to end up with little work, which is quickly consumed.
+These nodes must then idle, waiting for the few nodes which received a large number of tasks to finish.
+When there is churn, however, nodes have a chance of joining the network and acquiring more work, thus making it possible for more work to be done per a tick.
+The higher the rate of churn, the more this happens.
+
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.7\linewidth]{figs/churnVsWork}
 \caption[Churn vs average work per tick]{We can see that this is a mirror image of Figure \ref{fig:churnVsTime}.}
@@ -400,16 +405,10 @@ This speedup is reflected in the average number of tasks consumed in a tick, sho
 
 
 
+A more detailed view of how this happens is shown in Figures \ref{fig:ChurnStableHist0} \ref{fig:ChurnStableHist5} \ref{fig:ChurnStableHist35}
 
 
-
-
-How did scaling affect the network?  
-The variable that most affected the base runtime factor for Churn (and for networks with no strategy) is not
-
-Network runtime is affected by scaling.
-
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
 \caption[Workload for churn at tick 0]{Foo}
@@ -418,7 +417,7 @@ Network runtime is affected by scaling.
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
 \caption[Workload for churn at tick 5]{Bar}
@@ -428,7 +427,7 @@ Network runtime is affected by scaling.
 
 
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
 	\caption[Workload for churn at tick 35]{Baz}
