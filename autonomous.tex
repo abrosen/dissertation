@@ -396,42 +396,51 @@ These nodes must then idle, waiting for the few nodes which received a large num
 When there is churn, however, nodes have a chance of joining the network and acquiring more work, thus making it possible for more work to be done per a tick.
 The higher the rate of churn, the more this happens.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/churnVsWork}
-\caption[Churn vs average work per tick]{We can see that this is a mirror image of Figure \ref{fig:churnVsTime}.}
+\caption[Churn vs average work per tick]{With more and more churn in the network, new nodes have a higher chance of joining the network and acquiring work from overloaded nodes.  This results in more average work being done each tick, as there are less nodes simply idling.}
 \label{fig:churnVsWork}
 \end{figure}
 
 
 
-A more detailed view of how this happens is shown in Figures \ref{fig:ChurnStableHist0} \ref{fig:ChurnStableHist5} \ref{fig:ChurnStableHist35}
+A more detailed view of how this happens is shown in Figures \ref{fig:churnStableHist0}, \ref{fig:churnStableHist5}, and \ref{fig:churnStableHist35}.
+These figures show histograms of workload distribution for two networks at different ticks.
+One network uses 0.01 churn per tick to autonomously load balance the workload, the other uses no strategy at all.
 
+Both networks \footnote{Indeed, all networks we do this assessment for start with the same initial configuration} start with the 1000 nodes and 100,000 tasks distributed identically throughout the network. 
+Figure \ref{fig:churnStableHist0} shows the distribution of the workload for this initial configuration.
 
-\begin{figure}[h]
+As the network begins to work, we see the distributions diverge from one another.
+Figure \ref{fig:churnStableHist5} shows that after merely 5 ticks, the network using the churn strategy has noticeably fewer nodes that have smaller workloads.
+We also see more nodes with greater workloads.
+The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig:churnStableHist35}, where more have had a chance to finish their work and more churn has had the opportunity to occur.
+
+\begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
 \caption[Workload for churn at tick 0]{Foo}
 
-\label{fig:ChurnStableHist0}
+\label{fig:churnStableHist0}
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
 \caption[Workload for churn at tick 5]{Bar}
 
-\label{fig:ChurnStableHist5}
+\label{fig:churnStableHist5}
 \end{figure}
 
 
 
-\begin{figure}[h]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
 	\caption[Workload for churn at tick 35]{Baz}
-	\label{fig:ChurnStableHist35}
+	\label{fig:churnStableHist35}
 \end{figure}
 
 \subsection{Random Injection}
