@@ -124,7 +124,7 @@ def compareChurnInjection():
         plt.title('Churn vs Random Injection at Tick ' + str(i))
 
         plt.xlabel('Tasks Per Node')
-        plt.ylabel('Probability')
+        plt.ylabel('Fraction of the Network')
         #plt.ylim(0, 0.05)
         plt.show()
         
@@ -148,7 +148,7 @@ def compareChurnStable():
         plt.title('Churn vs No Strategy at Tick ' + str(i))
         
         plt.xlabel('Tasks Per Node')
-        plt.ylabel('Probability')
+        plt.ylabel('Fraction of the Network')
         #plt.ylim(0, 0.05)
         plt.show()
 
@@ -173,7 +173,7 @@ def compareInjectionStable():
         
         
         plt.xlabel('Tasks Per Node')
-        plt.ylabel('Probability')
+        plt.ylabel('Fraction of the Network')
         #plt.ylim(0, 0.05)
         plt.show()
 
