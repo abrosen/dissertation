@@ -346,28 +346,32 @@ Churn has a profound and significant impact on the network's computation, and th
 Our results in Table \ref{tab:ChurnRuntimesHomogenious} show the effects of churn in networks of varying sizes and loads on the runtime factor.
 
 
-
 \begin{table}[h]
-	
+	\tiny
 	\centering
-	\caption[Churn Runtimes in a homogenious network]{Average runtime factor of networks of varying sizes and number of tasks, each using the Churn strategy to load-balance.  The networks are homogeneous and each node consumes one task per tick.}
-	\begin{tabular}{|r || r | r | r | r |}
+	\caption[Churn Runtimes in a homogenious network]{Runtime factor of networks of varying sizes and number of tasks, each using the Churn strategy to load-balance.  Each result is the average of 100 trials. The networks are homogeneous and each node consumes one task per tick.  A runtime of 1 is the ideal and target.}
+	\begin{tabular}{|r || r | r | r | r | r |}
 		\hline
-		Churn Rate & $ 10^{3}$ nodes, $ 10^{5}$ tasks & $ 10^{3}$ nodes, $ 10^{6}$ tasks & $ 100$ nodes, $ 10^{4}$ tasks & $ 100$ nodes, $ 10^{6}$ tasks \\ \hline
-		0      & 7.476   &  7.467 &  5.043& 5.016 \\\hline
-		0.0001 & 7.122   &  5.732 &  4.934 & 3.077 \\\hline
-		0.001  & 6.047   &  3.674 &  4.391& 1.863\\\hline
-		0.01  &  3.721   &  2.104 &  3.076& 1.309\\\hline
+		Churn Rate & $ 10^{3}$ nodes, $ 10^{5}$ tasks & $ 10^{3}$ nodes, $ 10^{6}$ tasks & $ 100$ nodes, $ 10^{4}$ tasks & $ 100$ nodes, $ 10^{5}$ tasks &$ 100$ nodes, $ 10^{6}$ tasks \\ \hline
+		0      & 7.476   &  7.467 &  5.043& 5.022 &5.016 \\\hline
+		0.0001 & 7.122   &  5.732 &  4.934& 4.362&3.077 \\\hline
+		0.001  & 6.047   &  3.674 &  4.391& 3.019  &1.863\\\hline
+		0.01  &  3.721   &  2.104 &  3.076& 1.873 &1.309\\\hline
 		
 	\end{tabular}
 	\label{tab:ChurnRuntimesHomogenious}
 \end{table}
 
+We see that for each network size and load, even small amounts of churn have a noticeable impact on churn.
+The magnitude of churn's effect varies based on the size of the network and the number of tasks.
+In networks where there are fewer nodes, we see the base runtime factor is smaller.
+The gains from churn are most strongly related the number of tasks the network has, with the more tasks there are, the greater the gains of churn.
+A network 100 nodes and 1 million tasks, on average, has a runtime factor only 30\% higher than ideal when churn is 0.01 per tick.
+The runtime for heterogeneous versus homogeneous networks had no significant differences.
 
 
-
-
-We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks.
+We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks, in order to give a fuller picture of the effects of churn.
+We tested this network with a wider variety of churn rates.
 The results of this are shown on Figure \ref{fig:churnVsTime}, which plots the runtime of the distributed computation against the level of churn in the network.
 
 
@@ -381,12 +385,12 @@ The results of this are shown on Figure \ref{fig:churnVsTime}, which plots the r
 	\label{fig:churnVsTime}
 \end{figure}
 
-
 We note the significantly diminishing returns that occur after a churn rate of 0.01.
 One facet not captured by our simulations, but is significant, is the rising maintenance costs after that point.
 The makes any amount of churn after a certain point prohibitively expensive.
+What this point is requires implementation on a real network.
 
-Also graph average work per tick (Figure \ref{fig:churnVsWork})
+This speedup is reflected in the average number of tasks consumed in a tick, shown in Figure \ref{fig:churnVsWork}.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/churnVsWork}
@@ -397,7 +401,7 @@ Also graph average work per tick (Figure \ref{fig:churnVsWork})
 
 
 
-The runtime for heterogeneous versus homogeneous networks had no significant difference.
+
 
 
 How did scaling affect the network?  
