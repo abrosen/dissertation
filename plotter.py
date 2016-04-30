@@ -111,13 +111,67 @@ def compareChurnInjection():
     loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
     random.seed(125)
     s=Simulator()
-    s.setupSimulation(strategy = 'randomInjections',workMeasurement="one", numNodes=1000, numTasks=100000, churnRate=0)    
+    s.setupSimulation(strategy = 'randomInjection',workMeasurement="one", numNodes=1000, numTasks=100000, churnRate=0)    
     loads2 = s.simulateLoad()[0]
     for i in range(0,len(loads1), 5):
         x1= loads1[i]
         x2 =loads2[i]
-        colors = ["blue", "red"]
-        plt.hist([x1,x2], 100, normed =1, color=colors )
+        colors = ["k", "w"]
+        labels = ["Churn","Random Injection"]
+        plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
+        
+        plt.legend(loc=0)
+        plt.title('Churn vs Random Injection at tick ' + str(i))
+
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Probability')
+        #plt.ylim(0, 0.05)
+        plt.show()
+        
+def compareChurnStable():
+    s =  Simulator()
+    random.seed(125)
+    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
+    random.seed(125)
+    s=Simulator()
+    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0.1)
+    loads2 = s.simulateLoad()[0]
+    for i in range(0,len(loads1), 5):
+        x1= loads1[i]
+        x2 =loads2[i]
+        colors = ["k", "w"]
+        labels = ["No Strategy","Churn"]
+        plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
+        
+        plt.legend(loc=0)
+        plt.title('Churn vs No Strategy at tick ' + str(i))
+        
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Probability')
+        #plt.ylim(0, 0.05)
+        plt.show()
+
+def compareInjectionStable():
+    s =  Simulator()
+    random.seed(125)
+    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
+    random.seed(125)
+    s=Simulator()
+    s.setupSimulation(strategy= "randomInjection",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads2 = s.simulateLoad()[0]
+    for i in range(0,len(loads1), 5):
+        x1= loads1[i]
+        x2 =loads2[i]
+        colors = ["k", "w"]
+        labels = ["No Strategy","Random Injection"]
+        plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
+        
+        plt.legend(loc=0)
+        plt.title('RandomInjection vs No Strategy at tick ' + str(i))
+        
+        
         plt.xlabel('Tasks Per Node')
         plt.ylabel('Probability')
         #plt.ylim(0, 0.05)
@@ -150,9 +204,11 @@ def plotLoads():
     plt.show()
 
 
-drawGraph(10, 100)
+#drawGraph(10, 100)
 #plotLoads()
-#compareChurnInjection()
+compareChurnInjection()
+#compareChurnStable()
+#compareInjectionStable()
 #drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
 #printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
