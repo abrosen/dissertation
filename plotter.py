@@ -155,11 +155,11 @@ def compareChurnStable():
 def compareInjectionStable():
     s =  Simulator()
     random.seed(125)
-    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    s.setupSimulation(strategy= "churn", homogeneity="randomUniform" , workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
     loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
     random.seed(125)
     s=Simulator()
-    s.setupSimulation(strategy= "randomInjection",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    s.setupSimulation(strategy= "randomInjection", homogeneity="perStrength",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
     loads2 = s.simulateLoad()[0]
     for i in range(0,len(loads1), 5):
         x1= loads1[i]
@@ -169,7 +169,7 @@ def compareInjectionStable():
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
         plt.legend(loc=0)
-        plt.title('Random Injection vs No Strategy at Tick ' + str(i))
+        plt.title('Random Injection vs No Strategy in a Heterogeneous Network at Tick ' + str(i))
         
         
         plt.xlabel('Tasks Per Node')
@@ -261,9 +261,9 @@ def plotLoads():
 #plotLoads()
 #compareChurnInjection()
 #compareChurnStable()
-#compareInjectionStable()
+compareInjectionStable()
 #compareNeighborsStable()
-compareInviteStable()
+#compareInviteStable()
 #drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
 #printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
@@ -272,3 +272,4 @@ compareInviteStable()
 #printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1k100k")
 #printTimeDiffs("averagesRandomInjection1h100k", "averagesRandomInjection1k1m")
 #printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1h100k")
+#printTimeDiffs("averagesRandomInjection1k100k", "averagesRandomInjection1k1m")

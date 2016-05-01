@@ -445,14 +445,24 @@ The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig
 
 \subsection{Random Injection}
 
-We found that the strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
+The goal behind the churn strategy was to effectively have nodes join in the proper place with random insertions.
+However, churn relies on two factors that are completely random.
+The network nor it's members have any control over when node joins happen or where these joins occur.
+In addition, churn removes nodes, which can be detrimental to the network.
 
+The random injection strategy removes some of the randomization that the churn churn strategy deals with, namely \textit{when} new nodes join, albeit not where.
+As we discussed earlier, random injection does this by means of the Sybil Attack \cite{sybil}, with nodes creating virtual Sybil nodes when they are underutilized.
+
+We found that the strategy of having under-utilized nodes randomly create Sybil nodes works phenomenally well, approaching very close to the ideal time.
+Figures \ref{fig:randomStableHist5} and \ref{fig:churnStableHist35} compare two networks with identical starting configurations as the network preforms the computations.\footnote{We omit a figure comparing the two networks at tick 0, since it identical to Figure \ref{fig:churnStableHist0}.}
+These networks have 1000 nodes and 100,000 tasks.  
+The network using random injection.
 
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
-	\caption[Random injection vs no strategy after 5 ticks.]{Foobar}
+	\caption[Random injection vs no strategy after 5 ticks.]{The networks after 5 ticks.  The network using random injection has significantly less underutilized nodes, even after only 5 ticks.}
 	\label{fig:randomStableHist5}
 \end{figure}
 
@@ -460,23 +470,53 @@ We found that the strategy of having under-utilized nodes randomly create Sybil 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/randomStableHist35}
-	\caption[Random injection vs no strategy after 35 ticks.]{Foobar}
+	\caption[Random injection vs no strategy after 35 ticks.]{The networks after 35 ticks.  The network using random injection has significantly less underutilized nodes and substantially more notes with some or lots of work.}
 	\label{fig:randomStableHist35}
 \end{figure}
 
 
+We can see in Figure \ref{fig:randomStableHist5}, the results of a single load balancing operation.
+Each node has checked its workload, and if it was too low, created a single Sybil.
+If we compare this to Figure \ref{fig:churnStableHist0}, we see that this single operation has a better workload distribution than what we had started with and is substantially better than using no strategy.
 
-Ratios seem to have similar runtimes, but smaller networks run slightly faster.
-smaller network faster
-0.086 1h100k 1k1m 
-0.28 1h10k 
+We can see these effects become even more pronounced at tick 35 (Figure \ref{fig:randomStableHist35}), where seven load balancing operations have taken place.
+The network using random injection has many fewer nodes with little or no work and many more nodes with some work.
+Furthermore, we see a huge difference between the effectiveness of random injection versus churn (Figure \ref{fig:churnInjectionHist35}).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/churnInjectionHist35}
+	\caption[Churn vs Random Injection after 35 ticks.]{The networks after 35 ticks.  The network using random injection load-balances significantly better than the network using Churn.}
+	\label{fig:churnInjectionHist35}
+\end{figure}
+
+We found that a homogeneous, 1000 node 100,000 task network, where each node consumed a single task each tick would never have an average runtime factor great than 1.7 and the average runtime was as fast as 1.36.
+In the same network with 1,000,000 tasks, these runtimes were 1.25 and 1.12 respectively.
+On average, the 1,000,000 task network had a runtime factor 0.82 less than the 100,000 task network.
+This huge jump is the result of how the network is impacted by heterogeneous nodes, explained further below.
+
+Overall we found that networks with the same ratio of tasks to nodes would have relatively the same runtimes, but the smaller network would run slightly faster.
+For example, we compared two networks with 100 tasks per a node: a network with 100 nodes and 100,000 tasks and one with 1,000 nodes and 1,000,000 tasks.
+The smaller network had, on average, a mean runtime factor 0.086 less.
+
+Heterogeneous networks also saw significantly better performance (Figure \ref{fig:randomStableHistHetero35}), but the gains were not as great as in homogeneous networks.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{figs/randomStableHistHetero35}
+\caption[Random injection in a Heterogenous Network]{The workload distribution of heterogenous networks after 35 ticks}
+\label{fig:randomStableHistHetero35}
+\end{figure}
 
 
+
+\subsubsection{The Effects of Other Variables}
 However, the larger ratio networks handled heterogeneity much better, with the worst heterogeneous run time being 1.955, compared to 4.052 on  the smaller ratio networks
 
 Sybil Threshold had an effect in homogeneous networks but no effect in heterogeneous networks.
-In our 1k100k and 1h1k experiment, a homogeneous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
+In 1k100k and 1h1k experiment, a homogeneous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
 The effect was more pronounced when networks could complete a number of tasks equal to their strength each tick, reducing the runtime factor by at least 0.2.
+
 
 
 However, we saw no corresponding speedup in the 1k1m and 1h100k networks.
