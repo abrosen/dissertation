@@ -541,14 +541,32 @@ On the otherhand, the 100 node/10000 task  and 1000 node/100000 task networks sa
 \subsection{Neighbor Injection}
 
 The neighbor injection strategy was also effective at reducing the overall runtime factor, albeit not as greatly as the random injection strategy.
-Figures show the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
+Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35} show the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
+At the first glance, neighbor injection does not seem to be as good of a strategy 
 
 
 
 \begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
+	\caption[Neighbor injection vs no strategy after 5 ticks.]{}
+	\label{fig:neighborsStableHist5}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist35}
+	\caption[Neighbor injection  vs no strategy after 35 ticks.]{}
+	\label{fig:neighborsStableHist35}
+\end{figure}
+
+Smart strategy
+
+\begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
-\caption[Neighbor injection vs no strategy after 5 ticks.]{}
+\caption[Smart neighbor injection vs no strategy after 5 ticks.]{}
 \label{fig:neighborsStableSmartHist5}
 \end{figure}
 
@@ -556,7 +574,7 @@ Figures show the workload distribution of the neighbor injection strategy in a 1
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist35}
-	\caption[Neighbor injection  vs no strategy after 35 ticks.]{}
+	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{}
 	\label{fig:neighborsStableSmartHist35}
 \end{figure}
 

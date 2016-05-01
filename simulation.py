@@ -132,14 +132,23 @@ class Simulator(object):
                             boundaryB = j
                     
                     # TODO Unsimplify.  Right now we just cheat and generate a number rather than hashing
-                    a = (self.nodeIDs[boundaryA] + 1) % builder.MAX 
-                    b = (self.nodeIDs[boundaryB]) % builder.MAX
-                    sybilID = self.mash(a, b)
+                    a = (self.nodeIDs[boundaryA]+1) % builder.MAX 
+                    b = (self.nodeIDs[boundaryB] -1) % builder.MAX
+                    sybilID = self.mashSimpleNeighbor(a, b)
                     self.addSybil(nodeID, sybilID)
                     #assert((a < sybilID and sybilID < b) or  ()  )
                     
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)
+    
+    def mashSimpleNeighbor(self, a:int, b :int) -> int:
+        if b < a:
+            offset = builder.MAX - a 
+            b =  b + offset 
+            a = 0
+            retval  =  (random.randint(a, b) - offset)  % builder.MAX
+            return retval
+        return random.randint(a, b)   
     
     def neighborSmart(self):
         if (self.time % self.adaptationRate) == 0:
