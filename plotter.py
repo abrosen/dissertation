@@ -169,7 +169,7 @@ def compareInjectionStable():
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
         plt.legend(loc=0)
-        plt.title('Random Injection vs No Strategy in a Heterogeneous Network at Tick ' + str(i))
+        plt.title('Random Injection in a Heterogeneous Network at Tick ' + str(i))
         
         
         plt.xlabel('Tasks Per Node')
