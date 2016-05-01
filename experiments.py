@@ -215,6 +215,22 @@ def runInviteLimitedSize(numNodes = 1000, numTasks= 100000):
     print(numExperiments*variables.trials)
 
 
+def runInviteNoChurn(numNodes = 1000, numTasks= 100000):
+    numExperiments = 0
+    for homogeneity in variables.homogeneity:
+        for workMeasurement in variables.workPerTick:
+            for churn in [0]:
+                for adaptationRate in variables.adaptationRates:
+                    for maxSybil in variables.maxSybils:
+                        for sybilThreshold in variables.sybilThresholds:
+                            for numSuccessors in variables.successors:
+                                if workMeasurement=="perSybil":
+                                    continue
+                                runTrials("invite", homogeneity, workMeasurement,numNodes, numTasks , churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors)
+                                numExperiments +=1
+    print(numExperiments*variables.trials)
+
+
 
 def runFullExperiment():
     numExperiments = 0
