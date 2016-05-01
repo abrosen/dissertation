@@ -169,7 +169,7 @@ def compareInjectionStable():
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
         plt.legend(loc=0)
-        plt.title('RandomInjection vs No Strategy at Tick ' + str(i))
+        plt.title('Random Injection vs No Strategy at Tick ' + str(i))
         
         
         plt.xlabel('Tasks Per Node')
@@ -207,8 +207,8 @@ def plotLoads():
 #drawGraph(10, 100)
 #plotLoads()
 #compareChurnInjection()
-compareChurnStable()
-#compareInjectionStable()
+#compareChurnStable()
+compareInjectionStable()
 #drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
 #printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
