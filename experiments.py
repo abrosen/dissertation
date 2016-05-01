@@ -10,11 +10,11 @@ start = str( int( time.time() ) )
 
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
-    
+    """
     if seed < 13545:
         seed += variables.trials
         return
-    
+    """
     times = []
     idealTimes = []
     medianLoads = []
