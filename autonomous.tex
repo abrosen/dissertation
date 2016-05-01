@@ -490,7 +490,7 @@ Furthermore, we see a huge difference between the effectiveness of random inject
 	\label{fig:churnInjectionHist35}
 \end{figure}
 
-We found that a homogeneous, 1000 node, 100,000 task network, where each node consumed a single task each tick would never have an average runtime factor great than 1.7 and the average runtime was as fast as 1.36.
+We found that a homogeneous, 1000 node/100,000 task network, where each node consumed a single task each tick would never have an average runtime factor great than 1.7 and the average runtime was as fast as 1.36.
 In the same network with 1,000,000 tasks, these runtimes were 1.25 and 1.12 respectively.
 On average, the 1,000,000 task network had a runtime factor 0.82 less than the 100,000 task network.
 This huge jump is the result of how the network is impacted by heterogeneous nodes, explained further below.
@@ -515,19 +515,16 @@ However, most trials did not have a runtime factor greater than 3.
 
 \subsubsection{The Effects of Other Variables}
 
-Sybil Threshold had an effect in homogeneous networks but no effect in heterogeneous networks.
-In 1k100k and 1h1k experiment, a homogeneous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
+The \texttt{sybilThreshold} had an effect in homogeneous networks but no effect in heterogeneous networks.
+In 1000 node/100,000 task and 100 node/10,000 experiment, a homogeneous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.
 The effect was more pronounced when networks could complete a number of tasks equal to their strength each tick, reducing the runtime factor by at least 0.2.
 
-However, we saw no corresponding speedup in the 1k1m and 1h100k networks.
+However, we saw no corresponding speedup in the 1000 node/1,000,000 task and 100 node/100,000 task networks.
 We also found the \texttt{sybilThreshold} had no discernible effect on the runtime of heterogeneous networks.
 This suggests the effect of a particular \texttt{sybilThreshold} is tied to the ratio of nodes to tasks and that the larger the ratio, the less room there is to improve.
 
-
 Churn had no positive impact on the runtime factor.
 At higher levels, churn could begin having an extremely minor impact when churn is at 0.01 per tick, increasing the average runtime factor by approximately 0.06, not to mention any maintenance costs incurred by handling churn.
-
-
 
 Our \texttt{maxSybils} variable had no noticeable effect on runtime in a heterogeneous network.
 \texttt{maxSybils} controlled both the number of tasks a node could consume and the maximum number of Sybils that node could make.
@@ -536,8 +533,8 @@ Networks where nodes strength ranged 1 to 5 performed better than those where th
 In other words, the greater the disparity between node strength in the network, the greater 
 
 This impact was felt stronger in nodes with a lower node to task ratio.
-The runtime factor saw  a 0.3 to 0.4 increase in the 1000 node, 1,000,000 task and 100 node, 100,000 task networks (1000 tasks per node).
-On the otherhand, the 100 node, 10000 task  and 1000 node 100000 task networks saw an increase of about 1.
+The runtime factor saw  a 0.3 to 0.4 increase in the 1000 node/1,000,000 task and 100 node/100,000 task networks (1000 tasks per node).
+On the otherhand, the 100 node/10000 task  and 1000 node/100000 task networks saw an increase of about 1.
 
 
 
