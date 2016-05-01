@@ -85,7 +85,8 @@ class Simulator(object):
         if self.strategy == "randomInjection":
             self.randomInject()
         elif self.strategy == "neighbors":
-            self.neighborSmart()
+            self.neighborInject()
+            #self.neighborSmart()
         elif self.strategy == "invite":
             self.inviteSybil()
         if not self.churnRate == 0:
@@ -131,7 +132,7 @@ class Simulator(object):
                             boundaryB = j
                     
                     # TODO Unsimplify.  Right now we just cheat and generate a number rather than hashing
-                    a = (self.nodeIDs[boundaryA]) % builder.MAX 
+                    a = (self.nodeIDs[boundaryA] + 1) % builder.MAX 
                     b = (self.nodeIDs[boundaryB]) % builder.MAX
                     sybilID = self.mash(a, b)
                     self.addSybil(nodeID, sybilID)
