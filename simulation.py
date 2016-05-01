@@ -190,7 +190,6 @@ class Simulator(object):
                         predID = self.nodeIDs[predIndex]
                         predNode= self.nodes[predID]
                         if (len(predNode.tasks) <= helperLoad) and self.canSybil(predID):
-                            print("sybil found")
                             optimalHelper = predID
                             helperLoad = len(predNode.tasks)
                     
