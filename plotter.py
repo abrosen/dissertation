@@ -176,6 +176,59 @@ def compareInjectionStable():
         plt.ylabel('Fraction of the Network')
         #plt.ylim(0, 0.05)
         plt.show()
+        
+        
+def compareNeighborsStable():
+    s =  Simulator()
+    random.seed(125)
+    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
+    random.seed(125)
+    s=Simulator()
+    s.setupSimulation(strategy= "neighbors",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads2 = s.simulateLoad()[0]
+    for i in range(0,len(loads1), 5):
+        x1= loads1[i]
+        x2 =loads2[i]
+        colors = ["k", "w"]
+        labels = ["No Strategy","Neighbors"]
+        plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
+        
+        plt.legend(loc=0)
+        plt.title('Neighbors vs No Strategy at Tick ' + str(i))
+        
+        
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Fraction of the Network')
+        #plt.ylim(0, 0.05)
+        plt.show()
+
+
+def compareInviteStable():
+    s =  Simulator()
+    random.seed(125)
+    s.setupSimulation(strategy= "churn",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
+    random.seed(125)
+    s=Simulator()
+    s.setupSimulation(strategy= "invite",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads2 = s.simulateLoad()[0]
+    for i in range(0,len(loads1), 5):
+        x1= loads1[i]
+        x2 =loads2[i]
+        colors = ["k", "w"]
+        labels = ["No Strategy","Invitation"]
+        plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
+        
+        plt.legend(loc=0)
+        plt.title('Invitation vs No Strategy at Tick ' + str(i))
+        
+        
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Fraction of the Network')
+        #plt.ylim(0, 0.05)
+        plt.show()
+
 
 def printTimeDiffs(fileA,fileB):
     naiveData = open("data/done/"+fileA+".txt")
@@ -208,7 +261,9 @@ def plotLoads():
 #plotLoads()
 #compareChurnInjection()
 #compareChurnStable()
-compareInjectionStable()
+#compareInjectionStable()
+#compareNeighborsStable()
+compareInviteStable()
 #drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
 #printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")

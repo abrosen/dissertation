@@ -449,6 +449,23 @@ We found that the strategy of having under-utilized nodes randomly create Sybil 
 
 
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
+	\caption[Random injection vs no strategy after 5 ticks.]{Foobar}
+	\label{fig:randomStableHist5}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/randomStableHist35}
+	\caption[Random injection vs no strategy after 35 ticks.]{Foobar}
+	\label{fig:randomStableHist35}
+\end{figure}
+
+
+
 Ratios seem to have similar runtimes, but smaller networks run slightly faster.
 smaller network faster
 0.086 1h100k 1k1m 
@@ -456,7 +473,6 @@ smaller network faster
 
 
 However, the larger ratio networks handled heterogeneity much better, with the worst heterogeneous run time being 1.955, compared to 4.052 on  the smaller ratio networks
-
 
 Sybil Threshold had an effect in homogeneous networks but no effect in heterogeneous networks.
 In our 1k100k and 1h1k experiment, a homogeneous network where each node completed one task per a tick, this amounted to an reduction of at least 0.1 runtime factor.

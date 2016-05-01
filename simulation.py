@@ -173,7 +173,7 @@ class Simulator(object):
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
                 
-                if len(node.tasks) >= self.perfectTime - self.sybilThreshold:   # If I need help
+                if len(node.tasks) >= (self.perfectTime - self.sybilThreshold):   # If I need help
                 
                     # grab the index of the node and check with assert
                     index = bisect.bisect_left(self.nodeIDs, nodeID)
@@ -184,18 +184,20 @@ class Simulator(object):
                     optimalHelper = None
                     helperLoad = self.sybilThreshold
                     for predIndex in range(index-1 , index-1 -self.numSuccessors, -1):
-                        if predIndex <= len(self.nodeIDs):
-                            break
+                        #if predIndex <= len(self.nodeIDs):
+                        #    break
                         
                         predID = self.nodeIDs[predIndex]
                         predNode= self.nodes[predID]
                         if (len(predNode.tasks) <= helperLoad) and self.canSybil(predID):
+                            print("sybil found")
                             optimalHelper = predID
                             helperLoad = len(predNode.tasks)
                     
                     if optimalHelper is not None:
                         sybilID = self.mash(self.nodeIDs[index - 1], nodeID)
                         self.addSybil(optimalHelper, sybilID)
+                        
                 
                 if nodeID in self.sybils and len(node.tasks) == 0:
                     self.clearSybils(nodeID)        
