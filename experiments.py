@@ -266,7 +266,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runInviteNoChurn(1000, 1000000)
+    runNeighborLimitedSize(100, 10000)
     #runChurnLimitedSize(100, 100000)
     end= time.time()
     print("Time elapsed:" + str(end - startTime))
