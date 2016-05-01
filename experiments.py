@@ -10,11 +10,11 @@ start = str( int( time.time() ) )
 
 def runTrials(strategy, homogeneity, workMeasurement, networkSize, jobSize, churn, adaptationRate, maxSybil, sybilThreshold, numSuccessors):
     global seed
-    """
-    if seed < 21845:
+    
+    if seed < 13545:
         seed += variables.trials
         return
-    """
+    
     times = []
     idealTimes = []
     medianLoads = []
@@ -250,7 +250,7 @@ if __name__ == '__main__':
 
     startTime = time.time()
     
-    runInviteLimitedSize(1000, 1000000)
+    runInviteLimitedSize(100, 10000)
     #runChurnLimitedSize(100, 100000)
     end= time.time()
     print("Time elapsed:" + str(end - startTime))

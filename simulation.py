@@ -6,6 +6,7 @@ import statistics
 #maxSybils  = 10
 #assert(False)
 
+
 class Simulator(object):
     def __init__(self):
         pass
@@ -89,8 +90,12 @@ class Simulator(object):
             self.inviteSybil()
         if not self.churnRate == 0:
             self.churnNetwork() #if churn is 0
+        idLoads = [len(self.nodes[x].tasks) for x in self.superNodes]
+        loads = [len(x.tasks) for x in self.nodes.values()]
         workThisTick = self.performWork()
         if workThisTick == 0:
+            print(idLoads)
+            print(loads)
             assert(False)
         self.time += 1
         #print(self.time, self.numDone, workThisTick, len(self.superNodes), len(self.pool), len(self.nodeIDs) )
@@ -297,10 +302,6 @@ class Simulator(object):
         return len(self.sybils[superNode]) < self.nodes[superNode].strength
     
     def addSybil(self, superNode, sybilID = None):
-        
-        # TODO: check if work actual gets taken
-        # check insert worker
-        #assert(False)
         if sybilID is None:
             sybilID =  next(builder.generateFileIDs())
         if superNode not in self.sybils:
@@ -320,8 +321,6 @@ class Simulator(object):
         else:
             succID = self.nodeIDs[index]
         succ =  self.nodes[succID]                
- 
-        # assert(j not in self.nodeIDs)
         
         self.nodeIDs.insert(index, joiningID)         
         if node is None:
@@ -332,51 +331,13 @@ class Simulator(object):
         nodeStart = len(node.tasks)
         succStart = len(succ.tasks)
         
-        
         tasks = succ.tasks[:]
         succ.tasks = []
         
-        # assert tasks actually has tasks if it had tasks to begin wiht
-        """
-        This won't work because it will look at ALL work, including the sybilled work
-        and view them as the only two in the network
-        for task in tasks:
-            if joiningID < succID:
-                if task <= joiningID:      
-                    node.addTask(task)
-                else:
-                    succ.addTask(task)
-            else:
-                if task > succID and task < joiningID:
-                    node.addTask(task)
-                else:
-                    succ.addTask(task)
-        """
         self.reallocateTasks(tasks)
         nodeEnd = len(node.tasks)
         succEnd = len(succ.tasks)
-        
-        #print("Node/Successor has " + str(nodeStart)+"/" + str(succStart)  + " tasks;  took " + str(succStart - succEnd ) )
-        
-        """
-        try:
-            assert(succStart - succEnd ==  nodeEnd -  nodeStart)
-        except Exception:
-            print(succStart , succEnd, nodeEnd ,nodeStart)
-            print(succStart - succEnd, nodeEnd -  nodeStart)
-            assert(False)
-        """          
-    def clearSybils(self, superNode):
-        
-        for s in self.sybils[superNode]:
-            del(self.nodes[s])
-            self.numSybils -= 1
-            self.nodeIDs.remove(s)
-            
-            # make sure this gets taken care 
-        #assert(False)
-        del(self.sybils[superNode])
-    
+          
     def addToPool(self, num):
         # Adds num nodes to the pool of possible joining nodes
         for _ in range(num):
@@ -395,6 +356,18 @@ class Simulator(object):
         if key in self.sybils:
             self.clearSybils(key)
         return tasks
+    
+    def clearSybils(self, superNode):
+        
+        for s in self.sybils[superNode]:
+            del(self.nodes[s])
+            self.numSybils -= 1
+            self.nodeIDs.remove(s)
+            
+            # make sure this gets taken care 
+        #assert(False)
+        del(self.sybils[superNode])
+    
     
     def simulate(self):
         while(self.numDone < self.numTasks):
