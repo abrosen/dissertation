@@ -173,7 +173,7 @@ class Simulator(object):
                     
                     
     def inviteSybil(self):
-        # make sure I'm trying to from the correct gap
+        # TODO make sure I'm trying to from the correct gap
         if (self.time % self.adaptationRate) == 0:
             for nodeID in self.superNodes:
                 node = self.nodes[nodeID]
@@ -199,6 +199,7 @@ class Simulator(object):
                             helperLoad = len(predNode.tasks)
                     
                     if optimalHelper is not None:
+                        #AM I MASHING RIGHT?
                         sybilID = self.mash(self.nodeIDs[index - 1], nodeID)
                         self.addSybil(optimalHelper, sybilID)
                         
