@@ -582,9 +582,6 @@ However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxS
 
 
 
-
-
-
 To fully evaluate the effectiveness of the strategy, we compared the neighbor injection strategy, which estimates the node with the largest workload, to what we call smart neighbor injection.
 Smart neighbor injection actually queries the neighbors to find out their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
 The workload distributions of smart injection are shown in Figures \ref{fig:neighborsStableSmartHist5} and \ref{fig:neighborsStableSmartHist35}.
@@ -612,10 +609,54 @@ The strategy of probing each of the neighbors before inserting, rather than esti
 However, the estimation based neighbor injection requires fewer messages in an actual implementation.
 Overall, either neighbor injection strategy did not perform as well as the random injection strategy, but generates much less churn from joining nodes, since nodes can create their Sybils in a greatly reduced range.
 \subsection{Invitation}
+Our final strategy is invitation based injection.
+What differentiates invitation based injection from the neighbor injection or random injection strategy is that the latter two are proactive strategies, while the former is reactive.
 
-In invitation, churn losses can be greatly detrimental.
+The proactive strategies work by having nodes with low work loads seek out acquire work 
+This is good because less nodes become idle.
+However, nodes acquire work from other workers, even if that other worker needed no help.
+In addition, nodes can spend many cycles trying to acquire work that may or may not exist, which significantly 
+
+
+Invitation was unaffected by varaibles (double check)
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
+\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.}
+\label{fig:inviteStableHist5}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist35}
+	\caption[Invitiation vs no strategy after 35 ticks]{At 35 ticks, we can see the network }
+\label{fig:inviteStableHist35}
+\end{figure}
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
+	\caption[Invitation  vs smart neighbor injection after 5 ticks.]{}
+	\label{fig:inviteNeighborsHist5}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist35}
+	\caption[Invitation  vs smart neighbor injection after 35 ticks.]{}
+	\label{fig:inviteNeighborsHist35}
+\end{figure}
+
+
+The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 
 \section{Future Work}
+
+Improve on the strategies.
 
 As mentioned in Section \ref{sec:auto-simulation}, we made the assumption that nodes cannot choose their own ID and must rely on the strategies described in Chapter \ref{chapter:sybil}  \cite{sybil-analysis} for creating a Sybil with the appropriate ID.
 However, if this assumption was removed, this presents even more strategies for nodes to autonomously load-balance.

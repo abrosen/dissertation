@@ -228,6 +228,31 @@ def compareInviteStable():
         plt.ylabel('Fraction of the Network')
         #plt.ylim(0, 0.05)
         plt.show()
+    
+def compareInviteNeighbor():
+    s =  Simulator()
+    random.seed(125)
+    s.setupSimulation(strategy= "neighbors",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
+    random.seed(125)
+    s=Simulator()
+    s.setupSimulation(strategy= "invite",  workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    loads2 = s.simulateLoad()[0]
+    for i in range(0,len(loads1), 5):
+        x1= loads1[i]
+        x2 =loads2[i]
+        colors = ["k", "w"]
+        labels = ["Neighbors","Invitation"]
+        plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
+        
+        plt.legend(loc=0)
+        plt.title('Invitation vs Smart Neighbors at Tick ' + str(i))
+        
+        
+        plt.xlabel('Tasks Per Node')
+        plt.ylabel('Fraction of the Network')
+        #plt.ylim(0, 0.05)
+        plt.show()
 
 
 def printTimeDiffs(fileA,fileB):
@@ -250,7 +275,7 @@ def plotLoads():
         s.setupSimulation(numNodes=1000,numTasks=1000000)
         loads = loads + [len(x.tasks) for x in s.nodes.values()]
         seed += 1
-    n, bins, patches = plt.hist(loads, 150, normed =1 )
+    n, bins, patches = plt.hist(loads, 25, normed =1 )
     plt.xlabel('Tasks Per Node')
     plt.ylabel('Probability')
     plt.axvline(statistics.median_low(loads), color='r', linestyle='--')
@@ -258,15 +283,16 @@ def plotLoads():
 
 
 #drawGraph(10, 100)
-#plotLoads()
+plotLoads()
 #compareChurnInjection()
 #compareChurnStable()
 #compareInjectionStable()
 #compareNeighborsStable()
 #compareInviteStable()
+#compareInviteNeighbor()
 #drawAverageChurn("averagesChurnDataPoints")
 #drawRandomInjection("averagesRandomInject1k1m")
-printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
+#printTimeDiffs("averagesNeighbors1k100k", "averagesNeighborsSmart1k100k")
 #printTimeDiffs("averagesChurn1k1m", "averagesChurn1h1m")
 #printTimeDiffs("averagesChurn1k1m", "averagesChurn1k100k")
 #printTimeDiffs("averagesRandomInjection1h10k", "averagesRandomInjection1k100k")
