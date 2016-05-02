@@ -339,6 +339,10 @@ Files are sorted by the strategy used, the network size,  and number of tasks an
 Each trial is linked with a seed for the pseudorandom number generator and can be fully reproduced.
 
 
+
+\textbf{We suspect the worse runtime factors in homogeneous networks don't necessarily imply the method is weaker, but may imply that runtime factor is not the best metric, but it is the best simple one we have.}
+
+
 \subsection{Churn}
 
 Our results confirmed our hypothesis from ChordReduce \cite{chordreduce}.
@@ -539,17 +543,32 @@ On the otherhand, the 100 node/10000 task  and 1000 node/100000 task networks sa
 
 
 \subsection{Neighbor Injection}
-
 The neighbor injection strategy was also effective at reducing the overall runtime factor, albeit not as greatly as the random injection strategy.
 Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35} show the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
-At the first glance, neighbor injection does not seem to be doing worse than no strategy; 
+At the first glance, neighbor injection does not seem to be doing worse than no strategy; there are more nodes with less work than no strategy.
+However, if we look at the whole histogram, we see there are less nodes that have a huge amount of work and noticeably more nodes with a small number of tasks.
+In fact, at tick 35, we see that the network with no strategy has a node with approximately 650 tasks, while the most the network using the neighbors strategy has is 450 tasks.
 
+This is because the network is finishing off the tasks with small amounts of work quicker.
+However, nodes are not able to acquire work outside their immediate vicinity and must idle.
+In addition, nodes always inject Sybils into the largest gap between their successors that they see, but if they acquire no work.
+That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.\footnote{We suggest how to avoid this in a real implementation in Section \ref{sec:strat-neighbor}}
+
+The base runtime factor of the neighbor strategy in a 1000 node/100,000 task homogeneous network was 5.033, which is 2.4 lower than no strategy.
+In  a 100 node/10,000 task network, this was lower -- a runtime factor of 3.006, which was 2 lower than no strategy.
+However, the base runtime in a heterogeneous network  was \textbf{worse} and, like in random injection, is exacerbated by a higher \texttt{maxSybil}.\footnote{Runtime was fine in the heterogeneous networks where each node could create a different number of Sybils, but still only complete one task per tick.}
+We suspect this is because weaker nodes are acquiring work away from stronger nodes and then taking longer to finish.
+
+
+Unsurprisingly, a larger \texttt{numSuccessors} improves the runtime factor.
+Our example 1000 node/100,000 task network experienced a decrease of about 0.3 to the runtime factor.
+However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxSybil} for homogeneous networks.
 
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
-	\caption[Neighbor injection vs no strategy after 5 ticks.]{}
+	\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
 	\label{fig:neighborsStableHist5}
 \end{figure}
 
@@ -557,12 +576,17 @@ At the first glance, neighbor injection does not seem to be doing worse than no 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist35}
-	\caption[Neighbor injection  vs no strategy after 35 ticks.]{}
+	\caption[Neighbor injection  vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
 	\label{fig:neighborsStableHist35}
 \end{figure}
 
-Smart strategy
 
+
+
+
+
+To fully evaluate the effectiveness of the strategy, we compared the neighbor injection strategy, which estimates the node with the largest workload, to what we call smart neighbor injection.
+Smart neighbor injection actually queries the neighbors to find out their workload.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
