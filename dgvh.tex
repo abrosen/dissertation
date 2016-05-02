@@ -7,6 +7,7 @@ Furthermore, a network might need to minimize some arbitrary metric, such as ene
 
 VHash is a multi-dimensional DHT that minimizes routing over some given metric.
 It uses a fast approximation of a Delaunay Triangulation to compute the Voronoi tessellation of a multi-dimensional space.
+
 %Approximated routing tables
 
 
@@ -21,7 +22,7 @@ For example, Chord \cite{chord} and similar ring-based DHTs \cite{symphony} util
 
 Using a Voronoi tessellation in a DHT generalizes this design.
 Nodes are Voronoi generators at a position based on their hashed keys.
-These nodes are responsible for any key that falls within its generated Voronoi region.
+These nodes are then responsible for any key that falls within its generated Voronoi region.
 
 Messages get routed along links to neighboring nodes.
 This would take $O(n)$ hops in one dimension.
@@ -48,6 +49,11 @@ In multiple dimensions, our routing algorithm (Algorithm \ref{alg:lookup}) is ex
 Efficient solutions, such as Fortune's sweepline algorithm \cite{fortune1987sweepline}, are not usable in spaces with 2 more dimensions.
 As far as we can tell, there is no way efficient to generate higher dimension Voronoi tessellations, especially in the distributed Churn-heavy context of a DHT.
 Our solution is the Distributed Greedy Voronoi Heuristic.
+
+VHash served as the kernel from which we built UrDHT \cite{urdht} and  necessitated the creation of our Distributed Greedy Voronoi Heuristic \cite{dgvh}.
+UrDHT and VHash differ in that UrDHT seeks to completely abstract any DHT topology in terms of Voronoi Tessellation and Delaunay Triangulation.
+VHash is a DHT in its own right and does not aim to implement other DHT topologies.
+UrDHT has not so succeeded VHash as that UrDHT was built around the concept VHash, which still exists a default setting of sorts for UrDHT.
 
 \section{Distributed Greedy Voronoi Heuristic}
 A Voronoi tessellation is the partition of a space into cells or regions along a set of objects $O$, such that all the points in a particular region are closer to one object than any other object.
@@ -321,4 +327,5 @@ Our heuristic is fast and scalable, with a expected memory cost of $(3d+1)^{2}+3
 
 We ran two sets of experiments to demonstrate VHash's effectiveness.
 Our first set of experiments demonstrated that our heuristic is reasonably accurate  and our second set demonstrates that reasonably accurate is sufficient to build a P2P network which can route accurately.
-Our second experiment showed that VHash  could significantly reduced the latency in Distributed Hash Tables.
+Our second experiment showed that VHash could significantly reduced the latency in Distributed Hash Tables.
+These results eventually led us to try and completely map DHTs to Voronoi Tessellation and Delaunay Triangulation in UrDHT, the subject of Chapter \ref{chapter:urdht}.
