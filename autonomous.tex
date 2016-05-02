@@ -538,7 +538,7 @@ In other words, the greater the disparity between node strength in the network, 
 
 This impact was felt stronger in nodes with a lower node to task ratio.
 The runtime factor saw  a 0.3 to 0.4 increase in the 1000 node/1,000,000 task and 100 node/100,000 task networks (1000 tasks per node).
-On the otherhand, the 100 node/10000 task  and 1000 node/100000 task networks saw an increase of about 1.
+On the other hand, the 100 node/10000 task  and 1000 node/100000 task networks saw an increase of about 1.
 
 
 
@@ -588,13 +588,13 @@ However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxS
 To fully evaluate the effectiveness of the strategy, we compared the neighbor injection strategy, which estimates the node with the largest workload, to what we call smart neighbor injection.
 Smart neighbor injection actually queries the neighbors to find out their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
 The workload distributions of smart injection are shown in Figures \ref{fig:neighborsStableSmartHist5} and \ref{fig:neighborsStableSmartHist35}.
-Both graphs show the same reduction in high amounts of workload that the base neighbor strategy provided, but with fewer idling nodes
+Both graphs show the same reduction in high amounts of workload that the base neighbor strategy provided, but with fewer idling nodes.
 
 
 \begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
-\caption[Smart neighbor injection vs no strategy after 5 ticks.]{}
+\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
 \label{fig:neighborsStableSmartHist5}
 \end{figure}
 
@@ -602,7 +602,7 @@ Both graphs show the same reduction in high amounts of workload that the base ne
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist35}
-	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{}
+	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{After 35 ticks, we see the network using the smart neighbor injection strategy has significantly less nodes with little or no work, more nodes with smaller amounts of work, and less nodes with large amounts of tasks.}
 	\label{fig:neighborsStableSmartHist35}
 \end{figure}
 
