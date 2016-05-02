@@ -617,6 +617,9 @@ This is good because less nodes become idle.
 However, nodes acquire work from other workers, even if that other worker needed no help.
 In addition, nodes can spend many cycles trying to acquire work that may or may not exist, which significantly 
 
+Invitation, however, is reactive.
+Nodes react to having too much work and ask the predecessors (the same nodes who would be injecting Sybils in the neighbor injection strategy) with the lest work to come and help.
+This means queries of other nodes and Sybil injections only occur when they need to, greatly reducing the maintenance costs in an actual simulation.
 
 Invitation was unaffected by varaibles (double check)
 
