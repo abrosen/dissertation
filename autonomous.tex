@@ -586,7 +586,11 @@ However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxS
 
 
 To fully evaluate the effectiveness of the strategy, we compared the neighbor injection strategy, which estimates the node with the largest workload, to what we call smart neighbor injection.
-Smart neighbor injection actually queries the neighbors to find out their workload.
+Smart neighbor injection actually queries the neighbors to find out their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
+The workload distributions of smart injection are shown in Figures \ref{fig:neighborsStableSmartHist5} and \ref{fig:neighborsStableSmartHist35}.
+Both graphs show the same reduction in high amounts of workload that the base neighbor strategy provided, but with fewer idling nodes
+
+
 \begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
@@ -604,9 +608,9 @@ Smart neighbor injection actually queries the neighbors to find out their worklo
 
 
 
-On average, the strategy of probing each of the neighbors before inserting, rather than estimating 
-
-Overall, the neighbor injection strategy did not perform as well as the random injection strategy, but generates much less churn from joining nodes, since nodes can create their Sybils in a greatly reduced range.
+The strategy of probing each of the neighbors before inserting, rather than estimating, improved the runtime factor by 1.2  on average in when we compare each strategies mean homogeneous and heterogeneous runtimes.
+However, the estimation based neighbor injection requires fewer messages in an actual implementation.
+Overall, either neighbor injection strategy did not perform as well as the random injection strategy, but generates much less churn from joining nodes, since nodes can create their Sybils in a greatly reduced range.
 \subsection{Invitation}
 
 In invitation, churn losses can be greatly detrimental.
