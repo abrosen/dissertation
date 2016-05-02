@@ -212,8 +212,9 @@ While we believed the overall strategy would result in largest differences in ru
 	\item [Homogeneity]  This variable controls whether the network is homogeneous or not.
 	In a homogeneous network, each node has the same strength, which dictates how much work is consumed per a tick and how many Sybils it can create.
 	In a heterogeneous network, each node has a strength chosen uniformly at random from 1 to \texttt{maxSybils}.
+	The default value is homogeneous.
 	\item [Work Measurement] This variable dictates how much work is consumed in a tick.
-	Each node can either consume a single task per a tick or their strength's worth of tasks per a tick.
+	Each node can either consume a single task per a tick or their strength's worth of tasks per a tick, with the former being the default.
 	\item [Network Size]  How many nodes start in the network.  
 	We assume that this can grow during the experiment, either via churn or by creating Sybils.
 	We discuss how this works in Sections \ref{sec:strat-churn} and \ref{sec:strat-randomInject}.
@@ -224,9 +225,10 @@ While we believed the overall strategy would result in largest differences in ru
 	It also corresponded to the fraction of nodes we expect to leave the network each tick.
 	Churn can be self induced or a result of actual turbulence in the network.
 	Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
-	\item [Max Sybils] \texttt{maxSybils} is the maximum number of Sybils a node can have at once.
-	\item [Sybil Threshold] The \texttt{sybilThreshold} dictates the number of tasks a node must have before it can create a Sybil.
-	\item [Successors] The number of successors each node keeps track of.  
+	The default value is 0.
+	\item [Max Sybils] \texttt{maxSybils} is the maximum number of Sybils a node can have at once.  We tested 5, the default, and 10.
+	\item [Sybil Threshold] The \texttt{sybilThreshold} dictates the number of tasks a node must have before it can create a Sybil.  The default setting is having no work (0 tasks).
+	\item [Successors] The number of successors each node keeps track of, either 5 or 10, with 5 being the default.
 	Nodes also keep track of the same number of predecessors.
 	
 \end{description}
@@ -338,7 +340,8 @@ All the raw data can be found online \cite{simulation-data}.
 Files are sorted by the strategy used, the network size,  and number of tasks and include the both the results of each individual run and the averages of each 100 trials for a particular set of variables.
 Each trial is linked with a seed for the pseudorandom number generator and can be fully reproduced.
 
-
+We will be referring to a \textbf{base} runtime factor.
+This means the network had the defaults for variable.
 
 \textbf{We suspect the worse runtime factors in homogeneous networks don't necessarily imply the method is weaker, but may imply that runtime factor is not the best metric, but it is the best simple one we have.}
 
@@ -608,20 +611,23 @@ Both graphs show the same reduction in high amounts of workload that the base ne
 The strategy of probing each of the neighbors before inserting, rather than estimating, improved the runtime factor by 1.2  on average in when we compare each strategies mean homogeneous and heterogeneous runtimes.
 However, the estimation based neighbor injection requires fewer messages in an actual implementation.
 Overall, either neighbor injection strategy did not perform as well as the random injection strategy, but generates much less churn from joining nodes, since nodes can create their Sybils in a greatly reduced range.
+
 \subsection{Invitation}
 Our final strategy is invitation based injection.
 What differentiates invitation based injection from the neighbor injection or random injection strategy is that the latter two are proactive strategies, while the former is reactive.
 
-The proactive strategies work by having nodes with low work loads seek out acquire work 
+The proactive strategies work by having nodes with low work loads seek out acquire work from other nodes.
 This is good because less nodes become idle.
 However, nodes acquire work from other workers, even if that other worker needed no help.
 In addition, nodes can spend many cycles trying to acquire work that may or may not exist, which significantly 
 
 Invitation, however, is reactive.
 Nodes react to having too much work and ask the predecessors (the same nodes who would be injecting Sybils in the neighbor injection strategy) with the lest work to come and help.
-This means queries of other nodes and Sybil injections only occur when they need to, greatly reducing the maintenance costs in an actual simulation.
+This means queries of other nodes and Sybil injections only occur when they need to, greatly reducing the maintenance costs in an actual implementation.
 
-Invitation was unaffected by varaibles (double check)
+
+Figures \ref{fig:inviteStableHist5} and \ref{fig:inviteStableHist35} show the work distribution of a network using the invitation based strategy.
+When we compare this strategy to the smart neighbor injection strategy (Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35}), we see that invitation does a much better job of distributing the work.
 
 \begin{figure}
 \centering
@@ -655,11 +661,22 @@ Invitation was unaffected by varaibles (double check)
 \end{figure}
 
 
+
+The impact of the invitation strategy on the runtime factor was closely tied to the number or nodes in the network.
+For example, in a 100 node/ 100,000 task network (1000 tasks per node), the base average runtime factor was 3.749.
+However, a 1000 node/ 100,000 task  network had a base average runtime of 5.673.
+
+Other variables and the ratio of tasks to nodes appeared to have no effect on the runtime factor.\footnote{Churn was not tested on the invitation strategy, but we suspect it has the same effect as in the neighbor strategy.}
+The single exception was when the network was heterogeneous and each node could complete a number of tasks equal to it's strength.
+Like the neighbor injetion strategy, networks under these conditions faired much worse, with our 1000 node/ 100000 tasks networks base average runtime factor being 6.097.
+
 The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 
 \section{Future Work}
 
 Improve on the strategies.
+Divest strength and 
+Test wider range of variables.
 
 As mentioned in Section \ref{sec:auto-simulation}, we made the assumption that nodes cannot choose their own ID and must rely on the strategies described in Chapter \ref{chapter:sybil}  \cite{sybil-analysis} for creating a Sybil with the appropriate ID.
 However, if this assumption was removed, this presents even more strategies for nodes to autonomously load-balance.
