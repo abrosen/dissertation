@@ -283,11 +283,11 @@ def plotLoads():
 
 
 #drawGraph(10, 100)
-plotLoads()
+#plotLoads()
 #compareChurnInjection()
 #compareChurnStable()
 #compareInjectionStable()
-#compareNeighborsStable()
+compareNeighborsStable()
 #compareInviteStable()
 #compareInviteNeighbor()
 #drawAverageChurn("averagesChurnDataPoints")
