@@ -688,11 +688,21 @@ Like the neighbor injetion strategy, networks under these conditions faired much
 
 The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 
-\section{Future Work}
+\section{Remarks and Future Work}
+Our simulation results are notable for a number reasons.
+First, as we have previously mentioned, is the confirmation that churn can have a net positive effect on the runtime of the network.
+Second, we presented strategies based on the Sybil attack that performed significantly better than churn and would have a much less disruptive impact on the network's structure.
+We found that our random injection strategy performed exceptionally well, approaching as closer to ideal times as we could hope.
 
-Improve on the strategies.
-Divest strength and 
-Test wider range of variables.
+
+The fact that these strategies can be used as new nodes join the network can not be understated.
+Each joining node is another member of the network that can fully participate in the computation, despite not being present at the beginning of the computation.
+
+However, our strategies were not nearly as successful in a heterogeneous network.
+It could be that smarter or completely different strategies are needed.
+It could also be that the runtime factor is not the proper way to get a grasp of how well a heterogeneous network performs.
+This forms basis for interesting future work.
+
 
 As mentioned in Section \ref{sec:auto-simulation}, we made the assumption that nodes cannot choose their own ID and must rely on the strategies described in Chapter \ref{chapter:sybil}  \cite{sybil-analysis} for creating a Sybil with the appropriate ID.
 However, if this assumption was removed, this presents even more strategies for nodes to autonomously load-balance.
