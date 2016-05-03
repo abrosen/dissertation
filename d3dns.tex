@@ -15,7 +15,7 @@
 	
 
 
-\section{Introduction}
+%\section{Introduction}
 The Domain Name System, commonly referred to as DNS \cite{mockapetris2003rfc} \cite{mockapetris2004rfc}, is a fundamental component of the Internet.  DNS maps memorable names to the numerical IP addresses used by computers to communicate over IP. 
 
 %cut this for conference?
@@ -465,6 +465,9 @@ D$^3$NS successfully addresses the challenges laid down by Cox \textit{et al}. \
 \subsection{Unaddressed Issues and Future Work}
 The Blockchain does not solve all security issues relevant to DNS authentication and security. Exit nodes could lie or have packets inject to clients until the protocol from DNS server to client is improved. The DHT structure opens up unexplored disruption attacks on the overlay topology.
 
-A series of issues relevant to UrDHT are not addressed in this paper due to limiting of scope, space, time, and a lack of actual solutions to the problems: The exact method of caching to optimize lookup time under real world usage. The overlay network being mapped onto latency results in nodes whose failure due to natural disaster to be comorbid with it's neighbors resulting to data loss. Comorbidity could be counteracted by more complex backup schemes.
+A series of issues relevant to UrDHT are not addressed here due to limiting of scope, space, time, and a lack of actual solutions to the problems: The exact method of caching to optimize lookup time under real world usage. The overlay network being mapped onto latency results in nodes whose failure due to natural disaster to be comorbid with it's neighbors resulting to data loss. Comorbidity could be counteracted by more complex backup schemes.
 
 Future work will explore various solutions to theses issues, as well as generalized improvements to D$^3$NS as whole.  In particular, the technique of allying a DHT value store for real-time data and a Blockchain for ownership verification may prove a viable technique for decentralizing other web services and enabling new shared storage and computation mediums.
+
+However, D$^3$NS served as our first real application built with the concepts of DGVH, VHash, and UrDHT.
+It served as a successful prototype for and demonstrated the viability of those ideas.
