@@ -48,8 +48,9 @@ The nodes are then arranged in a ring from the lowest hash-value to highest.  Ch
 
 The node responsible for the key $\kappa$ is called the $successor$ of $\kappa$, or $successor(\kappa)$.  For example, if there were some portion of the network with nodes 20, 25, and 27, node 25 would be responsible for the files with the keys (21,22,23,24,25). If node 25 were to decide to leave the network, its absence would be detected by node 27, who would then be responsible for all the keys node 25 was covering, in addition to its own keys. 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/chordreal}
-	\caption{A Chord ring with 16 nodes.  The bold lines are incoming edges.  Each node has a connection to its successor, as well as 4 fingers, some of which are duplicates.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/chordreal}
+	\caption[A Chord ring with 16 nodes.]{A Chord ring with 16 nodes.  The bold lines are incoming edges.  Each node has a connection to its successor, as well as 4 fingers, some of which are duplicates.}
 	\label{fig:chordreal}
 \end{figure}
 
@@ -60,15 +61,17 @@ To speed up the lookup time, each node builds and maintains a \emph{finger table
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/abcd1}
-	\caption{Alice has incorrectly determined that Carol is her appropriate successor.  When Alice stabilizes, Carol will let her know about Bob.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/abcd1}
+	\caption[An error in Chord]{Alice has incorrectly determined that Carol is her appropriate successor.  When Alice stabilizes, Carol will let her know about Bob.}
 	\label{fig:abcd1}
 \end{figure}
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/abcd2}
-	\caption{After completing stabilize, Alice makes Bob her successor and notifies him. Bob then made Alice as his predecessor.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/abcd2}
+	\caption[Stabilize fixing the error]{After completing stabilize, Alice makes Bob her successor and notifies him. Bob then made Alice as his predecessor.}
 	\label{fig:abcd2}
 \end{figure}
 
@@ -218,8 +221,9 @@ Our prototype framework does not implement a polite disconnect;  when a node qui
 \subsection{Implementation}
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/crArch}
-	\caption{The basic architecture of a node in ChordReduce.  MapReduce runs as a service on top of each node.}
+	\centering
+	\includegraphics[width=0.55\linewidth]{figs/crArch}
+	\caption[ChordReduce architecture]{The basic architecture of a node in ChordReduce.  MapReduce runs as a service on top of each node.}
 	\label{fig:crArch}
 \end{figure}
 
@@ -260,7 +264,7 @@ Finally, to demonstrate robustness, we need to show that ChordReduce can handle 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.5\linewidth]{figs/dartboard}
+	\includegraphics[width=0.40\linewidth]{figs/dartboard}
 	\caption{The "dartboard." The computer throws a dart by choosing a random $x$ and $y$ between 0 and 1.  If $x^{2} + y^{2} < 1^{2} $, the dart landed inside the circle.  $A$ and $B$ are darts that landed inside the circle, while $C$ did not.}
 	\label{fig:dartboard}
 \end{figure}
@@ -282,15 +286,17 @@ We also utilized a subroutine we wrote called $plot$, which sends a message sequ
 \subsection{Results}
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/expTime}
-	\caption{For a sufficiently large job, it was almost always preferable to distribute it.  When the job is too small, such as with the $10^{7}$ data set, our runtime is dominated by the overhead.  Our results are what we would expect when overhead grows logarithmically to the number of workers.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/expTime}
+	\caption[ChordReduce workers vs runtime]{For a sufficiently large job, it was almost always preferable to distribute it.  When the job is too small, such as with the $10^{7}$ data set, our runtime is dominated by the overhead.  Our results are what we would expect when overhead grows logarithmically to the number of workers.}
 	\label{fig:expTime}
 \end{figure}
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/expSpeed}
-	\caption{The larger the size of the job, the greater the gains of distributing with ChordReduce.  In addition, the larger the job, the more workers can be added before we start seeing diminishing returns.  This demonstrates that ChordReduce is scalable.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/expSpeed}
+	\caption[ChordReduce workers vs speedup]{The larger the size of the job, the greater the gains of distributing with ChordReduce.  In addition, the larger the job, the more workers can be added before we start seeing diminishing returns.  This demonstrates that ChordReduce is scalable.}
 	\label{fig:expSpeed}
 \end{figure}
 
@@ -302,14 +308,16 @@ The $10^{7}$ sample set confirms that the network overhead is logarithmic.  At t
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/projTime}
-	\caption{The projected runtime using ChordReduce for differently sized jobs.  Each curve projects the expected behavior for job that takes a single worker the specified amount of time.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/projTime}
+	\caption[ChordReduce projected time]{The projected runtime using ChordReduce for differently sized jobs.  Each curve projects the expected behavior for job that takes a single worker the specified amount of time.}
 	\label{fig:projTime}
 \end{figure}
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/projSpeed}
-	\caption{The projected speedup for different sized jobs. }
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/projSpeed}
+	\caption[ChordReduce projected speedup]{The projected speedup for different sized jobs. }
 	\label{fig:projSpeed}
 \end{figure}
 
@@ -330,7 +338,7 @@ Since we have now established that $T_{n} = \frac{T_{1}}{n} + k \cdot \log_{2}(n
 		0.00250\% & 331.80  &  1.24 \\ \hline 
 		0\% & 441.57 & 1.00 \\ \hline
 	\end{tabular}
-	\caption{} 
+	\caption{Experimental results of different rates of Churn} 
 	\label{tab:churnSpeed}
 \end{table}
 

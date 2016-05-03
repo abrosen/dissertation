@@ -63,14 +63,14 @@ Chord's routing can be implemented recursively or iteratively, while Kademlia's 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\linewidth]{figs/voro-chord-normal}
-	\caption{A Voronoi diagram for a Chord network, using Chord's definition of closest.}
+	\caption[Chord Voronoi Example]{A Voronoi diagram for a Chord network, using Chord's definition of closest.}
 	\label{fig:voro-chord-normal}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\linewidth]{figs/voro-chord-alternative}
-	\caption{A Voronoi diagram for a Chord network, where closest is defined by the node being the closest in either direction.}
+	\caption[Chord voronoi example with intuitive metric]{A Voronoi diagram for a Chord network, where closest is defined by the node being the closest in either direction.}
 	\label{fig:voro-chord-alternative}
 \end{figure}
 
@@ -164,7 +164,7 @@ An example Chord network is shown in Figure \ref{fig:chord}.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.45\linewidth]{figs/chord}
-	\caption{A Chord ring with 16 nodes.  The fingers (long hop connections) are shown cutting across the ring.}
+	\caption[A Chord ring with 16 nodes]{A Chord ring with 16 nodes.  The fingers (long hop connections) are shown cutting across the ring.}
 	\label{fig:chord}
 \end{figure}
 
@@ -232,7 +232,7 @@ An example network is shown in Figure \ref{fig:kademlia}.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/kademlia}
-	\caption{An example Kademlia network from the original paper \cite{kademlia}. The ovals are the node's $k$-buckets.}
+	\caption[An example Kademlia network]{An example Kademlia network from the original paper \cite{kademlia}. The ovals are the node's $k$-buckets.}
 	\label{fig:kademlia}
 \end{figure}
 
@@ -431,7 +431,7 @@ Figure \ref{fig:pastry-table} shows an example peerlist of a node in PAST.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\linewidth]{figs/pastry-table}
-	\caption{An example peerlist for a node in Pastry \cite{pastry}.}
+	\caption[Pastry peerlist]{An example peerlist for a node in Pastry \cite{pastry}.}
 	\label{fig:pastry-table}
 \end{figure}
 
@@ -630,7 +630,7 @@ Table \ref{tab:tradeoffs} summarizes the information presented in this chapter.
         
         VHash & $\Omega(3d+1) + O((3d+1)^{2})$ & $O(\sqrt[d]{n})$ hops & $3d + 1$ & approximates regions, hops are based least latency\\ \hline
 	\end{tabularx}
-	\caption{The different ratios and their associated DHTs}
+	\caption[DHT comparison.]{A comparison of and summary of the various DHTs.}
 	\label{tab:tradeoffs}
 \end{table}
 
