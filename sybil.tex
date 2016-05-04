@@ -207,8 +207,8 @@ Our results averaged 100 trials for each network size are shown in Figure \ref{f
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/size_time}
-	\caption{This figure shows the amount of time needed for an adversary with a single IP address to mash a pair of adjacent nodes.  The time it takes to mash a pair of nodes begins to markedly increase once the network size gets above 1000 until it asymptotes at 48 ms.  For larger networks, more IP addresses are needed and precomputing becomes necessary.}
+	\includegraphics[width=0.7\linewidth]{figs/size_time}
+	\caption[Mashing time.]{This figure shows the amount of time needed for an adversary with a single IP address to mash a pair of adjacent nodes.  The time it takes to mash a pair of nodes begins to markedly increase once the network size gets above 1000 until it asymptotes at 48 ms.  For larger networks, more IP addresses are needed and precomputing becomes necessary.}
 	\label{fig:exp1}
 \end{figure}
 
@@ -310,8 +310,8 @@ For Table \ref{tab:exp2}, we have included only the results for larger sized net
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\linewidth]{figs/ip_prob_all}
-	\caption[foo]{Our simulation results.  
+	\includegraphics[width=0.7\linewidth]{figs/ip_prob_all}
+	\caption[Simulation results for mashing]{Our simulation results.  
 		The $x$-axis corresponds to the number of IP addresses the adversary can bring to bear.
 		The $y$-axis is the probability that any chosen region has been mashed.
 		Each line maps to a different network size of $n$.
@@ -322,8 +322,8 @@ For Table \ref{tab:exp2}, we have included only the results for larger sized net
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/size_prob_all}
-	\caption[a]{These are the same as results shown in Figure \ref{fig:exp2}, but our $x$-axis is the network size $n$ in this case.  
+	\includegraphics[width=0.7\linewidth]{figs/size_prob_all}
+	\caption[Simulation results from a different perspective]{These are the same as results shown in Figure \ref{fig:exp2}, but our $x$-axis is the network size $n$ in this case.  
 		Here, each line corresponds to a different number of unique IP addresses the adversary has at their disposal.}
 	\label{fig:size_prob_all}
 \end{figure}
@@ -396,8 +396,8 @@ We simulated this attack under the same parameters as above and are presented in
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/size_occlusion_chord}
-	\caption{This graph shows the relationship between the network size and the probability a particular link in Chord, adjacent or not, can be mashed.
+	\includegraphics[width=0.7\linewidth]{figs/size_occlusion_chord}
+	\caption[Relationship between network size and mashing probability]{This graph shows the relationship between the network size and the probability a particular link in Chord, adjacent or not, can be mashed.
 		The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_{bad\_neighbor} =  \frac{num\_ips \cdot 16383}{num\_ips \cdot 16383 + n - 1}$}
 	
 	\label{fig:exp3}
@@ -406,7 +406,7 @@ We simulated this attack under the same parameters as above and are presented in
 
 
 \begin{table}\small
-	
+	\centering
 	\caption{Selection of results for a Sybil attack on Chord.} % The percentage of links occluded is the percentage of long range links from healthy nodes that connect to Sybil nodes. 
 	%The Occlusion per node measures how many of the 160 long range links lead to a Sybil on average.  
 	%We ignore the predecessor links since it is not used for routing.}

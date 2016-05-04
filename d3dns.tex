@@ -109,8 +109,9 @@ Here we are particularly concerned with Bitcoin's blockchain. Bitcoin's blockcha
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/blockchain}
-	\caption{A section of the blockchain as defined by Bitcoin \cite{bitcoin}.}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/blockchain}
+	\caption[A blockchain segment]{A section of the blockchain as defined by Bitcoin \cite{bitcoin}.}
 	\label{fig:blockchain}
 \end{figure}
 
@@ -243,8 +244,9 @@ Nodes in UrDHT are responsible for the address space defined by their Voronoi re
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/voronoi-churn2}
-	\caption{The starting network topology.  The blue lines demark the Voronoi edges, while the red lines connecting the nodes correspond to the Delaunay Triangulation edges and one-hop connections.}
+	\centering
+	\includegraphics[width=0.5\linewidth]{figs/voronoi-churn2}
+	\caption[The starting network topology]{The starting network topology.  The blue lines demarcate  the Voronoi edges, while the red lines connecting the nodes correspond to the Delaunay Triangulation edges and one-hop connections.}
 	\label{fig:churninit}
 \end{figure}
 
@@ -388,21 +390,24 @@ There is no function for a ``polite'' exit from the network. UrDHT assumes nodes
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/voronoi-churn4}
-	\caption{Here, a new node is joining the networks and has established that his position falls in the the yellow shaded Voronoi region.}
+	\centering
+	\includegraphics[width=0.5\linewidth]{figs/voronoi-churn4}
+	\caption[Topology before join]{Here, a new node is joining the networks and has established that his position falls in the the yellow shaded Voronoi region.}
 	\label{fig:churnjoin}
 \end{figure}
 
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/voronoi-example}
-	\caption{The network topology after the new node has finished joining.}
+	\centering
+	\includegraphics[width=0.5\linewidth]{figs/voronoi-example}
+	\caption[Topology after join]{The network topology after the new node has finished joining.}
 	\label{fig:churndone}
 \end{figure}
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figs/voronoi-churn1}
-	\caption{The topology immediately after the new node leaves the network. After maintenance takes place, the topology repairs itself back to the configuration shown in Figure \ref{fig:churninit}.}
+	\centering
+	\includegraphics[width=0.5\linewidth]{figs/voronoi-churn1}
+	\caption[Topology after failure]{The topology immediately after the new node leaves the network. After maintenance takes place, the topology repairs itself back to the configuration shown in Figure \ref{fig:churninit}.}
 	\label{fig:churndrop}
 \end{figure}
 

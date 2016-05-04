@@ -94,7 +94,7 @@ As we have previously mentioned, many DHTs use a cryptographic hash function to 
 However, no cryptographic hash function can uniformly distribute it's outputs across its range. 
 Table \ref{tab:medianLoads} shows the median workload for networks of different numbers of nodes and tasks.
 In this context, tasks and nodes are interchangeable, as each node in a DHT performing a distributed computation would receive one task per file or chunk of file.
-The exact mechanics of this were discussed in \ref{chapter:chordreduce}.
+The exact mechanics of this were discussed in Chapter \ref{chapter:chordreduce}.
 
 
 \begin{table}
@@ -358,8 +358,8 @@ Each trial is linked with a seed for the pseudorandom number generator and can b
 
 We will be referring to a \textbf{base} runtime factor.
 This means the network had the defaults for variable.
-
-\textbf{We suspect the worse runtime factors in homogeneous networks don't necessarily imply the method is weaker, but may imply that runtime factor is not the best metric, but it is the best simple one we have.}
+{We suspect the worse runtime factors in homogeneous networks don't necessarily imply the method is weaker.
+It may imply that runtime factor is not the best metric, but it is the best simple one we have.
 
 
 \subsection{Churn}
@@ -698,10 +698,13 @@ We found that our random injection strategy performed exceptionally well, approa
 The fact that these strategies can be used as new nodes join the network can not be understated.
 Each joining node is another member of the network that can fully participate in the computation, despite not being present at the beginning of the computation.
 
-However, our strategies were not nearly as successful in a heterogeneous network.
-It could be that smarter or completely different strategies are needed.
-It could also be that the runtime factor is not the proper way to get a grasp of how well a heterogeneous network performs.
-This forms basis for interesting future work.
+However, our strategies were not nearly as successful in a heterogeneous network, even though the work was better distributed throughout the network.
+We suspect this is the result of weaker nodes acquiring more work from stronger nodes, leading to an overall longer runtime, despite the workload being better balanced.
+In other words, the workload is balanced in the heterogeneous network, but the efficiency is not improved.
+An avenue for future work can take the node strength into account or use another, smarter strategy.
+%It could be that smarter or completely different strategies are needed.
+%It could also be that the runtime factor is not the proper way to get a grasp of how well a heterogeneous network performs.
+%This forms basis for interesting future work.
 
 
 As mentioned in Section \ref{sec:auto-simulation}, we made the assumption that nodes cannot choose their own ID and must rely on the strategies described in Chapter \ref{chapter:sybil}  \cite{sybil-analysis} for creating a Sybil with the appropriate ID.
