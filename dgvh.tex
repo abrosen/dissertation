@@ -30,7 +30,7 @@ In multiple dimensions, our routing algorithm (Algorithm \ref{alg:lookup}) is ex
 
 
 \begin{algorithm}
-	\caption{Lookup in a Voronoi-based DHT}
+	\caption[Greedy Routing Algorithm]{The DHT Greedy Routing Algorithm, presented in the terms  used in this paper.}
 	\label{alg:lookup}
 	\begin{algorithmic}[1]
 		\State Given node $n$
@@ -70,10 +70,9 @@ For additional information, Aurenhammer \cite{voronoi} provides a formal and ext
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\linewidth]{figs/voronoi}
-	\caption{An example Voronoi diagram for objects on a 2-dimensional space.  The black lines correspond to the borders of the Voronoi region, while the dashed lines correspond to the edges of the Delaunay Triangulation.}
+	\caption[2D Voronoi Example]{An example Voronoi diagram for objects on a 2-dimensional space.  The black lines correspond to the borders of the Voronoi region, while the dashed lines correspond to the edges of the Delaunay Triangulation.}
 	\label{voro-ex}
 \end{figure}
-
 
 
 
