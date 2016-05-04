@@ -158,8 +158,8 @@ The base greedy algorithm is always the same regardless of the implementation.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.75\linewidth]{figs/voronoi}
-	\caption{An example Voronoi diagram for objects on a 2-dimensional space.  The black lines correspond to the borders of the Voronoi region, while the dashed lines correspond to the edges of the Delaunay Triangulation.}
+	\includegraphics[width=0.45\linewidth]{figs/voronoi}
+	\caption[Example Voronoi diagram ]{An example Voronoi diagram for objects on a 2-dimensional space.  The black lines correspond to the borders of the Voronoi region, while the dashed lines correspond to the edges of the Delaunay Triangulation.}
 	\label{fig:voro-ex}
 \end{figure}
 
@@ -578,28 +578,28 @@ We show these results in Figures \ref{fig:ChordDegree} - \ref{fig:KademliaDistan
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/ChordDegree}
-	\caption{This is the average and maximum degree of nodes in the Chord network. This Chord network utilized a 120 bit hash and thus degree is bound at 122 (full fingers, predecessor and successor) when the network reaches $2^{120}$ nodes.}
+	\includegraphics[width=0.7\linewidth]{figs/ChordDegree}
+	\caption[Degree of nodes in Chord]{This is the average and maximum degree of nodes in the Chord network. This Chord network utilized a 120 bit hash and thus degree is bound at 122 (full fingers, predecessor and successor) when the network reaches $2^{120}$ nodes.}
 	\label{fig:ChordDegree}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/ChordDistance}
-	\caption{This is the number hops required for a greedy routed lookup in Chord. The average lookup between two nodes follows the expected logarithmic curve.}
+	\includegraphics[width=0.7\linewidth]{figs/ChordDistance}
+	\caption[Chord hops]{This is the number hops required for a greedy routed lookup in Chord. The average lookup between two nodes follows the expected logarithmic curve.}
 	\label{fig:ChordDistance}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/KademliaDegree}
-	\caption{This is the average and maximum degree of nodes in the Kademlia network as new nodes are added.  Both the maximum degree and average degree are $O(\log n)$.}
+	\includegraphics[width=0.7\linewidth]{figs/KademliaDegree}
+	\caption[Degree of nodes in Kademlia]{This is the average and maximum degree of nodes in the Kademlia network as new nodes are added.  Both the maximum degree and average degree are $O(\log n)$.}
 	\label{fig:KademliaDegree}
 \end{figure}
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figs/KademliaDistance}
-	\caption{Much like Chord, the average degree follows a distinct logarithmic curve, reaching an average distance of approximately three hops when there are 500 nodes in the network.}
+	\includegraphics[width=0.7\linewidth]{figs/KademliaDistance}
+	\caption[Kademlia hops]{Much like Chord, the average degree follows a distinct logarithmic curve, reaching an average distance of approximately three hops when there are 500 nodes in the network.}
 	\label{fig:KademliaDistance}
 \end{figure}
 
@@ -624,28 +624,28 @@ This presents a strategy for trade-off of the network diameter vs. the overhead 
 
 \begin{figure}
 \centering
-\includegraphics[width=\linewidth]{figs/EucldianDegree}
-\caption{Because the long peers increase linearly to the maximum value (49), degree initially rises quickly and then grows  more slowly as the number of long peers ceases to grow and the size short peers increases with network size. }
+\includegraphics[width=0.7\linewidth]{figs/EucldianDegree}
+\caption[Growth of UrDHT degree]{Because the long peers increase linearly to the maximum value (49), degree initially rises quickly and then grows  more slowly as the number of long peers ceases to grow and the size short peers increases with network size. }
 \label{fig:EucldianDegree}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\linewidth]{figs/EucldianDistance}
-\caption{The inter-node distance stays constant at 1 until long peers are filled, then rises at the rate of a randomly connected network due to the distribution of long peers selected}
+\includegraphics[width=0.7\linewidth]{figs/EucldianDistance}
+\caption[Hops in Euclidean UrDHT]{The inter-node distance stays constant at 1 until long peers are filled, then rises at the rate of a randomly connected network due to the distribution of long peers selected}
 \label{fig:EucldianDistance}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\linewidth]{figs/HyperbolicDegree}
-\caption{The Hyperbolic network uses the same long and short peer strategies to the Euclidean network, and thus shows similar results.}
+\includegraphics[width=0.7\linewidth]{figs/HyperbolicDegree}
+\caption[Growth of UrDHT degree in a hyperbolic space]{The Hyperbolic network uses the same long and short peer strategies to the Euclidean network, and thus shows similar results.}
 \label{fig:HyperbolicDegree}
 \end{figure}
 \begin{figure}
 \centering
-\includegraphics[width=\linewidth]{figs/HyperbolicDistance}
-\caption{Like the Euclidean Geometry, our Poincar\`{e} disc based topology has much shorter maximum and average distances.
+\includegraphics[width=0.7\linewidth]{figs/HyperbolicDistance}
+\caption[Hops in Hyperbolic UrDHT]{Like the Euclidean Geometry, our Poincar\`{e} disc based topology has much shorter maximum and average distances.
 }
 \label{fig:HyperbolicDistance}
 \end{figure}
