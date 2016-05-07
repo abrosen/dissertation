@@ -23,7 +23,7 @@
 
 \logo{\includegraphics[height=1cm]{figs/logo}}
 \institute{Georgia State University}
-\date{July 15th, 2015}
+\date{May 13th, 2016}
 %\subject{}
 %\setbeamercovered{transparent}
 %\setbeamertemplate{navigation symbols}{}
@@ -993,94 +993,157 @@ The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_
 	\item By cost, that is the Amazon EC2 cost and assumed half the links of 20,000,000 nodes we occluded.
 }
 
-\section{Proposed Work}
 
 
+\section{UrDHT}
 
-\subsection{UrDHT}
-\begin{frame}{UrDHT}
+\section{Autonomous Load-Balancing}
+
+\subsection{Introduction}
+\begin{frame}{Introduction}
 	\begin{itemize}
-		\item UrDHT is a completely abstracted DHT that will serve as a framework for creating DHTs.
-		\item The goal is \textbf{not only} to create a DHT, but to create an easily extensible abstract framework for DHTs.
-		\item Continuation of the work in VHash.
+		
+		\item a
+		\item a
+		\item a
 	\end{itemize}
 \end{frame}
 
 
-\note[itemize]{
-	\item \textit{Ur} as in the germanic prefix for proto or first
-	\item UrDHT is a project that presents a minimal and extensible implementation for all the essential components for a DHT: the different aspects for a protocol definition, the storage of values, and the networking components.
-	Every DHT has the same components, but there has yet to be an all-encompassing framework that clearly demonstrates this.
-}
+\subsection{DHT Distribution}
 
-\begin{frame}{UrDHT}
+\subsection{Experimental Setup}
+\begin{frame}{Terms and Assumptions}
 	\begin{itemize}
-		\item We will be creating a mathematical description of what a DHT is.
-		\item We will implement various DHTs using UrDHT and compare their performance.
-
-	\end{itemize}
-\end{frame}
-
-
-
-\note[itemize]{
-	\item The purpose of doing this is that
-	\item it's cool
-	\item We want a framework for creating DHTs and DHT based applications to be easily available
-	\item I need it to do the rest of my proposal and Brendan needs it for the same reason.
-}
-
-
-\subsection{DHT Distributed Computing}
-\begin{frame}{DHT Distributed Computing}
-	\begin{itemize}
-			\item We will use UrDHT to implement a few of the more popular DHTs.
-			\begin{itemize}
-				\item See if there is a difference for distributed computing.
-				\item Using UrDHT for all the implementations will minimize the differences between each DHT.	
-			\end{itemize}
+		
+		\item Time is measured in ticks.
+		\item A tick is enough time to perform aggressive, reactive maintenance\footnote{This has been implemented and tested.}
+		\item Jobs are measured in tasks; each task can correspond to a file or a piece of a file
 		
 	\end{itemize}
 \end{frame}
-\note[itemize]{
-	\item Additionally this will serve as an example of how to implement our framework. 
+
+
+
+
+\begin{frame}{Variables}
+	\begin{itemize}
+		
+		\item Strategy
+		\item Homogeneity 
+		\item Work Measurement
+		\item Number of Nodes
+		\item Number of Tasks
+		\item Churn Rate 
+		\item Max Sybils or Node Strength
+		\item Number of Successors
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Output}
+	\begin{itemize}
+		
+		\item Ideal Runtime
+		\item Runtime
+		\item Runtime Factor
+		\item Task Distribution
+	\end{itemize}
+\end{frame}
+
+\note{
+We used these to calculate a ``runtime factor,'' the ratio of the experimental runtime compared to the ideal runtime.
+For example, in the network from our previous example took 852 ticks to finish, its factor is 8.52.
+We prefer to use this runtime factor for comparisons since it allows us to compare networks of different compositions, task assignments, and other variables.
+
 }
 
+\subsection{Churn}
 
-\begin{frame}{DHT Distributed Computing}
+
+\begin{frame}{Strategy}
 	\begin{itemize}
-			\item Implement distributed computing on each of the implemented DHTs.
-			\begin{itemize}
-				\item The emphasis is robustness and fault-tolerance.
-			\end{itemize}
-			\item Test each framework using a variety of embarrassingly parallel problems, such as:
-			\begin{itemize}
-				\item Brute-force cryptanalysis.
-				\item MapReduce problems.
-				\item Monte-Carlo computations.
-			\end{itemize}
-	\end{itemize}
-\end{frame}
-
-
-\subsection{Autonomous Load-Balancing}
-\begin{frame}{Autonomous Load-Balancing}
-	\begin{itemize}
-		\item We will confirm that the effect from the high rate of Churn exists.
-		\item We must create a scoring mechanism for nodes.
-		\item The last step is to implement load-balancing strategies.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Autonomous Load-Balancing Strategies}
-	A few strategies we've thought up.
-	\begin{itemize}
-		\item Passive load-balancing: Nodes create virtual nodes based on their score.
-		\item Traffic analysis:  Create replicas where there is a high level of traffic.
-		\item Invitation:  Nodes with large areas of responsibility can invite other nodes to help.
 		
+		\item a
+		\item a
+		\item a
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Runtime}
+	\begin{table}[h]
+		\tiny
+		\centering
+		\caption[Churn Runtimes in a homogenious network]{Runtime factor of networks of varying sizes and number of tasks, each using the Churn strategy to load-balance.  Each result is the average of 100 trials. The networks are homogeneous and each node consumes one task per tick.  A runtime of 1 is the ideal and target.}
+		\begin{tabular}{|p{1cm} || p{1cm} | p{1cm} | p{1cm} | p{1cm} | p{1cm} |}
+			\hline
+			Churn Rate & $ 10^{3}$ nodes, $ 10^{5}$ tasks & $ 10^{3}$ nodes, $ 10^{6}$ tasks & $ 100$ nodes, $ 10^{4}$ tasks & $ 100$ nodes, $ 10^{5}$ tasks &$ 100$ nodes, $ 10^{6}$ tasks \\ \hline
+			0      & 7.476   &  7.467 &  5.043& 5.022 &5.016 \\\hline
+			0.0001 & 7.122   &  5.732 &  4.934& 4.362&3.077 \\\hline
+			0.001  & 6.047   &  3.674 &  4.391& 3.019  &1.863\\\hline
+			0.01  &  3.721   &  2.104 &  3.076& 1.873 &1.309\\\hline
+			
+		\end{tabular}
+		\label{tab:ChurnRuntimesHomogenious}
+	\end{table}
+\end{frame}
+
+
+
+
+\begin{frame}{Churn vs Runtime factor}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/churnVsTime}
+		\caption[Churn vs Runtime factor]{This graph shows the effect churn has on runtime in a distributed computation.
+			Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
+			The lower the runtime factor, the closer it is to an ideal of 1.
+			Neither the homogeneity of the network nor work measurement had a significant effect on the runtime.}
+		\label{fig:churnVsTime}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Churn vs Average Work Per Tick}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/churnVsWork}
+	\caption[Churn vs average work per tick]{With more and more churn in the network, new nodes have a higher chance of joining the network and acquiring work from overloaded nodes.  This results in more average work being done each tick, as there are less nodes simply idling.}
+	\label{fig:churnVsWork}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Base Work Distribution}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
+	\caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.}
+	
+	\label{fig:churnStableHist0}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Churn Distribution after 5 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
+	\caption[Workload for churn at tick 5]{This is the distribution of the workloads at the beginning of tick 5.  We can see the network using 0.01 churn has fewer nodes with less work and more nodes with a greater workload.}
+	
+	\label{fig:churnStableHist5}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Churn Distribution after 35 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
+	\caption[Workload for churn at tick 35]{After 35 ticks, the effects of churn on the workload distribution become more pronounced.  More nodes have consumed all their tasks and are simply idling, but significantly less in the network using churn.}
+	\label{fig:churnStableHist35}
+\end{figure}
+\end{frame}
+
 
 
 \section{Conclusion}
@@ -1089,46 +1152,44 @@ The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_
 
 \begin{frame}{Conclusion}
 	\begin{itemize}
-		\item Developers will be able create DHTs and DHT based applications in a cohesive and consistent manner.
-		\item Minimal setup distributed computing.
-		\item Data centers will be able to leverage P2P resources.
+		\item Load Balancing
 	\end{itemize}
 \end{frame}
 
-\subsection{Publications}
-\begin{frame}{Published Work}
- 	\begin{itemize}\tiny{
-		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Poster at IPDPS 2014 PhD Forum
-		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Presentation ICA CON 2014
-		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Short Paper ICA CON 2014 
-		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
-		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``A Distributed Greedy Heuristic for Computing Voronoi Tessellations With Applications Towards Peer-to-Peer Networks'' IEEE IPDPS 2015 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems}
-	\end{itemize}
-	
-\end{frame}
-
-
-\begin{frame}{In Progress}
-	\begin{itemize}\footnotesize{
-		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``UrDHT: A Generalized DHT''
-		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``The Sybil Attack on Peer-to-Peer Networks From the Attacker's Perspective''
-		\item Chaoyang Li, Andrew Rosen, Anu G. Bourgeois ``On Minimum Camera Set Problem in Camera Sensor Networks''}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Other Publications}
-	
-	\begin{itemize}
-		\footnotesize{
-		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
-		``A Model Architecture for Big Data applications using Relational Databases''
-		2014 IEEE BigData - C4BD2014 - Workshop on Complexity for Big Data  
-		\item Chinua Umoja, J.T. Torrance, Erin-Elizabeth A. Durham, Andrew Rosen, Dr. Robert Harrison
-		``A Novel Approach to Determine Docking Locations Using Fuzzy Logic and Shape Determination''
-		2014 IEEE BigData - Poster and Short Paper 
-		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
-		``Optimization of Relational Database Usage Involving Big Data'' 
-		IEEE SSCI 2014 - CIDM 2014 - The IEEE Symposium Series on Computational Intelligence and Data Mining }
-	\end{itemize}
-\end{frame}
+%\subsection{Publications}
+%\begin{frame}{Published Work}
+% 	\begin{itemize}\tiny{
+%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Poster at IPDPS 2014 PhD Forum
+%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Presentation ICA CON 2014
+%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Short Paper ICA CON 2014 
+%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
+%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``A Distributed Greedy Heuristic for Computing Voronoi Tessellations With Applications Towards Peer-to-Peer Networks'' IEEE IPDPS 2015 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems}
+%	\end{itemize}
+%	
+%\end{frame}
+%
+%
+%\begin{frame}{In Progress}
+%	\begin{itemize}\footnotesize{
+%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``UrDHT: A Generalized DHT''
+%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``The Sybil Attack on Peer-to-Peer Networks From the Attacker's Perspective''
+%		\item Chaoyang Li, Andrew Rosen, Anu G. Bourgeois ``On Minimum Camera Set Problem in Camera Sensor Networks''}
+%	\end{itemize}
+%\end{frame}
+%
+%\begin{frame}{Other Publications}
+%	
+%	\begin{itemize}
+%		\footnotesize{
+%		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
+%		``A Model Architecture for Big Data applications using Relational Databases''
+%		2014 IEEE BigData - C4BD2014 - Workshop on Complexity for Big Data  
+%		\item Chinua Umoja, J.T. Torrance, Erin-Elizabeth A. Durham, Andrew Rosen, Dr. Robert Harrison
+%		``A Novel Approach to Determine Docking Locations Using Fuzzy Logic and Shape Determination''
+%		2014 IEEE BigData - Poster and Short Paper 
+%		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
+%		``Optimization of Relational Database Usage Involving Big Data'' 
+%		IEEE SSCI 2014 - CIDM 2014 - The IEEE Symposium Series on Computational Intelligence and Data Mining }
+%	\end{itemize}
+%\end{frame}
 \end{document}
