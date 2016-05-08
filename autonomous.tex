@@ -513,7 +513,7 @@ Furthermore, we see a huge difference between the effectiveness of random inject
 	\label{fig:churnInjectionHist35}
 \end{figure}
 
-We found that a homogeneous, 1000 node/100,000 task network, where each node consumed a single task each tick would never have an average runtime factor great than 1.7 and the average runtime was as fast as 1.36.
+We found that a homogeneous, 1000 node/100,000 task network, where each node consumed a single task each tick would never have an average runtime factor greater than 1.7 and the average runtime was as fast as 1.36.
 In the same network with 1,000,000 tasks, these runtimes were 1.25 and 1.12 respectively.
 On average, the 1,000,000 task network had a runtime factor 0.82 less than the 100,000 task network.
 This huge jump is the result of how the network is impacted by heterogeneous nodes, explained further below.
@@ -530,7 +530,7 @@ However, most trials did not have a runtime factor greater than 3.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/randomStableHistHetero35}
-\caption[Random injection in a Heterogenous Network]{The workload distribution of heterogenous networks after 35 ticks.  We can see the network using the random injection strategy is experiencing}
+\caption[Random injection in a Heterogenous Network]{The workload distribution of heterogenous networks after 35 ticks.  We can see the network using the random injection strategy is experiencing a better distribution of work.}
 \label{fig:randomStableHistHetero35}
 \end{figure}
 
@@ -553,7 +553,7 @@ Our \texttt{maxSybils} variable had no noticeable effect on runtime in a heterog
 \texttt{maxSybils} controlled both the number of tasks a node could consume and the maximum number of Sybils that node could make.
 Surprisingly, larger values for \texttt{maxSybils} had a negative impact on runtime in heterogeneous networks.
 Networks where nodes strength ranged 1 to 5 performed better than those where the range of \texttt{maxSybils} was 1 to 10.
-In other words, the greater the disparity between node strength in the network, the greater 
+In other words, the greater the disparity between node strength in the network, the greater the detrimental effect to the heterogeneous network.
 
 This impact was felt stronger in nodes with a lower node to task ratio.
 The runtime factor saw  a 0.3 to 0.4 increase in the 1000 node/1,000,000 task and 100 node/100,000 task networks (1000 tasks per node).
@@ -574,7 +574,7 @@ In addition, nodes always inject Sybils into the largest gap between their succe
 That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.\footnote{We suggest how to avoid this in a real implementation in Section \ref{sec:strat-neighbor}}
 
 The base runtime factor of the neighbor strategy in a 1000 node/100,000 task homogeneous network was 5.033, which is 2.4 lower than no strategy.
-In  a 100 node/10,000 task network, this was lower -- a runtime factor of 3.006, which was 2 lower than no strategy.
+In a 100 node/10,000 task network, this was lower -- a runtime factor of 3.006, which was 2 lower than no strategy.
 However, the base runtime in a heterogeneous network  was \textbf{worse} and, like in random injection, is exacerbated by a higher \texttt{maxSybil}.\footnote{Runtime was fine in the heterogeneous networks where each node could create a different number of Sybils, but still only complete one task per tick.}
 We suspect this is because weaker nodes are acquiring work away from stronger nodes and then taking longer to finish.
 
@@ -678,13 +678,13 @@ When we compare this strategy to the smart neighbor injection strategy (Figures 
 
 
 
-The impact of the invitation strategy on the runtime factor was closely tied to the number or nodes in the network.
+The impact of the invitation strategy on the runtime factor was closely tied to the number of nodes in the network.
 For example, in a 100 node/ 100,000 task network (1000 tasks per node), the base average runtime factor was 3.749.
 However, a 1000 node/ 100,000 task  network had a base average runtime of 5.673.
 
 Other variables and the ratio of tasks to nodes appeared to have no effect on the runtime factor.\footnote{Churn was not tested on the invitation strategy, but we suspect it has the same effect as in the neighbor strategy.}
 The single exception was when the network was heterogeneous and each node could complete a number of tasks equal to it's strength.
-Like the neighbor injetion strategy, networks under these conditions faired much worse, with our 1000 node/ 100000 tasks networks base average runtime factor being 6.097.
+Like the neighbor injection strategy, networks under these conditions faired much worse, with our 1000 node/ 100000 tasks networks base average runtime factor being 6.097.
 
 The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 

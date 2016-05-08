@@ -406,7 +406,7 @@ The big issues in distributed computing can be solved by the mechanisms provided
 %	\end{itemize}
 %\end{frame}
 
-\section{Completed Work}
+\section{Previous Work}
 
 
 
@@ -776,61 +776,6 @@ My research has been focused on:
 \note{The paths here are arbitrary edges that I came up with for the example.}
 
 
-\begin{frame}{Experiment Details}
-	Our test was a Monte Carlo approximation of $\pi$.
-	\begin{columns}[T]
-	
-	
-		\begin{column}{.5\textwidth}
-		
-			\begin{figure}
-			    \includegraphics[width=\linewidth]{figs/dartboard}
-			    \caption{The node chooses random $x$ and $y$ between 0 and 1. If $x^{2} + y^{2} < 1^{2} $, the ``dart ''landed inside the circle.}
-			    \label{dartboard}
-			\end{figure}
-			
-			
-		\end{column}
-			
-		\begin{column}{.5\textwidth}
-			\begin{itemize}
-				\item Map jobs were sent to randomly generated hash addresses.
-				\item The ratio of hits to generated results approximates $\frac{\pi}{4}$.
-				\item Reducing the results was a matter of combining the two fields.
-			\end{itemize}
-		\end{column}
-		
-	\end{columns}
-\end{frame}
-
-
-\note[itemize]{
-\item Experiment had these goals
-\begin{enumerate}
-	\item ChordReduce provided significant speedup during a distributed job.
-	\item ChordReduce scaled.
-	\item ChordReduce handled churn during execution.
-\end{enumerate}
-}
-
-\begin{frame}{Experimental Results}
-
-	\begin{figure}
-	    \includegraphics[width=0.75\linewidth]{figs/expTime}
-	    \caption{For a sufficiently large job, it was almost always preferable to distribute it.}
-	    \label{expTime}
-	\end{figure}
-
-
-\end{frame}
-\note[itemize]{
-	\item When the job is too small, such as with the $10^{7}$ data set, our runtime is dominated by the overhead.  
-	\item Our results are what we would expect when overhead grows logarithmically to the number of workers.
-	\item Diminishing returns.
-
-}
-
-
 
 \begin{frame}{Churn Results}
 	\begin{table}
@@ -884,118 +829,19 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 	It turns out the security world has something analogous to that.
 }
 
-\subsection{Sybil Attack Analysis}
 
-\begin{frame}{The Sybil Attack}
-	\begin{itemize}
-		\item The Sybil attack is a type of attack against a distributed system such as a DHT.
-		\item The adversary pretends to be more than one identity in the network.
-		\begin{itemize}
-			\item Each of these false identities, called a \textbf{Sybil} is treated as a full member of the network.
-		\end{itemize}
-		\item The overall goal is to occlude healthy nodes from one another.
-		\item The Sybil attack is extremely well known, but there is little literature written from the attacker's perspective.
-	\end{itemize}
-	
-\end{frame}
-
-\note[itemize]{
-	\item DHTs don't have a centralized point of failure, but this opens up different strategies for attack
-	\item How the identities are obtained is a question for later, but we assume they don't have to be real hardware.
-	\item By occlude, we me that that traffic must travel thru the adversary.
-	\item What distinguishes the Sybil from the Eclipse attack is the fact that the Sybil attack relies only on false identity
-}
-
-
-\begin{frame}
-	\frametitle{The Sybil Attack in A P2P network}
-	\begin{itemize}
-		\item We want to inject a Sybil into as many of the regions between nodes as we can.
-		\item The question we wanted to answer is what is the probability that a region can have a Sybil injected into it, given:
-		\begin{itemize}
-			\item The network size $n$
-			\item The number of IDs available to the attacker (the number of identities they can fake).
-		\end{itemize}
-	\end{itemize}
-	\end{frame} 
-       
-\begin{frame}
-\frametitle{Assumptions}
-	\begin{itemize}
-		\item The attacker is limited in the number of identities they can fake.		
-		\begin{itemize}
-			\item To fake an identity, the attacker must be able to generate a valid IP/port combo he owns.
-			\item The attacker therefore has $num\_IP \cdot num\_ports$ IDs.
-			\item We'll set $ num\_ports = 16383 $, the number of ephemeral ports.
-			\item Storage cost is 320 KiB.
-		\end{itemize}
-		\item We call the act of finding an ID by modulating your IP and port so you can inject a node \emph{mashing}.
-		\item In Mainline DHT, used by BitTorrent, you can choose your own ID at ``random.''   The implications should be apparent.
-	
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Analysis}
-    The probability an attacker can mash a region between two adjacent nodes in a size $n$ network is:
-     \begin{equation}
-    P \approx \frac{1}{n}\cdot num\_ips \cdot num\_ports
-    \end{equation}
-    An attacker can compromise a portion $ P_{bad\_neighbor} $ of the network given by:
-    \begin{equation}
-    P_{bad\_neighbor} =  \frac{num\_ips \cdot num\_ports}{num\_ips \cdot num\_ports + n - 1}
-    \label{eq:bad}
-    \end{equation}
-    
-\end{frame}
-
-
-\begin{frame}
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.75\linewidth]{figs/ip_prob_all}
-        \caption[foo]{Our simulation results.  
-           
-            The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_{bad\_neighbor} =  \frac{num\_ips \cdot 16383}{num\_ips \cdot 16383 + n - 1}$}.
-        \label{fig:exp2}
-    \end{figure}
-\end{frame}
-\note{ Our simulation results.  
-For this experiment, we created a Chord ring composed of a number of nodes.
-We then injected Sybils into the network to see how many short peers were comporomised.
-The $x$-axis corresponds to the number of IP addresses the adversary can bring to bear (about 16000 Sybils per IP).
-The $y$-axis is the probability that a random region between two adjacent normal members of the network can be mashed.
-Each line maps to a different network size of $n$.
-The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_{bad\_neighbor} =  \frac{num\_ips \cdot 16383}{num\_ips \cdot 16383 + n - 1}$.}
-
-
-\begin{frame}
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.7\linewidth]{figs/size_occlusion_chord}
-        \caption{This graph shows the relationship between the network size and the probability a particular link, adjacent or not, can be mashed.}
-        \label{fig:exp3}
-    \end{figure}
-\end{frame}
-    
-\note{We redid the previous experiments, this time examining how many long links were also compromised.  The results are the same}
-    
-\begin{frame}{Conclusion}
-	\begin{itemize}
-		
-		\item Our analysis showed an adversary with limited resources can occlude the majority of the paths between nodes.
-		\item An attack of this sort on Mainline DHT would cost about \$43.26 USD per hour.
-		\item Moreover, we demonstrated that creating virtual nodes is cheap and easy.
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-	\item By cost, that is the Amazon EC2 cost and assumed half the links of 20,000,000 nodes we occluded.
-}
 
 
 
 \section{UrDHT}
+
+\subsection{Introduction}
+\begin{frame}{Introduction}
+	\begin{itemize}
+		\item Build on DGVH and VHash
+	\end{itemize}
+\end{frame}
+
 
 \section{Autonomous Load-Balancing}
 
@@ -1013,10 +859,10 @@ The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_
 \end{frame}
 
 
-\subsection{DHT Distribution}
+\subsection{Distribution of Keys in A DHT}
 
 
-\begin{frame}{Distribution of Work in a DHT}
+\begin{frame}{Distribution in Networks of Different Sizes}
 \begin{table}
 	\centering
 	\caption{The median distribution of tasks (or files) among nodes.  We can see the standard deviation is fairly close to the expected mean workload ($\frac{tasks}{nodes}$). Each row is the average of 100 trials.  Experiments show there is practically little deviation in the median load of the network.}
@@ -1039,6 +885,11 @@ The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_
 
 \end{frame}
 
+\note[itemize]{
+\item This means 50\% of the network has significantly less tasks than the average.  Probably more.
+
+}
+
 
 \begin{frame}{Distribution of Work in A DHT}
 \begin{figure}
@@ -1051,6 +902,8 @@ The dotted line traces the line corresponding to the Equation \ref{eq:bad}: $ P_
 
 \note[itemize]{
 \item Keys were generated by feeding random numbers into the SHA1 hash function, a favorite for many distributed hash tables.
+\item Nodes with small amounts of work (the first two buckets)  will finish first.  
+\item If each node consumes a task a tick, then that means the nodes the furthest right will dictate the runtime.
 }
 
 \begin{frame}{Distribution of Work in Chord}
@@ -1153,7 +1006,12 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\end{table}
 \end{frame}
 
-
+\note[itemize]{
+	\item The magnitude of churn's effect varies based on the size of the network and the number of tasks. 
+	\item In networks where there are fewer nodes, we see the base runtime factor is smaller.
+	\item The more tasks there are, the greater the gains of churn.
+	\item A network 100 nodes and 1 million tasks, on average, has a runtime factor only 30\% higher than ideal when churn is 0.01 per tick.
+	\item The runtime for heterogeneous versus homogeneous networks had no significant differences.  This won't always be the case.}
 
 
 \begin{frame}{Churn vs Runtime factor}
@@ -1189,6 +1047,9 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{figure}
 \end{frame}
 
+\note{This will be the same for every strategy.}
+
+
 \begin{frame}{Churn Distribution after 5 Ticks}
 \begin{figure}
 	\centering
@@ -1211,7 +1072,9 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Remarks}
 \begin{itemize}
-	\item 
+	\item Diminishing returns
+	\item Maintenance costs can get excessive
+	\item We don't actually have to kill nodes, most of the speedup is from joining.
 \end{itemize}
 \end{frame}
 
@@ -1221,15 +1084,34 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\begin{itemize}
 		
 		\item Nodes with loads $ \leq $ \texttt{sybilThreshold} create Sybils
+		\item This check occurs every 5 ticks before work is performed
 		\item These Sybils are randomly placed
 		\item Act as a virtual node so the same node essentially exists in multiple locations
 		\item Sybils are removed if the node that created it has no work
+		
 	\end{itemize}
 \end{frame}
 
 \note[itemize]{
 	\item Leaving nodes enter pool, joing nodes leave pool
 	\item Sybil removal is instantaneous if no qork was acquired.  We can get a similar result with no disruption if a node asks if it would be stealing any work.
+}
+
+\begin{frame}{Effects of Network Size}
+	\begin{itemize}
+		\item A homogeneous, 1000 node/100,000 task network, never have an average runtime factor greater than 1.7
+		\item Minimum was 1.36.
+		\item In the same network with 1,000,000 tasks, these runtimes were 1.25 and 1.12 respectively.
+		\item On average, the 1,000,000 task network had a runtime factor 0.82 less than the 100,000 task network.
+	\end{itemize}
+\end{frame}
+
+\note[itemize]{
+\item  	Heterogeneous networks also saw signifcantly better performance , but the gains were not as great as in homogeneous networks.
+\item However, the larger ratio networks handled heterogeneity much better, with the worst average heterogeneous run time being 1.955 in networks with
+1000 tasks per node, compared to 4.052 on the smaller ratio networks with 100 tasks per node.
+\item Most trials did not have a runtime factor greater than 3.
+\item Random injection handled heterogeneity the best
 }
 
 
@@ -1242,6 +1124,10 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{figure}
 \end{frame}
 
+\note[itemize]{
+	\item The results of a single load balancing operation
+	\item This single operation balanced the work extremely well.
+	}
 
 \begin{frame}{Random Injection vs No Strategy After 35 ticks}
 \begin{figure}
@@ -1252,16 +1138,23 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{figure}
 \end{frame}
 
+\note[itemize]{
+	\item We see even better improvement here.
+}
+
 
 \begin{frame}{Random Injection in a Heterogeneous Network}
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/randomStableHistHetero35}
-	\caption[Random injection in a Heterogenous Network]{The workload distribution of heterogenous networks after 35 ticks.  We can see the network using the random injection strategy is experiencing}
+	\caption[Random injection in a Heterogenous Network]{The workload distribution of heterogenous networks after 35 ticks.  }
 	\label{fig:randomStableHistHetero35}
 \end{figure}
 \end{frame}
-\note{note text}
+\note[itemize]{
+	\item We can see the network using the random injection strategy is experiencing a better distribution of work.
+	\item This did not translate to better runtime factor, as we'll in in other experiments.
+}
 
 
 
@@ -1278,23 +1171,37 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 
 
-
-
-
-\begin{frame}{Remarks}
+\begin{frame}{Impacts of Variables}
 	\begin{itemize}
-		\item Best Results
+		\item \texttt{sybilThreshold} would lower the runtime factor.  
+		\item Churn had no significant effect
+		\item \texttt{Maxsybils} (node strength) had no effect in homogeneous networks
 	\end{itemize}
 \end{frame}
 
+\note[itemize]{
+\item \texttt{sybilThreshold} did nothing in heterogeneous networks. The improvement was tied to the ratio of tasks to nodes.
+\item  Hetergeneous networks were hurt by \texttt{maxsybil} being larger.  The wider the disparity in strength, the more the network was hurt.
+}
 
-\subsection{Neighbor Injections}
+\begin{frame}{Remarks}
+	\begin{itemize}
+		\item Best runtime factor
+		\item Could still incur high maintenance costs, especially with nodes being deleted as soon as they are made
+	\end{itemize}
+\end{frame}
+
+\note{Query first}
+
+
+
+\subsection{Neighbor Injection}
 \begin{frame}{Strategy}
 	\begin{itemize}
 		\item Rather than creating Sybils randomly, nodes create one in their successors
 		\item Finding node id uses mashes
 		\item Estimates which successor has most work.
-		\item Tested estimation against smart method
+		\item Tested estimation against smart method.
 	\end{itemize}
 \end{frame}
 
@@ -1304,9 +1211,77 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\item Otherwise same as random injection
 }
 
+\begin{frame}{Base Runtime}
+\begin{itemize}
+	\item The base runtime in a 1000 node/100,000 task homogeneous network was 5.033
+	\item 2.4 lower than no strategy
+	\item Base runtime in a heterogeneous runtime was worse
+	\item \texttt{numSuccessors} improves the runtime factor (0.3 for base network)
+	\item Other variables had no significant effect.
+\end{itemize}
+\end{frame}
+
+\note{This is because the network is finishing off the tasks with small amounts of work quicker.
+	However, nodes are not able to acquire work outside their immediate vicinity and must idle.
+	In addition, nodes always inject Sybils into the largest gap between their successors that they see, but if they acquire no work.
+	That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.
+}
+
+
+
+\begin{frame}{Neighbor Injection after 5 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
+	\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
+	\label{fig:neighborsStableHist5}
+\end{figure}
+
+
+\end{frame}
+
+
+\note{At the first glance, neighbor injection does not seem to be doing worse than no strategy; there are more nodes with less work than no strategy.
+	However, if we look at the whole histogram, we see there are less nodes that have a huge amount of work and noticeably more nodes with a small number of tasks.
+	In fact, at tick 35, we see that the network with no strategy has a node with approximately 650 tasks, while the most the network using the neighbors strategy has is 450 tasks.}
+
+\begin{frame}{Neighbor Injection after 35 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist35}
+	\caption[Neighbor injection  vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
+	\label{fig:neighborsStableHist35}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Smart Neighbor Injection after 5 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
+	\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
+	\label{fig:neighborsStableSmartHist5}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Smart Neighbor Injection after 35 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist35}
+	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{After 35 ticks, we see the network using the smart neighbor injection strategy has significantly less nodes with little or no work, more nodes with smaller amounts of work, and less nodes with large amounts of tasks.}
+	\label{fig:neighborsStableSmartHist35}
+\end{figure}
+\end{frame}
+
+
+
 \begin{frame}{Remarks}
 	\begin{itemize}
-		\item 
+		\item Smart method improved runtime factor by 1.2 on average
+		\item Smart would require querying, ``dumb'' estimation still would provide improvement
+		\item Less churn of joining nodes
 	\end{itemize}
 \end{frame}
 
@@ -1322,15 +1297,72 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \note[itemize]{
 	\item Only checks to create more work when a node is actually over loaded
 	\item This means less traffic
+	\item Random and neighbors try to acquire work proactively
+	\item They spam new sybils in the hopes of finding a place to grab work from
+	\item Invitation is reactive, overloaded nodes react and ask for sybils
+	\item less churn
 }
+
+
+\begin{frame}{Invitation at 5 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
+	\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
+	\label{fig:inviteStableHist5}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Invitation at 35 Ticks}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist35}
+	\caption[Invitiation vs no strategy after 35 ticks]{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
+	\label{fig:inviteStableHist35}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Invitation vs Smart Neighbors at Tick 5}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
+	\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
+	\label{fig:inviteNeighborsHist5}
+\end{figure}
+
+
+\end{frame}
+
+
+\begin{frame}{Invitation vs Smart Neighbors at Tick 35}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist35}
+	\caption[Invitation vs smart neighbor injection after 35 ticks.]{After 35 ticks, differences between the two strategies have emerged.  The network using the invitation strategy has significantly less nodes with a small work load and many more with large work loads.}
+	\label{fig:inviteNeighborsHist35}
+\end{figure}
+
+\end{frame}
+
 
 
 \begin{frame}{Remarks}
 	\begin{itemize}
-		\item 
+		\item Impact of Invitation was closely tied to the number of nodes in the network.
+		\begin{itemize}
+			\item 100 node/ 100,000 task network (1000 tasks per node), the base average runtime factor was 3.749.
+			\item 1000 node/ 100,000 task network had a base average runtime of 5.673.
+		\end{itemize}
+		\item Performed poorer in heterogeneous networks, but better than base on average (6.097 vs 7.5).
+		\item Better than smart neighbors and uses less bandwidth.
 	\end{itemize}
 \end{frame}
-
 
 \subsection{Conclusion}
 
@@ -1338,6 +1370,9 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\begin{itemize}
 		
 		\item Reactive vs Proactive
+		\item Heterogeneity was best handled by Churn or Random Injection.
+		\item Random injection was best overall
+		\item Load balanced did not mean faster since node strength was not taken into account.
 	\end{itemize}
 \end{frame}
 
