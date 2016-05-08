@@ -938,9 +938,133 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 \end{frame}
 
 
-\subsection{Experimental Data}
+\subsection{Experimental Results}
+
+
+\begin{frame}{Setup}
+	\begin{itemize}
+		\item Tested four different topologies
+		\begin{itemize}
+			\item Chord
+			\item Kademlia
+			\item Euclidean
+			\item Hyperbolic
+		\end{itemize}
+		\item We create a 500 node network, adding one node at a time and completing a maintenance cycle.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Collected}
+	\begin{itemize}
+		\item Reachability
+		\item The average degree of the network. 
+		\item The worst case degree of the network.
+		\item The average number of hops between nodes using greedy routing.
+		\item The diameter of the network.  
+		
+	\end{itemize}
+\end{frame}
+
+\note[itemize]{
+	\item Everything is reachable
+	\item The average degree of the network.  This is the  number of outgoing links and includes both short and long peers.
+	\item Diameter is the worst case distance between two nodes using greedy routing.
+}
+
+\begin{frame}{Chord Degree}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/ChordDegree}
+	\caption[Degree of nodes in Chord]{This is the average and maximum degree of nodes in the Chord network. This Chord network utilized a 120 bit hash and thus degree is bound at 122 (full fingers, predecessor and successor) when the network reaches $2^{120}$ nodes.}
+	\label{fig:ChordDegree}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Chord Distance}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/ChordDistance}
+	\caption[Chord hops]{This is the number hops required for a greedy routed lookup in Chord. The average lookup between two nodes follows the expected logarithmic curve.}
+	\label{fig:ChordDistance}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Kademlia Degree}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/KademliaDegree}
+	\caption[Degree of nodes in Kademlia]{This is the average and maximum degree of nodes in the Kademlia network as new nodes are added.  Both the maximum degree and average degree are $O(\log n)$.}
+	\label{fig:KademliaDegree}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Kademlia Distance}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/KademliaDistance}
+	\caption[Kademlia hops]{Much like Chord, the average degree follows a distinct logarithmic curve, reaching an average distance of approximately three hops when there are 500 nodes in the network.}
+	\label{fig:KademliaDistance}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Euclidean Degree}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/EucldianDegree}
+	\caption[Growth of UrDHT degree]{Because the long peers increase linearly to the maximum value (49), degree initially rises quickly and then grows  more slowly as the number of long peers ceases to grow and the size short peers increases with network size. }
+	\label{fig:EucldianDegree}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Euclidean Distance}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/EucldianDistance}
+		\caption[Hops in Euclidean UrDHT]{The inter-node distance stays constant at 1 until long peers are filled, then rises at the rate of a randomly connected network due to the distribution of long peers selected}
+		\label{fig:EucldianDistance}
+	\end{figure}
+\end{frame}
+	
+
+\begin{frame}{Hyperbolic Degree}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/HyperbolicDegree}
+		\caption[Growth of UrDHT degree in a hyperbolic space]{The Hyperbolic network uses the same long and short peer strategies to the Euclidean network, and thus shows similar results.}
+		\label{fig:HyperbolicDegree}
+	\end{figure}
+\end{frame}
+	
+
+\begin{frame}{Hyperbolic Distance}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/HyperbolicDistance}
+		\caption[Hops in Hyperbolic UrDHT]{Like the Euclidean Geometry, our Poincar\`{e} disc based topology has much shorter maximum and average distances.
+		}
+		\label{fig:HyperbolicDistance}
+	\end{figure}
+\end{frame}
+	
+
+
+
+
+
+
 
 \subsection{Conclusion}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+	\item 
+\end{itemize}
+\end{frame}
 
 \section{Autonomous Load-Balancing}
 
