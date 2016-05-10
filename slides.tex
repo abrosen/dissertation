@@ -1,6 +1,7 @@
 %\documentclass[11pt,aspectratio=169]{beamer}
 \documentclass[11pt]{beamer}
-\usetheme{Darmstadt}
+\usetheme{CambridgeUS}
+\setbeamerfont{frametitle}{size=\small}
 %\usecolortheme{dolphin}
 
 %\setbeameroption{show notes}
@@ -50,8 +51,10 @@
 
 \subsection{Objective}
 \begin{frame}{Objective}
-Our objective is to create a generalized framework for distributed computing using Distributed Hash Tables.
 
+\begin{itemize}
+	\item Our objective is to create a generalized framework for distributed computing using Distributed Hash Tables.
+\end{itemize}
 \pause
 \begin{center}
 	Or
@@ -63,7 +66,10 @@ We want to build a completely decentralized distributed computing framework.
 
 \note[itemize]{
 	\item We want to build a completely decentralized distributed computing framework based on distributed hash tables, or DHTs.
-	\item Doing this will require a generic framework for creating distributed hash tables and distributed applications
+	\item Doing this will require a generic framework for creating distributed hash tables and distributed applications.
+	\item This means we need two things:
+	\item A way of easily abstracting DHTs 
+	\item A way to make sure that we can distribute work effectively across a DHT
 }
 
 \subsection{Distributed Computing and Challenges}
@@ -107,44 +113,44 @@ From a probability standpoint, they are distributed uniformly at random.
 
 
 
-\begin{frame}{How Does It Work?}
-	
-	\begin{itemize}
-		\item DHTs organize a set of nodes, each identified by an \textbf{ID}. 
-		\item Nodes are responsible for the keys that are closest to their IDs.
-		\item Nodes maintain a small list of other peers in the network.
-		\begin{itemize}
-			\item Typically a size $ \log(n)$ subset of all nodes in the network.
-		\end{itemize}
-		\item Each node uses a very simple routing algorithm to find a node responsible for any given key.  %Explain what that is
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-
-\item We'll explain in greater detail later, but briefly:
-\item DHTs are composed of a set of nodes, each identified by a hashed ID
-\item Each node is responsible for the key/value pairs that fall within its zone of responsibility, which can be thought of as the nodes closest to it/.
-\item Nodes keep a list of other nodes in the network, composed of peers that are close to it in terms of ID, and shortcuts to achieve sublinear lookup time.
-\item To lookup a particular key, the node asks ``Am I responsible for this key?'' If yes, yay! If no, I forward this message to the peer I know who I think is best able answer this question.
-}
-
-
-\begin{frame}{Current Applications}
-	Applications that use or incorporate DHTs:
-	\begin{itemize}
-		\item P2P File Sharing applications, such as BitTorrent.
-		\item Distributed File Storage.
-		\item Distributed Machine Learning.
-		\item Name resolution in a large distributed database.
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-	\item DHTs weren't necessarily designed with large-scale P2P applications in mind, but that use case was never ignored.
-	\item BitTorrent uses a DHT, called MainlineDHT, and has about 20 million nodes active at any given time, and has a churn of about 50 \% per day.
-
-}
+%\begin{frame}{How Does It Work?}
+%	
+%	\begin{itemize}
+%		\item DHTs organize a set of nodes, each identified by an \textbf{ID}. 
+%		\item Nodes are responsible for the keys that are closest to their IDs.
+%		\item Nodes maintain a small list of other peers in the network.
+%		\begin{itemize}
+%			\item Typically a size $ \log(n)$ subset of all nodes in the network.
+%		\end{itemize}
+%		\item Each node uses a very simple routing algorithm to find a node responsible for any given key.  %Explain what that is
+%	\end{itemize}
+%\end{frame}
+%
+%\note[itemize]{
+%
+%\item We'll explain in greater detail later, but briefly:
+%\item DHTs are composed of a set of nodes, each identified by a hashed ID
+%\item Each node is responsible for the key/value pairs that fall within its zone of responsibility, which can be thought of as the nodes closest to it/.
+%\item Nodes keep a list of other nodes in the network, composed of peers that are close to it in terms of ID, and shortcuts to achieve sublinear lookup time.
+%\item To lookup a particular key, the node asks ``Am I responsible for this key?'' If yes, yay! If no, I forward this message to the peer I know who I think is best able answer this question.
+%}
+%
+%
+%\begin{frame}{Current Applications}
+%	Applications that use or incorporate DHTs:
+%	\begin{itemize}
+%		\item P2P File Sharing applications, such as BitTorrent.
+%		\item Distributed File Storage.
+%		\item Distributed Machine Learning.
+%		\item Name resolution in a large distributed database.
+%	\end{itemize}
+%\end{frame}
+%
+%\note[itemize]{
+%	\item DHTs weren't necessarily designed with large-scale P2P applications in mind, but that use case was never ignored.
+%	\item BitTorrent uses a DHT, called MainlineDHT, and has about 20 million nodes active at any given time, and has a churn of about 50 \% per day.
+%
+%}
 
 %\begin{frame}{Strengths of DHTs }
 %	DHTs are designed for large P2P applications, which means they need to be (and are):
@@ -207,30 +213,6 @@ From a probability standpoint, they are distributed uniformly at random.
 }
 
 
-\begin{frame}{DHTs Address the Specified Challenges}
-The big issues in distributed computing can be solved by the mechanisms provided by Distributed Hash Tables.
-
-\end{frame}
-
-\begin{frame}{Uses For DHT Distributed Computing}
-	The generic framework we are proposing would be ideal for:
-	\begin{itemize}
-		\item Embarrassingly Parallel Computations
-		\begin{itemize}
-			\item Any problem that can be framed using Map and Reduce.
-			\item Brute force cryptography.
-			\item Genetic algorithms.
-			\item Markov chain Monte Carlo methods.
-		\end{itemize}
-		\item Use in either a P2P context or a more traditional deployment.
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-\item All MapReduce problems are embarrassingly parallel by definition.
-\item Individual experiments for genetic algorithms are embarrassingly parallel
-\item Monte-Carlo Markov Chain: sample a probability distribution in order to build a markov chain with desired distribution.
-}
 
 \section{Background}
 
@@ -239,7 +221,7 @@ The big issues in distributed computing can be solved by the mechanisms provided
 
 \begin{frame}{Required Attributes of DHT}
 	\begin{itemize}
-		\item A distance and midpoint function.
+		\item A distance function.
 		\item A closeness or ownership definition.
 		\item A Peer management strategy.
 	\end{itemize}
@@ -251,34 +233,6 @@ The big issues in distributed computing can be solved by the mechanisms provided
 	\item The closeness metric establishes how a node decides what it is responsible for.
 	\item The peer management strategy encompasses a whole lot: the network topology, the distribution of long links (are they organized and spread out over specified  intervals, are they chosen according to a random distribution?), and the network maintenance.
 	}
-
-
-\begin{frame}{Chord's Closest Metric.}
-	\begin{figure}
-		\centering
-		
-		\caption{A Voronoi diagram for a Chord network, using Chord's definition of closest.}
-		\includegraphics[width=0.5\linewidth]{figs/voro-chord-normal}
-		\label{fig:voro-chord-normal}
-	\end{figure}
-	
-\end{frame}
-
-\note{Here, the nodes, the stars on this diagram are responsible for the region covered by the arc matching its color.  This repesents the space containing all keys greater than the ID of it's predecessor and less than or equal to its own ID.}
-
-\begin{frame}{Chord Using A Different Closest Metric}
-	\begin{figure}
-		\centering
-		\caption{A Voronoi diagram for a Chord network, where closest is defined by the node being the closest in either direction.}
-		\includegraphics[width=0.5\linewidth]{figs/voro-chord-alternative}
-		
-		\label{fig:voro-chord-alternative}
-	\end{figure}
-\end{frame}
-
-
-\note{In this figure, the ownership has the more intuitive definition of ``all points with to which I am the node with the shortest distance.''}
-
 
 \begin{frame}{Terms and Variables}
 	\begin{itemize}
@@ -295,26 +249,6 @@ The big issues in distributed computing can be solved by the mechanisms provided
 \note[itemize]{
 	\item SHA1 is being depreciated, but this is trivial from our perspective.  
 	\item Short peers are actively maintained, long peers replaced gradually and are not actively pinged.
-}
-
-
-
-
-
-
-\begin{frame}{Functions}
-	\begin{description}
-		\item[lookup($ key $)] Finds the node responsible for a given key.
-		\item[put($ key $, $ value $)] Stores $value$ at the node responsible for $key$, where $key =  hash(value)$.
-		\item[get($ key $)] Returns the $ value $ associated with $key$.
-	\end{description}
-\end{frame}
-
-\note[itemize]{
-	\item SPEED THRU THIS SLIDE
-	\item These are the common function is every DHT:  lookup: find a node, put: store data, get: retrieve data.
-	\item There is usually a delete function as well, but it's not important.
-	\item All work the same way: if I can answer the function, great, otherwise return the node I know that's closest to the key, who will then do the same thing.
 }
 
 
@@ -359,41 +293,41 @@ The big issues in distributed computing can be solved by the mechanisms provided
 	\item Traffic travels clockwise.
 	\item Routing example 24 to 150.
 	}
-
-\begin{frame}{Fault Tolerence in Chord}
-	\begin{itemize}
-		\item Local maintenance thread  gradually fixes the network topology.
-		\begin{itemize}
-			\item Each node ``notifies'' its successor.
-			\item The successor replies with a better successor if one exists.
-		\end{itemize}
-		\item The long peers are gradually updated by performing a lookup on each entry.
-		
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-	\item The notification allows a sucessor to either update its predecessor if incorrect and the predecessor to update its successor if wrong
-	\item Some implementations use predecessor and successor lists.
-	\item The long peers are replaced much slower; maintenance slowly iterates through the long peers and queries to see if there's better node for that particular long peer.
-}
-
-\begin{frame}{Handling Churn in General}
-	\begin{itemize}
-		\item Short peers, the neighbors, are regularly queried to:
-		\begin{itemize}
-			\item See of the node is still alive.
-			\item See if the neighbor knows about better nodes.
-		\end{itemize}
-		\item Long peer failures are replaced by periodic maintenance.
-	\end{itemize}
-\end{frame}
-
-
-\note[itemize]{
-	\item Short peers need to be actively maintained to keep the topology correct.
-	\item Long peers can either be replaced when a failure is detected, or periodically updated at a slower rate than the short peers.
-}
+%
+%\begin{frame}{Fault Tolerence in Chord}
+%	\begin{itemize}
+%		\item Local maintenance thread  gradually fixes the network topology.
+%		\begin{itemize}
+%			\item Each node ``notifies'' its successor.
+%			\item The successor replies with a better successor if one exists.
+%		\end{itemize}
+%		\item The long peers are gradually updated by performing a lookup on each entry.
+%		
+%	\end{itemize}
+%\end{frame}
+%
+%\note[itemize]{
+%	\item The notification allows a sucessor to either update its predecessor if incorrect and the predecessor to update its successor if wrong
+%	\item Some implementations use predecessor and successor lists.
+%	\item The long peers are replaced much slower; maintenance slowly iterates through the long peers and queries to see if there's better node for that particular long peer.
+%}
+%
+%\begin{frame}{Handling Churn in General}
+%	\begin{itemize}
+%		\item Short peers, the neighbors, are regularly queried to:
+%		\begin{itemize}
+%			\item See of the node is still alive.
+%			\item See if the neighbor knows about better nodes.
+%		\end{itemize}
+%		\item Long peer failures are replaced by periodic maintenance.
+%	\end{itemize}
+%\end{frame}
+%
+%
+%\note[itemize]{
+%	\item Short peers need to be actively maintained to keep the topology correct.
+%	\item Long peers can either be replaced when a failure is detected, or periodically updated at a slower rate than the short peers.
+%}
 %\subsection{Other DHTs}
 %\begin{frame}{Other DHTs}
 %	Other DHTs include
@@ -408,7 +342,59 @@ The big issues in distributed computing can be solved by the mechanisms provided
 
 
 \section{Completed Work}
-%TODO Make one slide per chapter of previous work
+%TODO Make one to two slides per chapter of previous work
+
+\begin{frame}{Overarching Theme}
+My research has been focused on:
+	\begin{itemize}
+		\item Abstracting out DHTs.
+		\item Distributed computation using DHTs.
+	\end{itemize}
+\end{frame}
+
+\note[itemize]{
+	\item I want to get down to what the essence of a DHT is, find out what all DHTs have in common, so that I could create a generic DHT.
+	\item As I implied earlier, we all these DHTs, but they all have the same features, and I want to generalize them.
+	\item I focused on creating a more abstract framework for MapReduce, so I could move it out of the datacenter and into other contexts.
+}
+
+\begin{frame}{ChordReduce}
+Objective:
+\begin{itemize}
+	\item Create an abstract MapReduce framework.
+	\item Create a completely decentralized, fault-tolerant, distributed computing framework. 
+
+\end{itemize}
+
+Results:
+\begin{itemize}
+	\item We succeeded.
+	\item Our network could handle nodes leaving, as well as assign joining nodes work.
+	\item We found anomalous results with Churn.
+\end{itemize}
+
+\note[itemize]{
+\item We leveraged Chord's fault tolerance mechanisms to handle tasks 
+\item Why did churn do what it did?  That's covered in UrDHT.
+}
+
+\end{frame}
+
+\begin{frame}{VHash and DGVH}
+
+\end{frame}
+
+
+\begin{frame}{D$^3$NS}
+
+\end{frame}
+
+
+\begin{frame}{Sybil Attack Analysis}
+
+\end{frame}
+
+
 
 \section{UrDHT}
 
@@ -430,7 +416,7 @@ The big issues in distributed computing can be solved by the mechanisms provided
 
 
 \begin{frame}{Goals}
-	VHash sprung from two related ideas:
+	VHash and DGVH sprung from two related ideas:
 	\begin{itemize}
 		
 		\item<1-> We wanted a way be able optimize latency by embedding it into the routing overlay. \note<1>{Most DHTs optimize routing for the number of hops, rather than latency.}
