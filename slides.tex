@@ -375,22 +375,49 @@ Results:
 
 \note[itemize]{
 \item We leveraged Chord's fault tolerance mechanisms to handle tasks 
-\item Why did churn do what it did?  That's covered in UrDHT.
+\item Why did churn do what it did?  That's covered in Autonomous Load Balancing.
 }
 
 \end{frame}
 
 \begin{frame}{VHash and DGVH}
 
+
+
+What was it:
+\begin{itemize}
+	\item Made a Voronoi-based DHT.
+	\item A greedy heuristic.
+	\item More detail later.
+\end{itemize}
+
+
+Results:
+\begin{itemize}
+	\item New concept: nodes that move their position.
+	\item DGVH.
+	\item We started to think how about how can we completely abstract any DHT topology into a Voronoi/Delaunay relationship.
+\end{itemize}
+
 \end{frame}
 
 
 \begin{frame}{D$^3$NS}
 
+\begin{itemize}
+	\item Create a completely decentralized, distributed, DNS.
+	\item Backwards compatible and completely reliable to the user.
+	\item Used Blockchains and UrDHT.
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}{Sybil Attack Analysis}
+\begin{itemize}
+	\item Studied the amount of resources needed to perform a Sybil attack.
+	\item Examined how difficult it was for nodes to inject a Sybil into a specific location.
+\end{itemize}
+
 
 \end{frame}
 
@@ -696,7 +723,7 @@ Results:
 
 \begin{frame}{Data Collected}
 	\begin{itemize}
-		\item Reachability
+		\item Reachability.
 		\item The average degree of the network. 
 		\item The worst case degree of the network.
 		\item The average number of hops between nodes using greedy routing.
@@ -798,7 +825,11 @@ Results:
 
 \begin{frame}{Conclusion}
 \begin{itemize}
-	\item 
+	\item UrDHT abstracts DHTs.
+	\item UrDHT can emulate the topology and performance of various DHTs.
+	\item We can use UrDHT to create a multidimensional DHT.
+	\item The maintenance algorithm can nodes moving in the overlay.
+
 \end{itemize}
 \end{frame}
 
@@ -820,8 +851,10 @@ Results:
 
 \begin{frame}{Strategies}
 	\begin{itemize}
-		\item 
-		\item 
+		\item Churn
+		\item Random Injection
+		\item Neighbor Injection
+		\item Invitation
 	\end{itemize}
 \end{frame}
 
@@ -996,15 +1029,15 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{frame}
 
 
-\begin{frame}{Churn vs Average Work Per Tick}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/churnVsWork}
-	\caption[Churn vs average work per tick]{With more and more churn in the network, new nodes have a higher chance of joining the network and acquiring work from overloaded nodes.  This results in more average work being done each tick, as there are less nodes simply idling.}
-	\label{fig:churnVsWork}
-\end{figure}
-
-\end{frame}
+%\begin{frame}{Churn vs Average Work Per Tick}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=0.7\linewidth]{figs/churnVsWork}
+%	\caption[Churn vs average work per tick]{With more and more churn in the network, new nodes have a higher chance of joining the network and acquiring work from overloaded nodes.  This results in more average work being done each tick, as there are less nodes simply idling.}
+%	\label{fig:churnVsWork}
+%\end{figure}
+%
+%\end{frame}
 
 \begin{frame}{Base Work Distribution}
 \begin{figure}
@@ -1119,24 +1152,29 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{frame}{Impacts of Variables}
 	\begin{itemize}
 		\item \texttt{sybilThreshold} would lower the runtime factor.  
-		\item Churn had no significant effect
-		\item \texttt{Maxsybils} (node strength) had no effect in homogeneous networks
+		\item Churn had no significant effect.
+		\item \texttt{maxSybils} (node strength) had no effect in homogeneous networks.
 	\end{itemize}
 \end{frame}
 
 \note[itemize]{
 \item \texttt{sybilThreshold} did nothing in heterogeneous networks. The improvement was tied to the ratio of tasks to nodes.
-\item  Hetergeneous networks were hurt by \texttt{maxsybil} being larger.  The wider the disparity in strength, the more the network was hurt.
+\item  Heterogeneous networks were hurt by \texttt{maxSybils} being larger.  The wider the disparity in strength, the more the network was hurt.
 }
 
 \begin{frame}{Remarks}
 	\begin{itemize}
-		\item Best runtime factor
-		\item Could still incur high maintenance costs, especially with nodes being deleted as soon as they are made
+		\item Best runtime factor of our experiments.
+		\item Could still incur high maintenance costs, especially with nodes being deleted as soon as they are made.
 	\end{itemize}
 \end{frame}
 
-\note{Query first}
+
+
+\note[itemize]{
+\item Gets extremely close to ideal.
+\item Query first
+}
 
 
 
@@ -1215,18 +1253,18 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Remarks}
 	\begin{itemize}
-		\item Smart method improved runtime factor by 1.2 on average
-		\item Smart would require querying, ``dumb'' estimation still would provide improvement
-		\item Less churn of joining nodes
+		\item Smart method improved runtime factor by 1.2 on average.
+		\item Smart would require querying, ``dumb'' estimation still would provide improvement.
+		\item Less churn of joining nodes.
 	\end{itemize}
 \end{frame}
 
 \subsection{Invitation}
 \begin{frame}{Strategy}
 	\begin{itemize}
-		\item Nodes with too much work ask for help
-		\item Predecessor with smallest workload and below \texttt{sybilThreshold} creates a Sybil
-		\item Reactive vs Proactive
+		\item Nodes with too much work ask for help.
+		\item Predecessor with smallest workload and below \texttt{sybilThreshold} creates a Sybil.
+		\item Reactive vs Proactive.
 	\end{itemize}
 \end{frame}
 
