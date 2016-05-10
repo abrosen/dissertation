@@ -96,8 +96,7 @@ The rationale for this heuristic is that, in the majority of cases, the midpoint
 		\State Sort $candidates$ in ascending order by each node's distance to $n$
 		\State Remove the first member of $candidates$ and add it to $short\_peers$
 		\ForAll{$c$ in $candidates$}
-		\State $m$ is the midpoint between $n$ and $c$
-		\If{Any node in $short\_peers$ is closer to $m$ than $n$}
+		\If{Any node in $short\_peers$ is closer to $c$ than $n$}
 		\State Reject $c$ as a peer
 		\Else
 		\State Remove $c$ from $candidates$
@@ -145,7 +144,7 @@ Node $n$ must then compute the midpoint between itself and each of the $k$ candi
 Node $n$ then compares distances to the midpoints between itself and all the candidates.
 This results in a cost of
 
-\[ k\cdot\lg(k) + k \text{ midpoints}  + k^{2} \text{ distances} \]
+\[ k\cdot\lg(k) + k^{2} \text{ distances} \]
 
 
 Since $k$ is  bounded by $\Theta(\frac{\log N}{\log \log N} )$ \cite{bern1991expected} (the expected maximum degree of a node), we can translate the above to

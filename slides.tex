@@ -465,26 +465,6 @@ My research has been focused on:
 %\end{frame}
 %
 
-\begin{frame}{System Architecture}
-	\begin{figure}
-	    \includegraphics[width=0.8\linewidth]{figs/CR_architecture}
-	
-	\end{figure}
-\end{frame}
-
-
-
-\note[itemize]{
-		\item Chord, which handles routing and lookup.
-		\item The Cooperative File System (CFS), which handles storage and data replication.
-		\item The MapReduce layer.
-
-		\item Files are split up, each block given a key based on their contents.
-		\item Each block is stored according to their key.
-		\item The hashing process guarantees that the keys are distributed near evenly among nodes.
-		\item A keyfile is created and stored where the whole file would have been found.
-		\item To retrieve a file, the node gets the keyfile and sends a request for each block listed in the keyfile	
-}
 
 
 \begin{frame}{Mapping Data}
@@ -657,28 +637,6 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 	So if we have a quick way approximate this, we can build a DHT based directly on Voronoi tessellation and Delaunay triangulation.
 }
 
-\begin{frame}{VHash}
-	\begin{itemize}
-		\item Voronoi-based Distributed Hash Table based on this relationship.
-		\item Uses our approximation to solve for Delaunay neighbors, called DGVH.
-		\item Topology updates occur via  gossip-based protocol. 
-		\item Routing speed is $ O(\sqrt[d]{n} ) $
-		\item Memory Cost
-		\begin{itemize}
-			\item Worst case: $O(n)$
-			\item Expected maximum size: $\Theta(\frac{\log n}{\log \log n} )$
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-	\item We created VHash, a DHT that works in an arbitrary geometric space.
-	\item Gossip:  every cycle, a node chooses a peer and swaps peerlist information, then reruns the approximation.
-	\item $d$ is number of dimensions, but we optimize over latency so that's deceptive
-	\item Short peers are lower bounded by $3d +1$, long peers upper bounded by $ (3d+1)^{2} $
-	\item It is possible that a node could have $ O(n)$ short peers, but that only happens in contrived cases.
-	\item We found a paper that proved $\Theta(\frac{\log n}{\log \log n} )$  is the expected maximum degree of a vertex in a Delaunay Triangulation.
-}
 
 \begin{frame}{Distributed Greedy Voronoi Heuristic}
 	
@@ -698,8 +656,7 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 		\STATE Sort $candidates$ in ascending order by each node's distance to $n$
 		\STATE Remove the first member of $candidates$ and add it to $peers$
 		\FORALL{$c$ in $candidates$}
-		\STATE $m$ is the midpoint between $n$ and $c$
-		\IF{Any node in $peers$ is closer to $m$ than $n$}
+		\IF{Any node in $peers$ is closer to $c$ than $n$}
 		\STATE Reject $c$ as a peer
 		\ELSE
 		\STATE Remove $c$ from $candidates$
@@ -719,8 +676,7 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 		\item We sort the candidates from closest to farthest.
 		\item The closest candidate is always guaranteed to be a peer.
 		\item Next, we iterate through the sorted list of candidates and either add them to the peers set or discard them.
-		\item We calculate the midpoint between the candidate and the $ n$. 
-		\item If this midpoint is closer to a peer than $n$, then it does not fall on the interface between the location's Voronoi regions.
+		\item If the  candidate is closer to any peer than $n$, then it does not fall on the interface between the location's Voronoi regions.
 		\item in this case discard it
 		\item otherwise add it the current peerlist
 	\end{enumerate}
@@ -729,11 +685,15 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 
 \begin{frame}{DGVH Time Complexity}
 	For $ k $ candidates, the cost is: 
-	\[ k\cdot\lg(k) + k \text{ midpoints}  + k^{2} \text{ distances} \]
+	\[ k\cdot\lg(k)  + k^{2} \text{ distances} \]
 	
 	However, the expected maximum for $k$ is $\Theta(\frac{\log n}{\log \log n} )$, which gives an expected maximum cost of 
 	
 	\[ O(\frac{\log^{2} n}{\log^{2} \log n} ) \]
+	or
+	\[O(\frac{\log^{4} n}{\log^{4} \log n} )\]
+	
+	Depending on whether we gossip with a single neighbor or all neighbors.
 	
 \end{frame}
 
@@ -741,16 +701,19 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 	DVGH is very efficient in terms of both space and time.
 	Suppose a node $n$ is creating its short peer list from $k$ candidates in an overlay network of $N$ nodes.
 	The candidates must be sorted, which takes $O(k\cdot\lg(k))$ operations.
-	Node $n$ must then compute the midpoint between itself and each of the $k$ candidates.
-	Node $n$ then compares distances to the midpoints between itself and all the candidates.
+	Node $n$ then compares distances between all peers  and all the candidates.
 	This results in a cost of
 	
-	\[ k\cdot\lg(k) + k \text{ midpoints}  + k^{2} \text{ distances} \]
+	\[ k\cdot\lg(k) + k^{2} \text{ distances} \]
 	
 	
 	Since $k$ is  bounded by $\Theta(\frac{\log N}{\log \log N} )$ (the expected maximum degree of a node), we can translate the above to:
 	
-	\[O(\frac{\log^{2} N}{\log^{2} \log N} )\]
+	
+	The expected worst case cost of DGVH is \(O(\frac{\log^{4} n}{\log^{4} \log n} )\), if we swap with all short peers.
+	Otherwise the cost is $O(\frac{\log^{2} N}{\log^{2} \log N} )$
+	
+	
 	
 	In the vast majority of cases, the number of peers is equal to the minimum size of \textit{Short Peers}.
 	This yields $k=(3d+1)^{2}+3d+1$ in the expected case, where the lower bound and expected complexities are $\Omega(1)$.
@@ -1273,16 +1236,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \note{This will be the same for every strategy.}
 
 
-\begin{frame}{Churn Distribution after 5 Ticks}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
-	\caption[Workload for churn at tick 5]{This is the distribution of the workloads at the beginning of tick 5.  We can see the network using 0.01 churn has fewer nodes with less work and more nodes with a greater workload.}
-	
-	\label{fig:churnStableHist5}
-\end{figure}
-\end{frame}
-
 
 \begin{frame}{Churn Distribution after 35 Ticks}
 \begin{figure}
@@ -1337,20 +1290,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \item Random injection handled heterogeneity the best
 }
 
-
-\begin{frame}{Random injection vs no strategy after 5 ticks}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
-	\caption[Random injection vs no strategy after 5 ticks.]{The networks after 5 ticks.  The network using random injection has significantly less underutilized nodes, even after only 5 ticks.}
-	\label{fig:randomStableHist5}
-\end{figure}
-\end{frame}
-
-\note[itemize]{
-	\item The results of a single load balancing operation
-	\item This single operation balanced the work extremely well.
-	}
 
 \begin{frame}{Random Injection vs No Strategy After 35 ticks}
 \begin{figure}
@@ -1452,21 +1391,21 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 
 
-\begin{frame}{Neighbor Injection after 5 Ticks}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
-	\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
-	\label{fig:neighborsStableHist5}
-\end{figure}
-
-
-\end{frame}
-
-
-\note{At the first glance, neighbor injection does not seem to be doing worse than no strategy; there are more nodes with less work than no strategy.
-	However, if we look at the whole histogram, we see there are less nodes that have a huge amount of work and noticeably more nodes with a small number of tasks.
-	In fact, at tick 35, we see that the network with no strategy has a node with approximately 650 tasks, while the most the network using the neighbors strategy has is 450 tasks.}
+%\begin{frame}{Neighbor Injection after 5 Ticks}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
+%	\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
+%	\label{fig:neighborsStableHist5}
+%\end{figure}
+%
+%
+%\end{frame}
+%
+%
+%\note{At the first glance, neighbor injection does not seem to be doing worse than no strategy; there are more nodes with less work than no strategy.
+%	However, if we look at the whole histogram, we see there are less nodes that have a huge amount of work and noticeably more nodes with a small number of tasks.
+%	In fact, at tick 35, we see that the network with no strategy has a node with approximately 650 tasks, while the most the network using the neighbors strategy has is 450 tasks.}
 
 \begin{frame}{Neighbor Injection after 35 Ticks}
 \begin{figure}
@@ -1478,15 +1417,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \end{frame}
 
-
-\begin{frame}{Smart Neighbor Injection after 5 Ticks}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
-	\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
-	\label{fig:neighborsStableSmartHist5}
-\end{figure}
-\end{frame}
 
 
 \begin{frame}{Smart Neighbor Injection after 35 Ticks}
@@ -1527,16 +1457,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 }
 
 
-\begin{frame}{Invitation at 5 Ticks}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
-	\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
-	\label{fig:inviteStableHist5}
-\end{figure}
-
-\end{frame}
-
 
 
 \begin{frame}{Invitation at 35 Ticks}
@@ -1549,17 +1469,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{frame}
 
 
-\begin{frame}{Invitation vs Smart Neighbors at Tick 5}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
-	\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
-	\label{fig:inviteNeighborsHist5}
-\end{figure}
-
-
-\end{frame}
 
 
 \begin{frame}{Invitation vs Smart Neighbors at Tick 35}
@@ -1605,6 +1514,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Conclusion}
 	\begin{itemize}
+		
 		\item Load Balancing
 	\end{itemize}
 \end{frame}
