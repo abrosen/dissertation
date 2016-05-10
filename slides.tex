@@ -406,143 +406,6 @@ The big issues in distributed computing can be solved by the mechanisms provided
 %	\end{itemize}
 %\end{frame}
 
-\section{Previous Work}
-
-
-
-\begin{frame}{Overarching Goal}
-My research has been focused on:
-	\begin{itemize}
-		\item Abstracting out DHTs.
-		\item Distributed computation using DHTs.
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-	\item I want to get down to what the essence of a DHT is, find out what all DHTs have in common, so that I could create a generic DHT.
-	\item As I implied earlier, we all these DHTs, but they all have the same features, and I want to generalize them.
-	\item I focused on creating a more abstract framework for MapReduce, so I could move it out of the datacenter and into other contexts.
-	\item We'll first discuss generalizing DHTs.
-}
-
-
-
-
-
-
-\subsection{ChordReduce}
-
-\begin{frame}{Goals}
-
-	\begin{itemize}
-		\item We wanted build a more abstract system for MapReduce.
-		\item We remove core assumptions:
-		\begin{itemize}
-			\item The system is centralized.
-			\item Processing occurs in a static network.
-		\end{itemize}
-		\item The resulting system must be:
-		\begin{itemize}
-			\item Completely decentralized.
-			\item Scalable.
-			\item Fault tolerant.
-			\item Load Balancing.
-		\end{itemize}
-	\end{itemize}
-
-\end{frame}
-
-
-%
-%\begin{frame}{System Architecture}  %
-%	ChordReduce has three layers:
-%	\begin{itemize}
-%		\item Chord \cite{Chord}, which handles routing and lookup.
-%		\item The Cooperative File System (CFS) \cite{CFS}, which handles storage and data replication.
-%		\item The MapReduce layer.
-%	\end{itemize}
-%
-%\end{frame}
-%
-
-
-
-\begin{frame}{Mapping Data}
-	\begin{figure}
-	    \includegraphics[width=0.48\linewidth]{figs/CR_dataflow2}
-	    \caption{ \footnotesize{The stager sends a map task for each key in the keyfile. In larger networks, this process is streamlined by recursively bundling keys and sending them to the best finger.}}
-		
-	\end{figure}
-\end{frame}
-
-
-\note[itemize]{
-\item this process is recursive
-}
-
-
-\begin{frame}{Reducing Results of Data}
-	\begin{figure}
-	    \includegraphics[width=0.50\linewidth]{figs/CR_dataflow3}
-	    \caption{Results are sent back via the overlay. If a node receives multiple results, they are reduced before being sent on.}
-	\end{figure}
-\end{frame}
-
-\note{The paths here are arbitrary edges that I came up with for the example.}
-
-
-
-\begin{frame}{Churn Results}
-	\begin{table}
-		\centering
-		\begin{tabular}{|r|r|r|} 
-			\hline 
-			Churn rate per second & Average runtime (s) & Speedup vs 0\% churn\\ \hline{}
-			0.8\% & 191.25 & 2.15 \\ \hline
-			0.4\% & 329.20 & 1.25 \\ \hline
-			0.025\% & 431.86 & 0.95 \\ \hline 
-			0.00775\%  & 445.47 & 0.92 \\ \hline 
-			0.00250\% & 331.80  &  1.24 \\ \hline 
-			0\% & 441.57 & 1.00 \\ \hline
-		\end{tabular}
-		\caption{The results of calculating $\pi$ by generating $10^8$ samples under churn. Churn is the chance for each node to join or leave the network. The large speedup is from joining nodes acquiring work during experimental runtime.} 
-		\label{tab:churnSpeed}
-	\end{table}
-	
-\end{frame}
-
-\note[itemize]{
-	\item We tested at rates from 0.0025\% to 0.8\% \textbf{\textit{per second}}, 120 times the fastest rate used to test P2P-MapReduce.
-	
-	\item ChordReduce finished twice as fast under the unrealistic levels churn (0.8\% per second) than no churn (Table \ref{tab:churnSpeed}).
-	
-	\item Churn is a disruptive force; how can it be aiding the network?  We have two hypotheses
-	\item Deleting nodes motivates other nodes to work harder to avoid deletion (a ``beatings will continue until morale improves'' situation).
-	\item Our high rate of churn was dynamically load-balancing the network.  How?
-	\item Nodes that die and rejoin are more likely to join a region owned by a node with larger region and therefore more work.
-	\item It appears even the smallest effort of trying to dynamically load balance, such as rebooting random nodes to new locations, has benefits for runtime.
-		Our method is a poor approximation of dynamic load-balancing, and it still shows improvement.
-	
-}
-
-
-\begin{frame}{Conclusions}
-Our experiments established:
-\begin{itemize}
-	\item ChordReduce can operate under high rates of churn.
-	\item Execution follows the desired speedup.
-	\item Speedup occurs on sufficiently large problem sizes.
-\end{itemize}
-
-This makes ChordReduce an excellent platform for distributed and concurrent programming in cloud and loosely coupled environments.
-
-\end{frame}
-
-\note{
-	One of the goals coming out of this is that I want to be able to harness this speedup due to churn.  I've come up with a number of potential strategies I've listed in the proposal, but a number of them involve nodes being able to create virtual nodes, in other words, be in multiples places at once and have multiple identities.
-	
-	It turns out the security world has something analogous to that.
-}
 
 
 
@@ -721,87 +584,14 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 
 
 
-\begin{frame}{Results}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.75\linewidth]{figs/error_rate}
-		\caption{As the size of the graph increases, we see approximately 1 error per node.
-			%			We can also see that the error rate and number of nodes has a linear relationship.
-		}
-		\label{exp_0}
-	\end{figure}
-\end{frame}
 
-\note[itemize]{
-	
-	\item The error is approximately 1 missed delaunay neighbor per node, so the entire generated mesh is a subset of the true delaunay trinagulation.
-	\item This error is acceptable since we miss an edge when it is occluded by another node in the way.
-}
-
-\begin{frame}{Results}
-	\begin{figure}
-		\label{fig:conv}
-		\centering
-		\includegraphics[width=0.75\linewidth]{figs/conv_d4}
-		%\caption{This plot shows the accuracy rate of lookups on a 4-dimensional network as it self-organizes.}
-		\label{conv4}
-		
-		\caption{These figures show, starting from a randomized network, VHash forms a stable and consistent network topology. %The Y axis is the percentage of successful lookups out of 2000 queries and the X axis is the number of gossips cycles.}
-		}
-		
-	\end{figure}
-\end{frame}
-
-\note[itemize]{
-	
-	\item Our first experiment was to confirm that VHash creates a stable mesh.
-	\item We did this by creating random networks of various sizes.
-	\item For the first two cycles each node bootstraps their short peer list with 10 randomly selected nodes
-	\item For the rest of the cycles, the nodes gossip and run DGVH
-	\item Each cycle we tested 2000 lookups to see if the lookup ended at the node that should be responsible for it.
-	\item the Y axis is the percentage of successful lookups.
-}
-
-\begin{frame}{Results}
-	\begin{figure}
-		
-		\centering
-		\includegraphics[width=0.75\linewidth]{figs/hist_1000}
-		\caption{Comparing the routing effectiveness of Chord and VHash.}
-		\label{fig:hist1000}
-	\end{figure}
-	
-\end{frame}
-
-
-\note[itemize]{
-	\item For this experiment, we constructed a scale free network with 10000 nodes placed at random (which has an approximate diameter of 3 hops) as an underlay network.
-	\item scale free networks model the Internet's topology.
-	\item We then chose a random subset of nodes to be members of the overlay network.
-	\item A good way to think of it is that the overlay hops are virtual, the underlay hops are physical.
-	\item We then measured the distance in underlay hops between 10000 random source-destination pairs in the overlay.
-	\item VHash generated an embedding of the latency graph utilizing a distributed force directed model, with the latency function defined as the number of underlay hops between it and its peers.	
-}
-
-
-\note[itemize]{
-	\item We embedded the inter-node latency graph into the overlay and assigned peers locations that would reduce latency.
-	\item We did this using a force directed model, which meant that peer locations could move through the metric space.  That was new.
-	\item Essentially, nodes with a high latency that are close to one another repel each other to new locations.
-}
-
-
-\note[itemize]{
-	\item This how the difference in the performance of Chord and VHash for 10,000 routing samples on a 10,000 node underlay network for differently sized overlays.
-	The Y axis shows the observed frequencies and the X axis shows the number of hops traversed on the underlay network.
-	VHash consistently requires fewer hops for routing than Chord.
-}
-
-
-\begin{frame}{Conclusions}
+\begin{frame}{Summary}
 	\begin{itemize}
 		\item DGVH is simple approximation for Delaunay Triangulation that guarantees a fully connected graph.
-		\item VHash can optimize over a metric such as latency and achieve superior routing speeds as a result.
+		\item  Creates a fully connected subset of the Delaunay Triangulation.
+		\item A DHT using DGVH can optimize over a metric such as latency and achieve superior routing speeds as a result.
+		\item We built VHash to test this.
+		\item UrDHT fully implements this and use
 	\end{itemize}
 \end{frame}		
 
@@ -818,6 +608,7 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 
 \begin{frame}{What is UrDHT}
 	\begin{itemize}
+		\item Abstract framework for implementing DHTs or various topologies
 		\item Three Components
 		\begin{itemize}
 			\item Storage 
@@ -832,6 +623,7 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 \end{frame}
 
 \note[itemize]{
+	\item We implement these topologies by abstracting them to the Voronoi Delaunay 
 	\item Storage deals with file storage
 	\item Networking deals with actual implementation of how nodes talk across the network
 	\item Mostly we'll talk about the logic, which has two components
@@ -1014,10 +806,6 @@ This makes ChordReduce an excellent platform for distributed and concurrent prog
 	\end{figure}
 \end{frame}
 	
-
-
-
-
 
 
 
