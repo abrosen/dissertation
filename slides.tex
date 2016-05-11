@@ -671,12 +671,12 @@ Results:
 \end{frame}
 
 \note[itemize]{
-	\item Seek is a single step of the lookup
-	\item lookup can be done with iterative calls to seek
-	\item While many protocols specify a recursive lookup, we find must actually implement an iterative, since it makes it easier to handle errors
-	\item Don't have to change protocol, but you can.  I implemented chord this way. Also, there may be some space DGVH might not work
+	\item \texttt{seek} is a single step of the \texttt{lookup}.
+	\item \texttt{lookup} can be done with iterative calls to \texttt{seek}.
+	\item While many protocols specify a recursive lookup, we find must actually implement an iterative, since it makes it easier to handle errors.
+	\item Don't have to change protocol, but you can.  I implemented chord this way. Also, there may be some space DGVH might not work.
 	\item Only DHT we haven't been able to fully reproduce is CAN, because the insertion order matters in CAN, but not other DHTs.
-	\item Handle long peers is discussed in a bit
+	\item Handle long peers is discussed in a bit.
 }
 
 \begin{frame}{Space Math}
@@ -688,9 +688,9 @@ Results:
 
 \begin{frame}{Space Functions}
 	\begin{itemize}
-		\item \texttt{idToPoint}  takes key, maps it to a point in space
+		\item \texttt{idToPoint}  takes key, maps it to a point in space.
 		\item \texttt{distance} outputs the shortest distance between $ a $ and $ b $
-		\item \texttt{getDelaunayPeers} which is DGVH 
+		\item \texttt{getDelaunayPeers} which is DGVH.
 		\item \texttt{getClosest}
 		\item \texttt{handleLongPeers}
 	\end{itemize}
@@ -706,7 +706,7 @@ Results:
 }
 
 \begin{frame}{DHTs To Implement}
-	We demonstrated how to implement
+	We demonstrated how to implement:
 	\begin{itemize}
 		\item Chord / Symphony
 		\item Kademlia 
@@ -760,12 +760,15 @@ Results:
 \begin{frame}{Chord Degree}
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{figs/ChordDegree}
-	\caption[Degree of nodes in Chord]{This is the average and maximum degree of nodes in the Chord network. This Chord network utilized a 120 bit hash and thus degree is bound at 122 (full fingers, predecessor and successor) when the network reaches $2^{120}$ nodes.}
+	\includegraphics[width=0.65\linewidth]{figs/ChordDegree}
+	\caption[Degree of nodes in Chord]{Average and max degree of nodes in Chord. This Chord network utilized a 120 bit hash and thus degree is bound at 122 (full fingers, predecessor and successor).}
 	\label{fig:ChordDegree}
 \end{figure}
 
 \end{frame}
+
+
+\note{Jaggedness of maximum is most likely the result of nodes joining and occluding previous connections.}
 
 \begin{frame}{Chord Distance}
 \begin{figure}
@@ -777,11 +780,12 @@ Results:
 \end{frame}
 
 
+
 \begin{frame}{Kademlia Degree}
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/KademliaDegree}
-	\caption[Degree of nodes in Kademlia]{This is the average and maximum degree of nodes in the Kademlia network as new nodes are added.  Both the maximum degree and average degree are $O(\log n)$.}
+	\caption[Degree of nodes in Kademlia]{This is the average and maximum degree of nodes in Kademlia.  Both the maximum degree and average degree are $O(\log n)$.}
 	\label{fig:KademliaDegree}
 \end{figure}
 \end{frame}
@@ -790,7 +794,7 @@ Results:
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/KademliaDistance}
-	\caption[Kademlia hops]{Much like Chord, the average degree follows a distinct logarithmic curve, reaching an average distance of approximately three hops when there are 500 nodes in the network.}
+	\caption[Kademlia hops]{Much like Chord, the average degree follows a logarithmic curve, reaching an average distance of about 3 hops with 500 nodes in the network.}
 	\label{fig:KademliaDistance}
 \end{figure}
 \end{frame}
@@ -806,11 +810,13 @@ Results:
 \end{figure}
 \end{frame}
 
+\note{The Euclidean and Hyperbolic networks are 2d spaces. Our equation for peers from VHash was $ 3d+1 $ short peers minimum and $ (3d+1)^2 $ long peers maximum.  We limit the long peers because those could eventually encompass the entire network if we don't cap it.  We don't cap short peers because it is possible, but unlikely, for a node to have many many many  short peers.}
+
 \begin{frame}{Euclidean Distance}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.7\linewidth]{figs/EucldianDistance}
-		\caption[Hops in Euclidean UrDHT]{The inter-node distance stays constant at 1 until long peers are filled, then rises at the rate of a randomly connected network due to the distribution of long peers selected}
+		\caption[Hops in Euclidean UrDHT]{The inter-node distance stays constant at 1 until long peers are filled, then rises at the rate of a randomly connected network due to the distribution of long peers selected.}
 		\label{fig:EucldianDistance}
 	\end{figure}
 \end{frame}
@@ -846,8 +852,8 @@ Results:
 \begin{itemize}
 	\item UrDHT abstracts DHTs.
 	\item UrDHT can emulate the topology and performance of various DHTs.
-	\item We can use UrDHT to create a multidimensional DHT.
-	\item The maintenance algorithm can nodes moving in the overlay.
+	\item The maintenance algorithm can handle nodes moving in the overlay.
+	\item Our abstract implementation allows for both the easy creation of new DHTs as well as 
 
 \end{itemize}
 \end{frame}
@@ -867,6 +873,8 @@ Results:
 	\end{itemize}
 \end{frame}
 
+\note{We saw that churn could speed up a distributed computation.  If it works, then essentially, we're saying turning machines off and on randomly speeds things up in a DHT.  We also want to probably create some strategies better than random chance.}
+
 
 \begin{frame}{Strategies}
 	\begin{itemize}
@@ -877,7 +885,9 @@ Results:
 	\end{itemize}
 \end{frame}
 
-
+\note[itemize]{
+	\item These are all strategies that require no centralization, little or no coordination.
+	\item Each node makes a lod balancing decision according to the strategy on its own.}
 
 
 \subsection{Distribution of Keys in A DHT}
@@ -907,8 +917,11 @@ Results:
 \end{frame}
 
 \note[itemize]{
-\item This means 50\% of the network has significantly less tasks than the average.  Probably more.
-
+\item Let's see how work is distributed in a DHT.
+\item In an ideal world, assume each node was the same strength and consumed a single task per tick, we'd want to give every node the same amount of work.
+\item In a DHT, though, we find that work is not evenly distributed.
+\item Compare the median and standard deviation to the ideal average.
+\item This means 50\% of the network has significantly less tasks than the average.  Probably more as we'll see.
 }
 
 
@@ -922,6 +935,7 @@ Results:
 \end{frame}
 
 \note[itemize]{
+\item The graph(and all graphs) are normalized.  Taking the integral will give us 1.
 \item Keys were generated by feeding random numbers into the SHA1 hash function, a favorite for many distributed hash tables.
 \item Nodes with small amounts of work (the first two buckets)  will finish first.  
 \item If each node consumes a task a tick, then that means the nodes the furthest right will dictate the runtime.
@@ -1054,14 +1068,15 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figs/churnVsTime}
-		\caption[Churn vs Runtime factor]{This graph shows the effect churn has on runtime in a distributed computation.
-			Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
-			The lower the runtime factor, the closer it is to an ideal of 1.
-			Neither the homogeneity of the network nor work measurement had a significant effect on the runtime.}
+		\caption[Churn vs Runtime factor]{This graph shows the effect churn has on runtime in a distributed computation.}
 		\label{fig:churnVsTime}
 	\end{figure}
 \end{frame}
 
+\note[itemize]{
+	\item Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
+	\item The lower the runtime factor, the closer it is to an ideal of 1.
+	\item Neither the homogeneity of the network nor work measurement had a significant effect on the runtime.}
 
 %\begin{frame}{Churn vs Average Work Per Tick}
 %\begin{figure}
@@ -1077,13 +1092,16 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
-	\caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.}
+	\caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  }
 	
 	\label{fig:churnStableHist0}
 \end{figure}
 \end{frame}
 
-\note{This will be the same for every strategy.}
+\note{
+	As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.
+	
+	This will be the same for every strategy.}
 
 
 
@@ -1091,36 +1109,43 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
-	\caption[Workload for churn at tick 35]{After 35 ticks, the effects of churn on the workload distribution become more pronounced.  More nodes have consumed all their tasks and are simply idling, but significantly less in the network using churn.}
+	\caption[Workload for churn at tick 35]{After 35 ticks}
 	\label{fig:churnStableHist35}
 \end{figure}
 \end{frame}
 
+\note{ The effects of churn on the workload distribution become pronounced.  More nodes have consumed all their tasks and are simply idling, but significantly less in the network using churn.}
+
 \begin{frame}{Remarks}
 \begin{itemize}
-	\item Diminishing returns
+	\item Diminishing returns.
 	\item Maintenance costs can get excessive
 	\item We don't actually have to kill nodes, most of the speedup is from joining.
 \end{itemize}
 \end{frame}
 
+\note[itemize]{\item After 0.01 churn, we saw reduced improvement.
+	\item We didn't simulate maintenance, but those are a factor 
+	\item Killing nodes provides no speedup
+	}
 
 \subsection{Random Injection}
 \begin{frame}{Strategy}
 	\begin{itemize}
 		
-		\item Nodes with loads $ \leq $ \texttt{sybilThreshold} create Sybils
-		\item This check occurs every 5 ticks before work is performed
-		\item These Sybils are randomly placed
-		\item Act as a virtual node so the same node essentially exists in multiple locations
-		\item Sybils are removed if the node that created it has no work
+		\item Nodes with loads $ \leq $ \texttt{sybilThreshold} create Sybils.
+		\item This check occurs every 5 ticks before work is performed.
+		\item These Sybils are randomly placed.
+		\item Act as a virtual node so the same node essentially exists in multiple locations.
+		\item Sybils are removed if the node that created it has no work.
 		
 	\end{itemize}
 \end{frame}
 
 \note[itemize]{
-	\item Leaving nodes enter pool, joing nodes leave pool
-	\item Sybil removal is instantaneous if no qork was acquired.  We can get a similar result with no disruption if a node asks if it would be stealing any work.
+	\item The check interval used to be a variable, but preliminary results showed it did not have much of an effect.
+	\item Sybil removal is instantaneous if no work was acquired.  We can get a similar result with no disruption if a node asks if it would be stealing any work.
+	\item So query before joining
 }
 
 \begin{frame}{Effects of Network Size}
@@ -1137,7 +1162,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \item However, the larger ratio networks handled heterogeneity much better, with the worst average heterogeneous run time being 1.955 in networks with
 1000 tasks per node, compared to 4.052 on the smaller ratio networks with 100 tasks per node.
 \item Most trials did not have a runtime factor greater than 3.
-\item Random injection handled heterogeneity the best
+\item Random injection handled heterogeneity the best.
 }
 
 
@@ -1145,12 +1170,13 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/randomStableHist35}
-	\caption[Random injection vs no strategy after 35 ticks.]{The networks after 35 ticks.  The network using random injection has significantly less underutilized nodes and substantially more notes with some or lots of work.}
+	\caption[Random injection vs no strategy after 35 ticks.]{The networks after 35 ticks. }
 	\label{fig:randomStableHist35}
 \end{figure}
 \end{frame}
 
 \note[itemize]{
+	\item  The network using random injection has significantly less underutilized nodes and substantially more notes with some or lots of work.
 	\item We see even better improvement here.
 }
 
@@ -1266,24 +1292,24 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist35}
-	\caption[Neighbor injection  vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
+	\caption[Neighbor injection  vs no strategy after 35 ticks.]{Neighbor injection  vs no strategy after 35 ticks.}
 	\label{fig:neighborsStableHist35}
 \end{figure}
 
 \end{frame}
 
-
+\note{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
 
 \begin{frame}{Smart Neighbor Injection after 35 Ticks}
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist35}
-	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{After 35 ticks, we see the network using the smart neighbor injection strategy has significantly less nodes with little or no work, more nodes with smaller amounts of work, and less nodes with large amounts of tasks.}
+	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{Smart Neighbor injection  vs no strategy after 35 ticks.}
 	\label{fig:neighborsStableSmartHist35}
 \end{figure}
 \end{frame}
 
-
+\note{After 35 ticks, we see the network using the smart neighbor injection strategy has significantly less nodes with little or no work, more nodes with smaller amounts of work, and less nodes with large amounts of tasks.}
 
 \begin{frame}{Remarks}
 	\begin{itemize}
@@ -1318,12 +1344,12 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist35}
-	\caption[Invitiation vs no strategy after 35 ticks]{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
+	\caption[Invitiation vs no strategy after 35 ticks]{Invitiation vs no strategy after 35 ticks}
 	\label{fig:inviteStableHist35}
 \end{figure}
 \end{frame}
 
-
+\note{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
 
 
 \begin{frame}{Invitation vs Smart Neighbors at Tick 35}
@@ -1331,12 +1357,13 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist35}
-	\caption[Invitation vs smart neighbor injection after 35 ticks.]{After 35 ticks, differences between the two strategies have emerged.  The network using the invitation strategy has significantly less nodes with a small work load and many more with large work loads.}
+	\caption[Invitation vs smart neighbor injection after 35 ticks.]{Invitation vs smart neighbor injection after 35 ticks.}
 	\label{fig:inviteNeighborsHist35}
 \end{figure}
 
 \end{frame}
 
+\note{After 35 ticks, differences between the two strategies have emerged.  The network using the invitation strategy has significantly less nodes with a small work load and many more with large work loads.}
 
 
 \begin{frame}{Remarks}
@@ -1369,54 +1396,56 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Conclusion}
 	\begin{itemize}
-		
-		\item Load Balancing
+		\item UrDHT provides a platform for quickly creating DHTs.
+		\item UrDHT shows that almost any DHT can be implemented by defining the Space Math.
+		\item We showed that files are  unevenly distributed in a DHT.
+		\item We demonstrated strategies nodes can use to autonomously load balance the network and approach close to ideal times.
 	\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{Publication List}
+\subsection{Publications}
+\begin{frame}{Published Work}
+ 	\begin{itemize}\tiny{
+		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Poster at IPDPS 2014 PhD Forum
+		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Presentation ICA CON 2014
+		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Short Paper ICA CON 2014 
+		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
+		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``A Distributed Greedy Heuristic for Computing Voronoi Tessellations With Applications Towards Peer-to-Peer Networks'' IEEE IPDPS 2015 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems}
+		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison
+	``Distributed Decentralized Domain Name Service''
+	IEEE IPDPS 2016 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems
+	
+	\end{itemize}
+	
+\end{frame}
+
+
+\begin{frame}{Submitting}
+	\begin{itemize}\footnotesize{
+		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``Replication Strategies to Increase Storage Robustness in Decentralized P2P Architectures''
+		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``Online Hyperbolic Latency Graph Embedding as Synthetic Coordinates for Latency Reduction in DHTs''
+		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``Autonomous Load Balancing in a DHT''
+		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``UrDHT: A Generalized DHT''
+		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``The Sybil Attack on Peer-to-Peer Networks From the Attacker's Perspective''}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Other Publications}
+
 	\begin{itemize}
-		
-		\item Load Balancing
+		\footnotesize{
+		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
+		``A Model Architecture for Big Data applications using Relational Databases''
+		2014 IEEE BigData - C4BD2014 - Workshop on Complexity for Big Data  
+		\item Chinua Umoja, J.T. Torrance, Erin-Elizabeth A. Durham, Andrew Rosen, Dr. Robert Harrison
+		``A Novel Approach to Determine Docking Locations Using Fuzzy Logic and Shape Determination''
+		2014 IEEE BigData - Poster and Short Paper 
+		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
+		``Optimization of Relational Database Usage Involving Big Data'' 
+		IEEE SSCI 2014 - CIDM 2014 - The IEEE Symposium Series on Computational Intelligence and Data Mining }
 	\end{itemize}
 \end{frame}
 
-%\subsection{Publications}
-%\begin{frame}{Published Work}
-% 	\begin{itemize}\tiny{
-%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Poster at IPDPS 2014 PhD Forum
-%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Presentation ICA CON 2014
-%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Short Paper ICA CON 2014 
-%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
-%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``A Distributed Greedy Heuristic for Computing Voronoi Tessellations With Applications Towards Peer-to-Peer Networks'' IEEE IPDPS 2015 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems}
-%	\end{itemize}
-%	
-%\end{frame}
-%
-%
-%\begin{frame}{In Progress}
-%	\begin{itemize}\footnotesize{
-%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``UrDHT: A Generalized DHT''
-%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``The Sybil Attack on Peer-to-Peer Networks From the Attacker's Perspective''
-%		\item Chaoyang Li, Andrew Rosen, Anu G. Bourgeois ``On Minimum Camera Set Problem in Camera Sensor Networks''}
-%	\end{itemize}
-%\end{frame}
-%
-%\begin{frame}{Other Publications}
-%	
-%	\begin{itemize}
-%		\footnotesize{
-%		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
-%		``A Model Architecture for Big Data applications using Relational Databases''
-%		2014 IEEE BigData - C4BD2014 - Workshop on Complexity for Big Data  
-%		\item Chinua Umoja, J.T. Torrance, Erin-Elizabeth A. Durham, Andrew Rosen, Dr. Robert Harrison
-%		``A Novel Approach to Determine Docking Locations Using Fuzzy Logic and Shape Determination''
-%		2014 IEEE BigData - Poster and Short Paper 
-%		\item  Erin-Elizabeth A. Durham, Andrew Rosen, Robert W. Harrison
-%		``Optimization of Relational Database Usage Involving Big Data'' 
-%		IEEE SSCI 2014 - CIDM 2014 - The IEEE Symposium Series on Computational Intelligence and Data Mining }
-%	\end{itemize}
-%\end{frame}
 \end{document}
