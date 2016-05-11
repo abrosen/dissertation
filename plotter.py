@@ -28,6 +28,33 @@ def drawGraph(nodes, tasks):
     plt.plot(xs,ys, 'ro')
     plt.plot(fx,fy, 'b+')
     plt.show()
+    
+def drawEvenGraph(nodes, tasks):
+    xs = []
+    ys = [] 
+    fx = []
+    fy = []
+    i = 0
+    for _ in range(nodes):
+        n = next(generateFileIDs())
+        n = i/nodes * MAX
+        x = math.sin(2*math.pi*n/ MAX)
+        y = math.cos(2*math.pi*n/ MAX)
+        xs.append(x)
+        ys.append(y)
+        i += 1
+    
+    for _ in range(tasks):
+        n = next(generateFileIDs())
+        x = math.sin(2*math.pi*n/ MAX)
+        y = math.cos(2*math.pi*n/ MAX)
+        fx.append(x)
+        fy.append(y)
+    #plt.axes([-1.0,1.0,-1.0,1.0] )
+    plt.plot(xs,ys, 'ro')
+    plt.plot(fx,fy, 'b+')
+    plt.show()
+
 
 def drawAverageChurn(filename):
     data =  open("data/done/"+filename+".txt")
@@ -282,12 +309,12 @@ def plotLoads():
     plt.show()
 
 
-#drawGraph(10, 100)
+drawEvenGraph(10, 100)
 #plotLoads()
 #compareChurnInjection()
 #compareChurnStable()
 #compareInjectionStable()
-compareNeighborsStable()
+#compareNeighborsStable()
 #compareInviteStable()
 #compareInviteNeighbor()
 #drawAverageChurn("averagesChurnDataPoints")

@@ -134,7 +134,7 @@ We see the bulk of the nodes have less than 1000 tasks and a few unfortunate nod
 	\label{fig:workloadDistribution}
 \end{figure}
 
-Our final example is on a much smaller scale, but provides an excellent visual representation of a netwrk.
+Our final example is on a much smaller scale, but provides an excellent visual representation of a network.
 Figure \ref{fig:exampleChordDistribution} shows a visualization of 10 nodes and 100 tasks in a Chord overlay network.
 
 Each node and task is given a 160-bit identifier \texttt{id} that is mapped to location $ (x,y) $ on the perimeter of the unit circle via the equations $ x = \sin\left( \frac{ 2 \pi \cdot id}{2^{160}} \right)$ and $ y = \cos\left( \frac{ 2 \pi \cdot id}{2^{160}} \right)$. 
@@ -145,13 +145,28 @@ That node and the node located at about $(-0.1, -1)$ are responsible for approxi
 \begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{figs/exampleChordDistribution}
-\caption[Distribution of Nodes and Tasks in a Chiord DHT]{A visual example of data and nodes in a Chord DHT with 10 nodes (represented by red circles) and 100 tasks (blue pluses). Nodes are responsible for all the tasks that fall along the perimeter between themselves and their predecessor, which is the closest node counterclockwise.}
+\caption[Distribution of Nodes and Tasks in a Chord DHT]{A visual example of data and nodes in a Chord DHT with 10 nodes (represented by red circles) and 100 tasks (blue pluses). Nodes are responsible for all the tasks that fall along the perimeter between themselves and their predecessor, which is the closest node counterclockwise.}
 \label{fig:exampleChordDistribution}
+\end{figure}
+
+Figure \ref{fig:exampleChordEvenDistribution} shows the same network, but the nodes are evenly distributed, rather than generated but the SHA1 hash function.
+We see that while the network is better balanced, the files cluster and some nodes still end up with noticeably more work than others.
+It is possible for nodes to choose their own IDs in some DHTs \cite{mainline}, but the files will still be distributed according to a cryptographic hash function.
+In addition, it would require some additional centralization to make sure every single node covered the same range and may be impossible to coordinate such an effort in a constantly changing network.
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{figs/exampleChordEvenDistribution}
+	\caption[Distribution of Tasks in a Chord DHT  with Evenly Distributed Nodes]{A visual example of data and nodes in a Chord DHT with 10 evenly distributed nodes (represented by red circles) and 100 tasks (blue pluses).}
+	\label{fig:exampleChordEvenDistribution}
 \end{figure}
 
 From these examples, we can see that nodes and data in a DHT are not distributed uniformly at random, but rather their distribution is better represented by  an exponential distribution.
 In this setting, a few nodes are responsible for the bulk of the work, and in a distributed computation, it is these nodes that will account for the majority of the runtime in the network.
 As we will see in our simulations, if nodes with little or no work can acquire some of this work, this has a significant impact on the networks's runtime.
+
 
 
 \section{Simulation}
