@@ -853,7 +853,7 @@ Results:
 	\item UrDHT abstracts DHTs.
 	\item UrDHT can emulate the topology and performance of various DHTs.
 	\item The maintenance algorithm can handle nodes moving in the overlay.
-	\item Our abstract implementation allows for both the easy creation of new DHTs as well as 
+	\item Our abstract implementation allows for both the easy creation of new DHTs as well as the simulation of various topologies.
 
 \end{itemize}
 \end{frame}
@@ -1150,7 +1150,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Effects of Network Size}
 	\begin{itemize}
-		\item A homogeneous, 1000 node/100,000 task network, never have an average runtime factor greater than 1.7
+		\item A homogeneous, 1000 node/100,000 task network, never has an average runtime factor greater than 1.7
 		\item Minimum was 1.36.
 		\item In the same network with 1,000,000 tasks, these runtimes were 1.25 and 1.12 respectively.
 		\item On average, the 1,000,000 task network had a runtime factor 0.82 less than the 100,000 task network.
@@ -1256,9 +1256,9 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Base Runtime}
 \begin{itemize}
-	\item The base runtime in a 1000 node/100,000 task homogeneous network was 5.033
-	\item 2.4 lower than no strategy
-	\item Base runtime in a heterogeneous runtime was worse
+	\item The base runtime in a 1000 node/100,000 task homogeneous network was 5.033.
+	\item 2.4 lower than no strategy.
+	\item Base runtime in a heterogeneous network was worse.
 	\item \texttt{numSuccessors} improves the runtime factor (0.3 for base network)
 	\item Other variables had no significant effect.
 \end{itemize}
