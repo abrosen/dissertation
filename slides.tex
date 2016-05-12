@@ -386,8 +386,7 @@ What was it:
 \begin{itemize}
 	\item Made a Voronoi-based DHT to operate in multiple dimensions.
 	\item Wanted to embed information, such as inter-node latency, into the position in the overlay.
-	\item Voronoi computations required a greedy heuristic.
-	\item More detail later.
+	\item Voronoi computations in high dimensions required a greedy heuristic.
 \end{itemize}
 
 
@@ -401,7 +400,10 @@ Results:
 \end{frame}
 
 \note[itemize]{
-	\item The embedding stuff was Brendan's research}
+	\item We discovered a mapping between Distributed Hash Tables and Voronoi/Delaunay Triangulations.
+	\item Most DHTs optimize routing for the number of hops, rather than latency.  We wanted to embed latency in the network
+	\item The embedding stuff was Brendan's research
+}
 
 \begin{frame}{D$^3$NS}
 
@@ -449,89 +451,89 @@ Results:
 
 
 
-\subsection{DGVH}
-
-
-\begin{frame}{Goals}
-	VHash and DGVH sprung from two related ideas:
-	\begin{itemize}
-		
-		\item<1-> We wanted a way be able optimize latency by embedding it into the routing overlay. \note<1>{Most DHTs optimize routing for the number of hops, rather than latency.}
-		\item<2-> We wanted to create a DHT based off of Voronoi tessellations. Unfortunately: \note<2>{ We discovered a mapping between Distributed Hash Tables and Voronoi/Delaunay Triangulations.}
-		\begin{itemize}
-			\item<3-> Distributed algorithms for this problem don't really exist.  \note<3>{I lie, they do exist, but they all are ``run the global algorithm on your local subset.  And if we move out of or above 2D Euclidean space, as Brendan wanted to, no fast algorithms exist at all.  We quickly determined that solving was never really a feasible option. So that leaves approximation.  A distributed algorithm would be helpful for some WSNs solving the boundary coverage problem.}
-			\item<4-> Existing approximation algorithms were unsuitable. \note<4>{Simple approximations have no guarantees of connectivity, which is very bad for a routing topology.  Better algorithms that existed for this problem technically ran in constant time, but had a prohibitively high sampling.  So to understand what I'm talking about here, let's briefly define what a Voronoi tessellation is.}
-		\end{itemize}
-		%		\item<5>  We wanted to the nodes to move in the key space to adjust to . \note{Just a minor challenge no }
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Voronoi Tesselation}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/new_voronoi}
-		%\caption{A set of points and the generated Voronoi regions}
-		\label{fig:new_voronoi}
-	\end{figure}
-\end{frame}
-
-\note{Define
-	\begin{itemize}
-		\item A Voronoi tessellation or Voronoi diagram divides a space into regions, where each region encompasses all the points closest to Voronoi generators (point).
-		\item Voronoi generators
-		\item Voronoi Region
-		\item Voronoi Tessellation/ Diagram
-	\end{itemize}
-}
-
-\begin{frame}{Delaunay Triangulation}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/delaunay}
-		%\caption{The same set of nodes with their corresponding Delaunay Triangulation.}
-		\label{fig:delaunay}
-	\end{figure}
-\end{frame}
-
-\note{Define
-	\begin{itemize}
-		\item Delaunay Triangulation is a triangulation of a set of points with the following rule:
-		\item No point falls within any of the circumcircles for every triangle in the triangulation, 
-		\item The Voronoi tessellation and Delaunay Triangulation are dual problems.
-		\begin{itemize}
-			\item Solving one yields the other.
-			\item We can get the Voronoi diagram by connecting all the centers of circumcircles.
-		\end{itemize}
-	\end{itemize}
-}
-
-
-\begin{frame}{DHT and Voronoi Relationship }
-	\begin{itemize}
-		\item We can view DHTs in terms of Voronoi tessellation and Delaunay triangulation.
-		\begin{itemize}
-			\item The set of keys the node is responsible for is its Voronoi region.
-			\item The nodes neighbors are its Delaunay neighbors.
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\note{
-	It turns out we  can look at distributed hash tables in terms of Voronoi tessellation and Delaunay triangulation. 
-	So if we have a quick way approximate this, we can build a DHT based directly on Voronoi tessellation and Delaunay triangulation.
-}
-
-
-\begin{frame}{Distributed Greedy Voronoi Heuristic}
-	
-	\begin{itemize}
-		\item Assumption: The majority of Delaunay links cross the corresponding Voronoi edges.
-		\item We can test if the midpoint between two potentially connecting nodes is on the edge of the Voronoi region.
-		\item This intuition fails if the midpoint between two nodes does not fall on their Voronoi edge.
-	\end{itemize}
-	
-\end{frame}
+%\subsection{DGVH}
+%
+%
+%\begin{frame}{Goals}
+%	VHash and DGVH sprung from two related ideas:
+%	\begin{itemize}
+%		
+%		\item<1-> We wanted a way be able optimize latency by embedding it into the routing overlay. \note<1>{Most DHTs optimize routing for the number of hops, rather than latency.}
+%		\item<2-> We wanted to create a DHT based off of Voronoi tessellations. Unfortunately: \note<2>{ We discovered a mapping between Distributed Hash Tables and Voronoi/Delaunay Triangulations.}
+%		\begin{itemize}
+%			\item<3-> Distributed algorithms for this problem don't really exist.  \note<3>{I lie, they do exist, but they all are ``run the global algorithm on your local subset.  And if we move out of or above 2D Euclidean space, as Brendan wanted to, no fast algorithms exist at all.  We quickly determined that solving was never really a feasible option. So that leaves approximation.  A distributed algorithm would be helpful for some WSNs solving the boundary coverage problem.}
+%			\item<4-> Existing approximation algorithms were unsuitable. \note<4>{Simple approximations have no guarantees of connectivity, which is very bad for a routing topology.  Better algorithms that existed for this problem technically ran in constant time, but had a prohibitively high sampling.  So to understand what I'm talking about here, let's briefly define what a Voronoi tessellation is.}
+%		\end{itemize}
+%		%		\item<5>  We wanted to the nodes to move in the key space to adjust to . \note{Just a minor challenge no }
+%	\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}{Voronoi Tesselation}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/new_voronoi}
+%		%\caption{A set of points and the generated Voronoi regions}
+%		\label{fig:new_voronoi}
+%	\end{figure}
+%\end{frame}
+%
+%\note{Define
+%	\begin{itemize}
+%		\item A Voronoi tessellation or Voronoi diagram divides a space into regions, where each region encompasses all the points closest to Voronoi generators (point).
+%		\item Voronoi generators
+%		\item Voronoi Region
+%		\item Voronoi Tessellation/ Diagram
+%	\end{itemize}
+%}
+%
+%\begin{frame}{Delaunay Triangulation}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/delaunay}
+%		%\caption{The same set of nodes with their corresponding Delaunay Triangulation.}
+%		\label{fig:delaunay}
+%	\end{figure}
+%\end{frame}
+%
+%\note{Define
+%	\begin{itemize}
+%		\item Delaunay Triangulation is a triangulation of a set of points with the following rule:
+%		\item No point falls within any of the circumcircles for every triangle in the triangulation, 
+%		\item The Voronoi tessellation and Delaunay Triangulation are dual problems.
+%		\begin{itemize}
+%			\item Solving one yields the other.
+%			\item We can get the Voronoi diagram by connecting all the centers of circumcircles.
+%		\end{itemize}
+%	\end{itemize}
+%}
+%
+%
+%\begin{frame}{DHT and Voronoi Relationship }
+%	\begin{itemize}
+%		\item We can view DHTs in terms of Voronoi tessellation and Delaunay triangulation.
+%		\begin{itemize}
+%			\item The set of keys the node is responsible for is its Voronoi region.
+%			\item The nodes neighbors are its Delaunay neighbors.
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+%\note{
+%	It turns out we  can look at distributed hash tables in terms of Voronoi tessellation and Delaunay triangulation. 
+%	So if we have a quick way approximate this, we can build a DHT based directly on Voronoi tessellation and Delaunay triangulation.
+%}
+%
+%
+%\begin{frame}{Distributed Greedy Voronoi Heuristic}
+%	
+%	\begin{itemize}
+%		\item Assumption: The majority of Delaunay links cross the corresponding Voronoi edges.
+%		\item We can test if the midpoint between two potentially connecting nodes is on the edge of the Voronoi region.
+%		\item This intuition fails if the midpoint between two nodes does not fall on their Voronoi edge.
+%	\end{itemize}
+%	
+%\end{frame}
 
 \begin{frame}{DGVH Heuristic}
 	
@@ -568,41 +570,41 @@ Results:
 }
 
 
-\begin{frame}{DGVH Time Complexity}
-	For $ k $ candidates, the cost is: 
-	\[ k\cdot\lg(k)  + k^{2} \text{ distances} \]
-	
-	However, the expected maximum for $k$ is $\Theta(\frac{\log n}{\log \log n} )$, which gives an expected maximum cost of 
-	
-	\[ O(\frac{\log^{2} n}{\log^{2} \log n} ) \]
-	or
-	\[O(\frac{\log^{3} n}{\log^{3} \log n} )\]
-	
-	Depending on whether we gossip with a single neighbor or all neighbors.
-	
-\end{frame}
-
-\note{
-	DVGH is very efficient in terms of both space and time.
-	Suppose a node $n$ is creating its short peer list from $k$ candidates in an overlay network of $N$ nodes.
-	The candidates must be sorted, which takes $O(k\cdot\lg(k))$ operations.
-	Node $n$ then compares distances between all peers  and all the candidates.
-	This results in a cost of
-	
-	\[ k\cdot\lg(k) + k^{2} \text{ distances} \]
-	
-	
-	Since $k$ is  bounded by $\Theta(\frac{\log N}{\log \log N} )$ (the expected maximum degree of a node), we can translate the above to:
-	
-	
-	The expected worst case cost of DGVH is \(O(\frac{\log^{3} n}{\log^{3} \log n} )\), if we swap with all short peers.
-	Otherwise the cost is $O(\frac{\log^{2} N}{\log^{2} \log N} )$
-	
-	
-	
-	In the vast majority of cases, the number of peers is equal to the minimum size of \textit{Short Peers}.
-	This yields $k=(3d+1)^{2}+3d+1$ in the expected case, where the lower bound and expected complexities are $\Omega(1)$.
-}
+%\begin{frame}{DGVH Time Complexity}
+%	For $ k $ candidates, the cost is: 
+%	\[ k\cdot\lg(k)  + k^{2} \text{ distances} \]
+%	
+%	However, the expected maximum for $k$ is $\Theta(\frac{\log n}{\log \log n} )$, which gives an expected maximum cost of 
+%	
+%	\[ O(\frac{\log^{2} n}{\log^{2} \log n} ) \]
+%	or
+%	\[O(\frac{\log^{3} n}{\log^{3} \log n} )\]
+%	
+%	Depending on whether we gossip with a single neighbor or all neighbors.
+%	
+%\end{frame}
+%
+%\note{
+%	DVGH is very efficient in terms of both space and time.
+%	Suppose a node $n$ is creating its short peer list from $k$ candidates in an overlay network of $N$ nodes.
+%	The candidates must be sorted, which takes $O(k\cdot\lg(k))$ operations.
+%	Node $n$ then compares distances between all peers  and all the candidates.
+%	This results in a cost of
+%	
+%	\[ k\cdot\lg(k) + k^{2} \text{ distances} \]
+%	
+%	
+%	Since $k$ is  bounded by $\Theta(\frac{\log N}{\log \log N} )$ (the expected maximum degree of a node), we can translate the above to:
+%	
+%	
+%	The expected worst case cost of DGVH is \(O(\frac{\log^{3} n}{\log^{3} \log n} )\), if we swap with all short peers.
+%	Otherwise the cost is $O(\frac{\log^{2} N}{\log^{2} \log N} )$
+%	
+%	
+%	
+%	In the vast majority of cases, the number of peers is equal to the minimum size of \textit{Short Peers}.
+%	This yields $k=(3d+1)^{2}+3d+1$ in the expected case, where the lower bound and expected complexities are $\Omega(1)$.
+%}
 
 
 
@@ -613,7 +615,7 @@ Results:
 		\item  Creates a fully connected subset of the Delaunay Triangulation.
 		\item A DHT using DGVH can optimize over a metric such as latency and achieve superior routing speeds as a result.
 		\item We built VHash to test this.
-		\item UrDHT fully implements this and use
+		\item UrDHT fully implements and uses this.
 	\end{itemize}
 \end{frame}		
 
@@ -645,10 +647,10 @@ Results:
 \end{frame}
 
 \note[itemize]{
-	\item We implement these topologies by abstracting them to the Voronoi Delaunay 
-	\item Storage deals with file storage
-	\item Networking deals with actual implementation of how nodes talk across the network
-	\item Mostly we'll talk about the logic, which has two components
+	\item We implement these topologies by abstracting them to the Voronoi Delaunay .
+	\item Storage deals with file storage.
+	\item Networking deals with actual implementation of how nodes talk across the network.
+	\item Mostly we'll talk about the logic, which has two components.
 	\item You can change both, but changing space math is sufficient to create a DHT with a new topology.
 }
 
@@ -656,7 +658,7 @@ Results:
 \begin{frame}{The Protocol}
 
 	\begin{itemize}
-		\item Consists of
+		\item Consists of:
 		\begin{itemize}
 			\item Node Information
 			\item Short peers
@@ -680,39 +682,33 @@ Results:
 }
 
 \begin{frame}{Space Math}
+
 	\begin{itemize}
 		\item Defines the DHT topology
 		\item Requires a way to generate short peers and choose long peers
+		\item Functions that define the overlay:
+		\begin{itemize}
+				\item \texttt{idToPoint}  takes key, maps it to a point in space.
+				\item \texttt{distance} outputs the shortest distance between $ a $ and $ b $
+				\item \texttt{getDelaunayPeers} which is DGVH.
+				\item \texttt{getClosest}
+				\item \texttt{handleLongPeers}
+		\end{itemize}
+	
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Space Functions}
-	\begin{itemize}
-		\item \texttt{idToPoint}  takes key, maps it to a point in space.
-		\item \texttt{distance} outputs the shortest distance between $ a $ and $ b $
-		\item \texttt{getDelaunayPeers} which is DGVH.
-		\item \texttt{getClosest}
-		\item \texttt{handleLongPeers}
-	\end{itemize}
+	
 \end{frame}
 
 \note[itemize]{
 	\item Distance is not symetrical in every space
 	\item Given a set of points, the candidates, and a center point, \texttt{getDelaunayPeers} calculates a mesh that approximates the Delaunay peers of center. 
 	\item \texttt{getClosest} returns the point closest to \texttt{center} from \texttt{candidates}.  \texttt{seek} depends on \texttt{getClosest}
-	\item \texttt{handleLongPeers} takes a liost of candidates and a center, returns a selection of long peers/
-	\item Implementation should vary greatly, small world and the like should use a probability dist, Chord uses a structed distribution
+	\item \texttt{handleLongPeers} takes a list of candidates and a center, returns a selection of long peers/
+	\item Implementation should vary greatly, small world and the like should use a probability dist, Chord uses a structured distribution
 	\item If long peers is too big, use a subset.
 }
 
-\begin{frame}{DHTs To Implement}
-	We demonstrated how to implement:
-	\begin{itemize}
-		\item Chord / Symphony
-		\item Kademlia 
-		\item ZHT
-	\end{itemize}
-\end{frame}
+
 
 
 \subsection{Experimental Results}
@@ -734,7 +730,7 @@ Results:
 \note[itemize]{
 	\item Two different types of experiments
 	\item Tested to see if actual implementation worked
-	\item Simulated creating larger networks using the smae exact logic we used for UrDHT
+	\item Simulated creating larger networks using the same exact logic we used for UrDHT
 	\item This was one of the benefits to abstract this the way we did, we could pull the math out for easy simulation
 }
 
@@ -757,15 +753,7 @@ Results:
 	\item Averages of degree were averages of all nodes.
 }
 
-\begin{frame}{Chord Degree}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.65\linewidth]{figs/ChordDegree}
-	\caption[Degree of nodes in Chord]{Average and max degree of nodes in Chord. This Chord network utilized a 120 bit hash and thus degree is bound at 122 (full fingers, predecessor and successor).}
-	\label{fig:ChordDegree}
-\end{figure}
 
-\end{frame}
 
 
 \note{Jaggedness of maximum is most likely the result of nodes joining and occluding previous connections.}
@@ -781,14 +769,6 @@ Results:
 
 
 
-\begin{frame}{Kademlia Degree}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/KademliaDegree}
-	\caption[Degree of nodes in Kademlia]{This is the average and maximum degree of nodes in Kademlia.  Both the maximum degree and average degree are $O(\log n)$.}
-	\label{fig:KademliaDegree}
-\end{figure}
-\end{frame}
 
 \begin{frame}{Kademlia Distance}
 \begin{figure}
@@ -800,17 +780,6 @@ Results:
 \end{frame}
 
 
-\begin{frame}{Euclidean Degree}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/EucldianDegree}
-	\caption[Growth of UrDHT degree]{Because the long peers increase linearly to the maximum value (49), degree initially rises quickly and then grows  more slowly as the number of long peers ceases to grow and the size short peers increases with network size. }
-	\label{fig:EucldianDegree}
-\end{figure}
-\end{frame}
-
-\note{The Euclidean and Hyperbolic networks are 2d spaces. Our equation for peers from VHash was $ 3d+1 $ short peers minimum and $ (3d+1)^2 $ long peers maximum.  We limit the long peers because those could eventually encompass the entire network if we don't cap it.  We don't cap short peers because it is possible, but unlikely, for a node to have many many many  short peers.}
 
 \begin{frame}{Euclidean Distance}
 	\begin{figure}
@@ -822,16 +791,6 @@ Results:
 \end{frame}
 	
 
-\begin{frame}{Hyperbolic Degree}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/HyperbolicDegree}
-		\caption[Growth of UrDHT degree in a hyperbolic space]{The Hyperbolic network uses the same long and short peer strategies to the Euclidean network, and thus shows similar results.}
-		\label{fig:HyperbolicDegree}
-	\end{figure}
-\end{frame}
-	
 
 \begin{frame}{Hyperbolic Distance}
 	\begin{figure}
@@ -964,10 +923,11 @@ Results:
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.7\linewidth]{figs/exampleChordEvenDistribution}
-		\caption[Distribution of Nodes and Tasks in a Chiord DHT]{A visual example of data and nodes in a Chord DHT with 10 evenly distributed nodes (represented by red circles) and 100 tasks (blue pluses).}
+		\caption[Distribution of Nodes and Tasks in a Chord DHT]{A visual example of data and nodes in a Chord DHT with 10 evenly distributed nodes (represented by red circles) and 100 tasks (blue pluses).}
 		\label{fig:exampleChordEvenDistribution}
 	\end{figure}
 \end{frame}
+
 
 \note{We see that while the network is better balanced, the files cluster and some nodes still end up with noticeably more work than others.
 	It is possible for nodes to choose their own IDs in some DHTs, but the files will still be distributed according to a cryptographic hash function.
@@ -1033,14 +993,14 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{frame}
 
 \note[itemize]{
-	\item Leaving nodes enter pool, joing nodes leave pool
+	\item Leaving nodes enter pool, joining nodes leave pool
 	\item Check is done before work is done
 }
 
 
 \begin{frame}{Runtime}
 	\begin{table}[h]
-		\tiny
+		\small
 		\centering
 		\caption[Churn Runtimes in a homogenious network]{Runtime factor of networks of varying sizes and number of tasks, each using the Churn strategy to load-balance.  Each result is the average of 100 trials. The networks are homogeneous and each node consumes one task per tick.  A runtime of 1 is the ideal and target.}
 		\begin{tabular}{|p{1cm} || p{1cm} | p{1cm} | p{1cm} | p{1cm} | p{1cm} |}
@@ -1158,7 +1118,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \end{frame}
 
 \note[itemize]{
-\item  	Heterogeneous networks also saw signifcantly better performance , but the gains were not as great as in homogeneous networks.
+\item  	Heterogeneous networks also saw significantly better performance , but the gains were not as great as in homogeneous networks.
 \item However, the larger ratio networks handled heterogeneity much better, with the worst average heterogeneous run time being 1.955 in networks with
 1000 tasks per node, compared to 4.052 on the smaller ratio networks with 100 tasks per node.
 \item Most trials did not have a runtime factor greater than 3.
@@ -1166,17 +1126,18 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 }
 
 
-\begin{frame}{Random Injection vs No Strategy After 35 ticks}
+\begin{frame}{Random Injection vs Churn}
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{figs/randomStableHist35}
-	\caption[Random injection vs no strategy after 35 ticks.]{The networks after 35 ticks. }
-	\label{fig:randomStableHist35}
+	\includegraphics[width=0.7\linewidth]{figs/churnInjectionHist35}
+	\caption[Churn vs Random Injection after 35 ticks.]{The networks after 35 ticks.  The network using random injection load-balances significantly better than the network using Churn.}
+	\label{fig:churnInjectionHist35}
 \end{figure}
+
 \end{frame}
 
 \note[itemize]{
-	\item  The network using random injection has significantly less underutilized nodes and substantially more notes with some or lots of work.
+	\item  The network using random injection has significantly less underutilized nodes and substantially more nodes with some or lots of work.
 	\item We see even better improvement here.
 }
 
@@ -1194,36 +1155,11 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\item This did not translate to better runtime factor, as we'll in in other experiments.
 }
 
-
-
-\begin{frame}{Random Injection VS Churn}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/churnInjectionHist35}
-	\caption[Churn vs Random Injection after 35 ticks.]{The networks after 35 ticks.  The network using random injection load-balances significantly better than the network using Churn.}
-	\label{fig:churnInjectionHist35}
-\end{figure}
-
-\end{frame}
-
-
-
-
-\begin{frame}{Impacts of Variables}
+\begin{frame}{Remarks}
 	\begin{itemize}
 		\item \texttt{sybilThreshold} would lower the runtime factor.  
 		\item Churn had no significant effect.
 		\item \texttt{maxSybils} (node strength) had no effect in homogeneous networks.
-	\end{itemize}
-\end{frame}
-
-\note[itemize]{
-\item \texttt{sybilThreshold} did nothing in heterogeneous networks. The improvement was tied to the ratio of tasks to nodes.
-\item  Heterogeneous networks were hurt by \texttt{maxSybils} being larger.  The wider the disparity in strength, the more the network was hurt.
-}
-
-\begin{frame}{Remarks}
-	\begin{itemize}
 		\item Best runtime factor of our experiments.
 		\item Could still incur high maintenance costs, especially with nodes being deleted as soon as they are made.
 	\end{itemize}
@@ -1232,6 +1168,9 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 
 \note[itemize]{
+\item \texttt{sybilThreshold} did nothing in heterogeneous networks. The improvement was tied to the ratio of tasks to nodes.
+\item  Heterogeneous networks were hurt by \texttt{maxSybils} being larger.  The wider the disparity in strength, the more the network was hurt.
+
 \item Gets extremely close to ideal.
 \item Query first
 }
@@ -1340,18 +1279,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 
 
-\begin{frame}{Invitation at 35 Ticks}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist35}
-	\caption[Invitiation vs no strategy after 35 ticks]{Invitiation vs no strategy after 35 ticks}
-	\label{fig:inviteStableHist35}
-\end{figure}
-\end{frame}
-
-\note{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
-
-
 \begin{frame}{Invitation vs Smart Neighbors at Tick 35}
 
 \begin{figure}
@@ -1363,7 +1290,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \end{frame}
 
-\note{After 35 ticks, differences between the two strategies have emerged.  The network using the invitation strategy has significantly less nodes with a small work load and many more with large work loads.}
+\note{After 35 ticks, differences between the two strategies have emerged.  The network using the invitation strategy has significantly less nodes with a small work load and many more with large work loads. The highest load is around 500 tasks in the network using invitation.}
 
 
 \begin{frame}{Remarks}
@@ -1383,9 +1310,9 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{frame}{Summary}
 	\begin{itemize}
 		
-		\item Reactive vs Proactive
+		\item Reactive vs Proactive.
 		\item Heterogeneity was best handled by Churn or Random Injection.
-		\item Random injection was best overall
+		\item Random injection was best overall.
 		\item Load balanced did not mean faster since node strength was not taken into account.
 	\end{itemize}
 \end{frame}
