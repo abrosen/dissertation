@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import math
 import random
 import statistics
@@ -182,7 +183,7 @@ def compareChurnStable():
 def compareInjectionStable():
     s =  Simulator()
     random.seed(125)
-    s.setupSimulation(strategy= "churn", homogeneity="randomUniform" , workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
+    s.setupSimulation(strategy= "churn", homogeneity="equal" , workMeasurement= "one", numNodes= 1000, numTasks = 100000, churnRate =0)
     loads1, medians1, means1, maxs1, devs1 = s.simulateLoad()
     random.seed(125)
     s=Simulator()
@@ -309,9 +310,24 @@ def plotLoads():
     plt.show()
 
 
+def compareTimes():
+    data = [7.476, 3.721, 1.558, 5.033, 4.612, 5.673]
+    strats = ["None", "Churn", "Random Injection", "Neighbors", "Smart Neighbors", "Invitation"]
+    x = np.arange(6)
+
+    plt.bar(x, data, color=['k','w','b','y','g','r'])
+    
+    plt.xticks(x + 0.5, strats) 
+    plt.title('Node Runtimes' )
+    plt.legend(loc=0)
+    plt.xlabel('Strategy')
+    plt.ylabel('Runtime Factor')
+    plt.show()
+
+compareTimes()
 #drawEvenGraph(10, 100)
 #plotLoads()
-compareChurnInjection()
+#compareChurnInjection()
 #compareChurnStable()
 #compareInjectionStable()
 #compareNeighborsStable()

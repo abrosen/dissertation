@@ -364,8 +364,8 @@ Objective:
 Results:
 \begin{itemize}
 	\item We succeeded.
-	\item Our network could handle nodes leaving, as well as assign joining nodes work.
-	\item We found anomalous results with Churn.
+	\item Our network could handle nodes leaving and assign joining nodes work.
+	\item We found anomalous results under high levels of churn.
 \end{itemize}
 
 \end{frame}
@@ -611,7 +611,7 @@ Results:
 
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item DGVH is simple approximation for Delaunay Triangulation that guarantees a fully connected graph.
+		\item DGVH is a simple approximation for a Delaunay Triangulation that guarantees a fully connected graph.
 		\item  Creates a fully connected subset of the Delaunay Triangulation.
 		\item A DHT using DGVH can optimize over a metric such as latency and achieve superior routing speeds as a result.
 		\item We built VHash to test this.
@@ -632,7 +632,7 @@ Results:
 
 \begin{frame}{What is UrDHT}
 	\begin{itemize}
-		\item Abstract framework for implementing DHTs or various topologies
+		\item Abstract framework for implementing DHTs in any topology.
 		\item Three Components
 		\begin{itemize}
 			\item Storage 
@@ -992,7 +992,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 		\item The network load-balances using churn.
 		\item Proper simulation of churn.
 		\item \texttt{churnRate} chance per tick for each node to leave network.
-		\item Pool of potentially joining joins at the same rate.
+		\item Pool of potentially joining nodes joins at the same rate.
 	\end{itemize}
 \end{frame}
 
@@ -1116,7 +1116,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 	\begin{itemize}
 		\item A homogeneous, 1000 node/100,000 task network, never has an average runtime factor greater than 1.7
 		\item Minimum was 1.36.
-		\item In the same network with 1,000,000 tasks, these runtimes were 1.25 and 1.12 respectively.
+		\item In the same network with 1,000,000 tasks, these runtime factors were 1.25 and 1.12 respectively.
 		\item On average, the 1,000,000 task network had a runtime factor 0.82 less than the 100,000 task network.
 	\end{itemize}
 \end{frame}
@@ -1256,7 +1256,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{frame}{Remarks}
 	\begin{itemize}
 		\item Querying method improved runtime factor by 1.2 on average.
-		\item Querying would require querying, estimation still would provide improvement.
+		\item Querying would require additional communication overhead and coordination, estimation still would provide improvement.
 		\item Less churn of joining nodes.
 	\end{itemize}
 \end{frame}
@@ -1310,6 +1310,19 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \subsection{Conclusion}
 
+
+\begin{frame}{Summary}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/runtimes}
+		\caption[The runtimes of the strategies]{The runtime factors of the strategies.}
+		\label{runtimes}
+	\end{figure}
+	
+\end{frame}
+
+
 \begin{frame}{Summary}
 	\begin{itemize}
 		
@@ -1319,6 +1332,7 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 		\item Load balanced did not mean faster since node strength was not taken into account.
 	\end{itemize}
 \end{frame}
+
 
 \section{Conclusion}
 
@@ -1338,10 +1352,10 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \subsection{Publications}
 \begin{frame}{Published Work}
  	\begin{itemize}\tiny{
-		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Poster at IPDPS 2014 PhD Forum
+%		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Poster at IPDPS 2014 PhD Forum
 		\item Andrew Rosen, Brendan Benshoof, Robert W. Harrison, Anu G. Bourgeois ``MapReduce on a Chord Distributed Hash Table'' Presentation ICA CON 2014
 		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Short Paper ICA CON 2014 
-		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
+%		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``VHASH: Spatial DHT based on Voronoi Tessellation'' Poster ICA CON 2014 
 		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison ``A Distributed Greedy Heuristic for Computing Voronoi Tessellations With Applications Towards Peer-to-Peer Networks'' IEEE IPDPS 2015 - Workshop on Dependable Parallel, Distributed and Network-Centric Systems}
 		\item Brendan Benshoof, Andrew Rosen, Anu G. Bourgeois, Robert W. Harrison
 	``Distributed Decentralized Domain Name Service''
