@@ -143,7 +143,7 @@ def compareChurnInjection():
     for i in range(0,len(loads1), 5):
         x1= loads1[i]
         x2 =loads2[i]
-        colors = ["k", "w"]
+        colors = ["r", "b"]
         labels = ["Churn","Random Injection"]
         plt.hist([x1,x2], 25, normed =1, color=colors, label=labels)
         
@@ -309,9 +309,9 @@ def plotLoads():
     plt.show()
 
 
-drawEvenGraph(10, 100)
+#drawEvenGraph(10, 100)
 #plotLoads()
-#compareChurnInjection()
+compareChurnInjection()
 #compareChurnStable()
 #compareInjectionStable()
 #compareNeighborsStable()

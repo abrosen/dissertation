@@ -968,14 +968,17 @@ Results:
 \begin{frame}{Output}
 	\begin{itemize}
 		
-		\item Ideal Runtime
+		\item Target Runtime (ideal in homogeneous networks)
 		\item Runtime
 		\item Runtime Factor
 		\item Task Distribution
 	\end{itemize}
 \end{frame}
 
-\note{
+\note[itemize]{
+\item Target runtime in homogeneous networks that consume one task per tick is $ \frac{tasks}{nodes} $.
+\item In networks in where work measurement is strength, the target runtime is $ \frac{tasks}{expectedWorkPerTick} $.
+
 We used these to calculate a ``runtime factor,'' the ratio of the experimental runtime compared to the ideal runtime.
 For example, in the network from our previous example took 852 ticks to finish, its factor is 8.52.
 We prefer to use this runtime factor for comparisons since it allows us to compare networks of different compositions, task assignments, and other variables.
@@ -986,9 +989,10 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \begin{frame}{Strategy}
 	\begin{itemize}
 		
-		\item The network load-balances using churn
-		\item \texttt{churnRate} chance per tick for each node to leave network
-		\item Pool of potentially joining joins at the same rate
+		\item The network load-balances using churn.
+		\item Proper simulation of churn.
+		\item \texttt{churnRate} chance per tick for each node to leave network.
+		\item Pool of potentially joining joins at the same rate.
 	\end{itemize}
 \end{frame}
 
@@ -1180,15 +1184,14 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 \subsection{Neighbor Injection}
 \begin{frame}{Strategy}
 	\begin{itemize}
-		\item Rather than creating Sybils randomly, nodes create one in their successors
+		\item Rather than creating Sybils randomly, nodes create one in their successors's range.
 		\item Finding node id uses mashes
 		\item Estimates which successor has most work.
-		\item Tested estimation against smart method.
+		\item Tested estimation against actual querying method.
 	\end{itemize}
 \end{frame}
 
 \note[itemize]{
-	\item Smart actually queuries
 	\item Estimation can cause a node to keep checking same space each tick.  Trivial to solve.
 	\item Otherwise same as random injection
 }
@@ -1239,11 +1242,11 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \note{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
 
-\begin{frame}{Smart Neighbor Injection after 35 Ticks}
+\begin{frame}{Querying Neighbor Injection after 35 Ticks}
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist35}
-	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{Smart Neighbor injection  vs no strategy after 35 ticks.}
+	\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{Querying Neighbor injection  vs no strategy after 35 ticks.}
 	\label{fig:neighborsStableSmartHist35}
 \end{figure}
 \end{frame}
@@ -1252,8 +1255,8 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 
 \begin{frame}{Remarks}
 	\begin{itemize}
-		\item Smart method improved runtime factor by 1.2 on average.
-		\item Smart would require querying, ``dumb'' estimation still would provide improvement.
+		\item Querying method improved runtime factor by 1.2 on average.
+		\item Querying would require querying, estimation still would provide improvement.
 		\item Less churn of joining nodes.
 	\end{itemize}
 \end{frame}
