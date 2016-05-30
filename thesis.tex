@@ -9,11 +9,20 @@
 \usepackage{algpseudocode} 
 \usepackage{subcaption}
 \usepackage[font=small]{caption}
-%\usepackage{titlesec}
-%\titleformat{\chapter}[display]
-%{\normalfont\bfseries}
-%{\chaptertitlename\ \thechapter}{12pt}{\small}
-%\usepackage[backref]{hyperref}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+{\normalfont\bfseries}
+{\chaptertitlename\ \thechapter}{12pt}{\small}
+\titleformat{\section}
+{\normalfont\bfseries}
+{\thesection}{12pt}{\small}
+\titleformat{\subsection}
+{\normalfont\bfseries}
+{ \thesubsection}{12pt}{\small}
+\titleformat{\subsubsection}
+{\normalfont\bfseries}
+{\thesubsubsection}{12pt}{\small}
+\usepackage[backref]{hyperref}
 \usepackage{url}
 \usepackage[english]{babel}
 \usepackage{setspace} 
