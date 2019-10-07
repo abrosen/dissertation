@@ -37,7 +37,8 @@
 \begin{abstract}
 Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts 30-40\% of North American uplink traffic, and blockchain based applications, such as bitcoin.
 
-In previous work, we have shown that DHTs can also be used as a means to organize a large number of workers to tackle a large scale computing problem in a fault tolerant context.
+In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
+
 Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced, with some nodes processing hundreds of tasks, while other process minimal or no tasks at all. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
 
 In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload. We also present avenues for future research.
@@ -48,9 +49,6 @@ In this paper, we present four methods to autonomously balance the load of DHTs:
 	Distributed Computing; Decentralized Systems; Peer-to-Peer Networks;  Distributed Hash Tables; Self-Organizing Networks; Load-Balancing; Sybil Attack;
 	
 \end{IEEEkeywords}
-
-
-
 
 %http://michiel.buddingh.eu/distribution-of-hash-values
 
