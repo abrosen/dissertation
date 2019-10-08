@@ -16,17 +16,14 @@
 %\usepackage[margin=1in]{geometry}
 
 %TODO:
-% Abstract 
 % brief background on early sybil attacks
+% Update Authors
 
 %\doublespacing
 
 \title{Autonomous Load Balancing in Distributed Hash Tables Using Churn and The Sybil Attack}
-\author{\IEEEauthorblockN{Andrew Rosen \qquad Brendan Benshoof \qquad Robert W. Harrison \qquad Anu G. Bourgeois}
-	\IEEEauthorblockA{Department of Computer Science\\
-		Georgia State University\\
-		Atlanta, Georgia\\
-		rosen@cs.gsu.edu \qquad  bbenshoof@cs.gsu.edu  \qquad rharrison@cs.gsu.edu \qquad anu@cs.gsu.edu }
+\author{\IEEEauthorblockN{Andrew Rosen \qquad Benjamin Levin \qquad Anu G. Bourgeois}
+	\IEEEauthorblockA{ Department of Computer Science \\ Temple University \qquad Temple University \qquad Georgia State University \\ Philadelphia, PA \qquad Philadelphia, PA \qquad Atlanta, GA \\ andrew.rosen@temple.edu \qquad blevin@temple.edu \qquad abourgeois@gsu.edu }
 }
 
 \hyphenation{op-tical net-works semi-conduc-tor Chord-Reduce Map-Reduce Data-Nodes Name-Nodes Ur-DHT Ur-CHORD}
@@ -35,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts 30-40\% of North American uplink traffic, and blockchain based applications, such as bitcoin.
+Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts 30-40\% of North American uplink traffic.
 
 In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
 
@@ -56,29 +53,26 @@ In this paper, we present four methods to autonomously balance the load of DHTs:
 
 %\subsection{2-4 sentences telling people what you will talk about in the paper}
 
-\subsection*{What are DHTs}
 Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
 DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the incredibly popular BitTorrent \cite{bittorrent}.
-DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing \cite{chordreduce}.
+DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing.
+%Still add block chain reference? No real relations between DHTS and blockchain found
 
 Our previous research \cite{chordreduce} examined using a DHT as the organizing mechanism for a distributed platform.
-This enabled us to create an exceptionally fault tolerant distributed computing platform that was easy to setup and could be run in a completely decentralized P2P environment.
+This enabled us to create a fault tolerant distributed computing platform that was easy to setup and could be run in a completely decentralized P2P environment.
 
 % Copy into disseration start here
-\subsection*{What is the significance of the hash function }
-One of key components of a Distributed Hash Table is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
-Distributed Hash Tables rely on this cryptographic hash function to generate identifiers for data stored on the network.
+One of key components of a DHT is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
+DHTs rely on this cryptographic hash function to generate identifiers for data stored on the network.
 The cryptographic hash of the filename or other identifier for the data is used as the location of the file or data in the network.
 It can also be used to generate the identifiers for nodes in the network.
 
 Ideally, inputing random numbers into a cryptographic hash function should produce a uniformly distributed output.
 However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
-
+%Weird transistion between these two sentences
 In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
-Some nodes will end up with a lion's share of the keys, while other will have few responsibilities (Table \ref{tab:medianLoads}).
+Some nodes will end up with a larger share of the keys, while others will have few responsibilities (Table \ref{tab:medianLoads}), resulting in an unbalanced workload.
 
-
-This makes it especially disheartening to try and ensure as even a load as possible.
 We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objects behind creating a fully decentralized and distributed system.
 
 Therefore, if we want to create strategies to act against the inequity of the load distribution, we need a strategy that individual nodes can act upon autonomously.
@@ -87,11 +81,12 @@ These strategies need to make decisions that a node can make at a local level, u
 
 \subsection*{Motivation}
 %Update section
+%expand Primary motivation
 The primary motivation for us is creating a new viable type of platform for distributed computing.
 Most distributed computing paradigms, such as Hadoop \cite{hadoop}, assume that the computations occur in a centralized environments.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing.
-
-However, in an increasingly global world where computation is king and the Internet is increasingly an integral part of everyday life, single points of failure failures quickly become more and more risky.
+%change computation is king to something better
+However, in an increasingly global world where computation is king and the Internet is increasingly an integral part of everyday life, single points of failure quickly become more and more risky.
 Users expect their apps to work regardless of any power outage affecting an entire region.
 Customers expect their services to still be provided regardless of any.
 The next big quake affecting the the San Andreas fault line is a matter of when, not if.
@@ -110,7 +105,6 @@ ChordReduce had to have the same level of robustness against churn that Chord di
 During our experiments with ChordReduce, we found that high levels of churn actually made our computations run \textit{faster}.
 We hypothesized that the churn was effectively load-balancing the network.
 
-\subsection*{Objectives}
 This paper serves to prove our hypothesis that inherent random churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
 
@@ -118,8 +112,8 @@ We present three additional strategies that nodes can use to redistribute the wo
 Each of these three strategies relies on nodes creating virtual nodes, as a result they are represented multiple times in the network.
 The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.
 
-Consequently, we'll call our virtual nodes in this scenario Sybils for clarity and brevity.
-None of the strategies require a centralized organizer, merely a way for a node to check the amount of files or tasks it and its Sybils are responsible for.
+We call our virtual nodes in this scenario Sybils.
+None of our strategies require a centralized organizer, but instead a way for a node to check the amount of files or tasks it and its Sybils are responsible for.
 
 
 We also want to show how distributed computing can be performed in a heterogeneous environment.
@@ -136,6 +130,7 @@ In particular, we want to see if our strategies result in similar speedups in bo
 \section{How Work Is Distributed in DHTs: A Visual Guide}
 %In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
 
+%Remove A Visual Guide part of section to save space?
 As we have previously mentioned, many DHTs use a cryptographic hash function to choose keys for nodes and data.
 However, no cryptographic hash function can uniformly distribute its outputs across its range. 
 Table \ref{tab:medianLoads} shows the median workload for networks of different numbers of nodes and tasks.
@@ -168,8 +163,8 @@ We can see  that in a 1000 node/1,000,000 tasks network, the average median work
 If work were distributed equally among all nodes in this network, each node would have 1000 tasks.
 This means that 50\% of the network has less significantly less tasks than the average number of tasks per node.
 
-If we plot a histogram of how the probability of how work is distributed in this network, we gain a clearer picture (Figure \ref{fig:workloadDistribution}).
-We see the bulk of the nodes have less than 1000 tasks and a few unfortunate nodes end up with more than 10,000 tasks.
+Figure \ref{fig:workloadDistribution} plots the probability of of how work is distributed in this network.
+We see the bulk of the nodes have less than 1000 tasks and a few unfortunate nodes are burdened with more than 10,000 tasks.
 
 
 \begin{figure}
