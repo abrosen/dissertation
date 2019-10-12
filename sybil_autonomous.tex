@@ -545,22 +545,22 @@ This means the network had the defaults for variable.
 	We also see more nodes with greater workloads.
 	The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig:churnStableHist35}, where more have had a chance to finish their work and more churn has occurred.
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
-		\caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.}
-		
-		\label{fig:churnStableHist0}
-	\end{figure}
+	%\begin{figure}
+	%	\centering
+	%	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
+	%	\caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.}
+	%	
+	%	\label{fig:churnStableHist0}
+	%\end{figure}
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
-		\caption[Workload for churn at tick 5]{This is the distribution of the workloads at the beginning of tick 5.  We can see the network using 0.01 churn has fewer nodes with less work and more nodes with a greater workload.}
+	%\begin{figure}
+	%	\centering
+	%	\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
+	%	\caption[Workload for churn at tick 5]{This is the distribution of the workloads at the beginning of tick 5.  We can see the network using 0.01 churn has fewer nodes with less work and more nodes with a greater workload.}
 		
-		\label{fig:churnStableHist5}
-	\end{figure}
+	%	\label{fig:churnStableHist5}
+	%\end{figure}
 	
 	
 	
@@ -588,12 +588,12 @@ This means the network had the defaults for variable.
 	The network using random injection fared significantly better than those using no strategy.
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
-		\caption[Random injection vs no strategy after 5 ticks.]{The networks after 5 ticks.  The network using random injection has significantly less underutilized nodes, even after only 5 ticks.}
-		\label{fig:randomStableHist5}
-	\end{figure}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
+%		\caption[Random injection vs no strategy after 5 ticks.]{The networks after 5 ticks.  The network using random injection has significantly less underutilized nodes, even after only 5 ticks.}
+%		\label{fig:randomStableHist5}
+%	\end{figure}
 	
 	
 	\begin{figure}
@@ -690,12 +690,12 @@ This means the network had the defaults for variable.
 	However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxSybil} for homogeneous networks.
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
-		\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
-		\label{fig:neighborsStableHist5}
-	\end{figure}
+	%\begin{figure}
+	%	\centering
+	%	\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
+	%	\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
+	%	\label{fig:neighborsStableHist5}
+	%\end{figure}
 	
 	
 	\begin{figure}
@@ -713,12 +713,12 @@ This means the network had the defaults for variable.
 	Both graphs show the same reduction in high amounts of workload that the base neighbor strategy provided, but with fewer idling nodes.
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
-		\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
-		\label{fig:neighborsStableSmartHist5}
-	\end{figure}
+	%\begin{figure}
+	%	\centering
+	%	\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
+	%	\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
+	%	\label{fig:neighborsStableSmartHist5}
+	%\end{figure}
 	
 	
 	\begin{figure}
@@ -753,12 +753,12 @@ This means the network had the defaults for variable.
 	Figures \ref{fig:inviteStableHist5} and \ref{fig:inviteStableHist35} show the work distribution of a network using the invitation based strategy.
 	When we compare this strategy to the smart neighbor injection strategy (Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35}), we see that invitation does a much better job of distributing the work.
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
-		\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
-		\label{fig:inviteStableHist5}
-	\end{figure}
+	%\begin{figure}
+	%	\centering
+	%	\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
+	%	\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
+	%	\label{fig:inviteStableHist5}
+	%\end{figure}
 	
 	\begin{figure}
 		\centering
@@ -769,12 +769,12 @@ This means the network had the defaults for variable.
 	
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
-		\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
-		\label{fig:inviteNeighborsHist5}
-	\end{figure}
+	%\begin{figure}
+	%	\centering
+	%	\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
+	%	\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
+	%	\label{fig:inviteNeighborsHist5}
+	%\end{figure}
 	
 	
 	\begin{figure}
