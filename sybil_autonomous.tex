@@ -54,7 +54,7 @@ In this paper, we present four methods to autonomously balance the load of DHTs:
 %\subsection{2-4 sentences telling people what you will talk about in the paper}
 
 Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
-DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the BitTorrent \cite{bittorrent}.
+DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the BitTorrent \cite{bittorrent} and IPFS \cite{benet2014ipfs}.
 DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing  \cite{marozzo2012p2p} \cite{leemap}.
 %Still add block chain reference? No real relations between DHTS and blockchain found
 
@@ -77,25 +77,36 @@ These strategies need to make decisions that a node can make at a local level, u
 
 
 \subsection*{Motivation}
+
+%%% GRAB FROM CHORD REDUCE
 %Update section
 %expand Primary motivation
 %The primary motivation for us is creating a new viable type of platform for distributed computing.
-Most distributed computing paradigms, such as Hadoop \cite{hadoop}, assume that the computations occur in a centralized environments.
+Distributed computing is and will continue to be  approach of choice for intensive applications.
+We have seen over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}.
+Most distributed computing paradigms assume that the computations occur in a centralized environments, if explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing.
-%change computation is king to something better
-However, in an increasingly global world where computation is king and the Internet is increasingly an integral part of everyday life, single points of failure quickly become more risky.
-Users expect their apps to work regardless of any power outage affecting an entire region.
-Customers expect their services to still be provided regardless of any.
-The next big quake affecting the the San Andreas fault line is a matter of when, not if.
-Thus, centralized systems with single points of failure become a riskier option and decentralized, distributed systems the safer choice.
+However, there are notable issues with a centralized design.
 
+
+First and foremost is the issue of fault-tolerance.
+Centralized designs have a single point of failure \cite{shvachko2010hadoop}.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}.
+
+A centralized design assumes that the network is relatively static and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
+Many environments also anticipate a certain degree in homogeneity in the system.
+Finally deploying these systems and developing programs for them has an extremely steep learning curve.
 %%%%%%%
 however  completely decentralized systems cannot rely on some centralized coordinator to evenly ditribute workloads.
 
+Moving away from the data center context opens up more possibilities for distributed computing, such as P2P clouds \cite{p2p-cloud}.
+However, without a centralized framework, the network needs some kind of protocol to organize the various components in the network.
+As part of our research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
+
 %%%%%%%
 
 
-Previous research has demostrated the feasibility of a DHT-based distributed computational system.
+Previous research has demonstrated the feasibility of a DHT-based distributed computational system.
 \cite{marozzo2012p2p} demonstrated ABC awesomely, but however had XYZ issue
 Similarly \cite{leemap} showed ABC awesomely, had XYZ as issue
 Our own research  \cite{chordreduce} was awesome, but did not load balance properly.
@@ -112,6 +123,9 @@ ChordReduce had to have the same level of robustness against churn that Chord di
 
 During our experiments with ChordReduce, we found that high levels of churn actually made our computations run \textit{faster}.
 We hypothesized that the churn was effectively load-balancing the network.
+
+
+
 
 This paper serves to prove our hypothesis that inherent random churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
