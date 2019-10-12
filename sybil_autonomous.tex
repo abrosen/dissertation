@@ -100,50 +100,51 @@ These strategies need to make decisions that a node can make at a local level, u
 %expand Primary motivation
 %The primary motivation for us is creating a new viable type of platform for distributed computing.
 Distributed computing is and will continue to be the approach of choice for intensive applications.
-We have seen over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}.
+We have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
 Most distributed computing paradigms assume that the computations occur in a centralized environments, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
-One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not risks and issues specific to centralized approaches.
+One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
 
 First and foremost is the issue of fault-tolerance.
 Centralized designs have a single point of failure \cite{shvachko2010hadoop}.
-So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. 
 
 A centralized design often assumes that the network is relatively static and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
 Many environments also anticipate a certain degree in homogeneity in the system.
-Finally deploying these systems and developing programs for them has an extremely steep learning curve.
+%Finally deploying these systems and developing programs for them has an extremely steep learning curve.
 %%%%%%%
 
 
 Moving away from the data center context opens up more possibilities for distributed computing, such as P2P clouds \cite{p2p-cloud}.
-However, without a centralized framework, the network needs some kind of protocol to organize the various components in the network and cannot rely on a centralized coordinator.
-As part of our research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
-
-%%%%%%%
-
-
-Previous research has demonstrated the feasibility of a DHT-based distributed computational system.
+Previous research has demonstrated the feasibility of a P2P or DHT-based distributed computational system.
 Marozzo et al. \cite{marozzo2012p2p} investigated the issue of fault tolerance in centralized MapReduce architectures such as Hadoop.  
 They focused on creating a new P2P based MapReduce architecture built on JXTA \cite{jxta} called P2P-MapReduce.  
 P2P-MapReduce is designed to be more robust at handling node and job failures during execution.
 
-Rather than use a single master node, P2P-MapReduce employs multiple master nodes, each responsible for some job.  If one of those master nodes fails, another will be ready as a backup to take its place and manage the slave nodes assigned to that job.  This avoids the single point of failure that Hadoop is vulnerable to. Failures of the slave nodes are handled by the master node responsible for it.
+%Rather than use a single master node, P2P-MapReduce employs multiple master nodes, each responsible for some job.  If one of those master nodes fails, another will be ready as a backup to take its place and manage the slave nodes assigned to that job.  This avoids the single point of failure that Hadoop is vulnerable to. Failures of the slave nodes are handled by the master node responsible for it.
+%
+%Experimental results were gathered via simulation and compared P2P-MapReduce to a centralized framework. Their results showed that while P2P-MapReduce generated an order of magnitude more messages than a centralized approach, the difference rapidly began to shrink at higher rates of churn.  When looking at actual amounts of data being passed around the network, the bandwidth required by the centralized approach greatly increased as a function of churn, while the distributed approach again remained relatively static in terms of increased bandwidth usage.  
 
-Experimental results were gathered via simulation and compared P2P-MapReduce to a centralized framework. Their results showed that while P2P-MapReduce generated an order of magnitude more messages than a centralized approach, the difference rapidly began to shrink at higher rates of churn.  When looking at actual amounts of data being passed around the network, the bandwidth required by the centralized approach greatly increased as a function of churn, while the distributed approach again remained relatively static in terms of increased bandwidth usage.  
+They concluded that P2P-MapReduce would, in general, use more network resources than a centralized approach. 
+However, this was an acceptable cost as the P2P-MapReduce would lose less time from node and job failures \cite{marozzo2012p2p}.
 
-They concluded that P2P-MapReduce would, in general, use more network resources than a centralized approach. However, this was an acceptable cost as the P2P-MapReduce would lose less time from node and job failures \cite{marozzo2012p2p}.
-
-While P2P-MapReduce is decentralized, it still relies on a very definite master/slave hierarchy for organization, computations, and scaling. 
-During simulation, 1\% of the entire network was assigned as master nodes. This means for a simulation of 40000 nodes, 400 were required to organize and coordinate jobs, rendering them unable to do any processing.  In addition, a loosely-consistent Distributed Hash Table (DHT) such as JXTA can be much slower and fails to maintain the same level of guarantees as an actual DHT, such as Chord \cite{5359174}.   
-
-Marozzo et al. \cite{marozzo2012p2p} shows that adding additional fault-tolerance features to a MapReduce architecture is worth the added cost of maintenance, as the time lost due to node failures is greatly reduced.  However, Marozzo et al. do not explore the benefits of leveraging the properties of a P2P protocol to reduce the complexity of the architecture and completely distribute the responsibility of the task across the network.  As a result, P2P-MapReduce still relies on a ratio of masters to slaves to coordinate and organize the network, meaning a percentage of the network is unable to contribute processing power to the actual solving of a problem.   
-
+While P2P-MapReduce is decentralized, it still relies on a very definite parent/child hierarchy for organization, computations, and scaling. 
+During simulation, 1\% of the entire network was assigned as parent nodes. This means for a simulation of 40000 nodes, 400 were required to organize and coordinate jobs, rendering them unable to do any processing.  
+In addition, a loosely-consistent DHT such as JXTA can be much slower and fails to maintain the same level of guarantees as an actual DHT, such as Chord \cite{5359174}.   
+%
+%Marozzo et al. \cite{marozzo2012p2p} shows that adding additional fault-tolerance features to a MapReduce architecture is worth the added cost of maintenance, as the time lost due to node failures is greatly reduced.  However, Marozzo et al. do not explore the benefits of leveraging the properties of a P2P protocol to reduce the complexity of the architecture and completely distribute the responsibility of the task across the network.  As a result, P2P-MapReduce still relies on a ratio of masters to slaves to coordinate and organize the network, meaning a percentage of the network is unable to contribute processing power to the actual solving of a problem.   
 
 
-Lee et al.'s work \cite{leemap} draws attention to the fact that a P2P network can be much more than a way to distribute files and demonstrates how to accomplish different tasks using Map and Reduce functions over a P2P network.  Rather than using Chord, Lee et al. used Symphony \cite{symphony}, another DHT protocol with a ring topology.  To run a MapReduce job over the Symphony ring, a node is selected by the user to effectively act as the master.  This ad-hoc master then performs a bounded broadcast over a subsection the ring.  Each node repeats this broadcast over a subsection of that subsection, resulting in a tree with the first node at the top.  Map tasks are disseminated evenly throughout the tree and their results are reduced on the way back up to the ad-hoc master node.  This allows the ring to disseminate Map and Reduce tasks without the need for a coordinator responsible for distributing these tasks and keeping track of them, unlike Hadoop.
 
-Their experimental results showed that the latency experienced by a centralized configuration is similar to the latency experienced in a completely distributed framework.  However, there are no mechanisms in place to handle churn in the network.  If a node joins during a MapReduce job, it will be unable to contribute any of its resources to the problem. If a node in the bounded broadcast tree fails, or worse the ad-hoc master node fails, the data that node is responsible for is lost.
+%Lee et al.'s work \cite{leemap} demonstrated that a P2P network can be more than a way to distribute files and demonstrates how to accomplish different tasks using Map and Reduce functions over a P2P network.  
+%Rather than using Chord, Lee et al. used Symphony \cite{symphony}, a DHT protocol.  
+%To run a MapReduce job over the Symphony ring, a node is selected by the user to effectively act as the coordinator.  
+%This ad-hoc coordinator then performs a bounded broadcast over a subsection the ring.  
+%Each node repeats this broadcast over a subsection of that subsection, resulting in a tree with the first node at the top.  Map tasks are disseminated evenly throughout the tree and their results are reduced on the way back up to the ad-hoc master node.  This allows the ring to disseminate Map and Reduce tasks without the need for a coordinator responsible for distributing these tasks and keeping track of them, unlike Hadoop.
+%
+%Their experimental results showed that the latency experienced by a centralized configuration is similar to the latency experienced in a completely distributed framework.  However, there are no mechanisms in place to handle churn in the network.  If a node joins during a MapReduce job, it will be unable to contribute any of its resources to the problem. If a node in the bounded broadcast tree fails, or worse the ad-hoc master node fails, the data that node is responsible for is lost.
 
-Lee et al. \cite{leemap} explores the benefits of building a MapReduce module to run on top of Symphony \cite{symphony},  a P2P protocol.  Unlike Hadoop, this allows the MapReduce tasks to be executed without the need of a central source of coordination by distributing tasks over a bounded broadcast tree created at runtime.  The Symphony based MapReduce architecture would be greatly improved by the addition of components to handle the failure of nodes during execution.  As it stands now, if a node crashes the job will fail due to the loss of data.
+Lee et al. \cite{leemap} explores the benefits of building a MapReduce module to run on top of Symphony \cite{symphony},  a P2P protocol. 
+ Unlike Hadoop, this allows the MapReduce tasks to be executed without the need of a central source of coordination by distributing tasks over a bounded broadcast tree created at runtime.  The Symphony based MapReduce architecture would be greatly improved by the addition of components to handle the failure of nodes during execution.  As it stands now, if a node crashes the job will fail due to the loss of data.
 
 
 Our own previous work in ChordReduce \cite{chordreduce} focused on creating a decentralized distributed computing framework based off of the Chord (DHT) and MapReduce.
@@ -154,6 +155,15 @@ Chord (and all DHTs) have the qualities we desire for distributed computing: sca
 Fault tolerance is of particular importance to DHTs, since their primary use case is P2P file-sharing, such as BitTorrent \cite{bittorrent}.
 These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
 ChordReduce had to have the same level of robustness against churn that Chord did, if not better.
+
+
+
+However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
+As part of our research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
+
+%%%%%%%
+
+
 
 During our experiments with ChordReduce, we found that high levels of churn actually made our computations run \textit{faster}.
 We hypothesized that the churn was effectively load-balancing the network.
@@ -168,7 +178,7 @@ We present three additional strategies that nodes can use to redistribute the wo
 Each of these three strategies relies on nodes creating virtual nodes, as a result they are represented multiple times in the network.
 The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.
 
-We call our virtual nodes in this scenario Sybils.
+We call our virtual nodes in this scenario Sybils, as this duplication is almost identical to the way the Sybil attack  \cite{sybil} creates virtual nodes in a P2P system.
 None of our strategies require a centralized organizer, but instead a way for a node to check the amount of files or tasks it and its Sybils are responsible for.
 
 
@@ -271,7 +281,7 @@ As we will see in our simulations, if nodes with little or no work can acquire s
 %We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
 
 
-We simulate our strategies on a Chord DHT \cite{chord},nodes obtain an ID, drawn from a cryptographic hash function, typically SHA1 \cite{sha1}.
+We simulate our strategies on a Chord DHT \cite{chord},nodes obtain an ID, drawn from a SHA1 \cite{sha1}.
 Any data in the network is given a key in a similar manner.
 Nodes are responsible for all the keys between their predecessor's ID and their own.
 
