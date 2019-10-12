@@ -291,7 +291,7 @@ The following analysis and simulation relies on an important assumption about DH
 
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
 %Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
-We have demonstrated the effectiveness and viability of implementing an active backup strategy in our previous work \cite{chordreduce} \cite{urdht}.
+We have demonstrated the effectiveness and viability of implementing an active backup strategy in our previous work \cite{chordreduce}.
 As previously mentioned, we also assume nodes have the ability to examine the amount of work they have and know how many tasks or pieces of data exist for a particular job.
 
 Another assumption is that nodes do not have control in choosing their IDs from the range of hash values.
@@ -323,7 +323,7 @@ First, we will informally define the vocabulary we use to discuss our simulation
 We will be using an abstract \textit{tick} to measure time.  
 We consider the tick to be the amount of time it takes a node to complete one task (or more depending on our variables, see below) and perform the appropriate maintenance to keep the network consistent and healthy.
 
-\subsubsection*{Maintenance} We assume nodes use the active, aggressive strategy from ChordReduce and UrDHT \cite{chordreduce} \cite{urdht}.
+\subsubsection*{Maintenance} We assume nodes use the active, aggressive strategy from ChordReduce \cite{chordreduce}.
 Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately. 
 We assume that a tick is enough time to accomplish at least one maintenance cycle.
 \subsubsection*{Task} We measure the size of a distributed computing job in tasks.
@@ -410,7 +410,7 @@ Because the initial size of the network and the pool of waiting nodes is the sam
 As we have previously discussed, nodes in our network model actively back up their data and tasks to the a number of successors in case of failure.
 In addition, when a node joins, it acquires all the work it is responsible for.
 While this model is rarely implemented for DHTs, it is often assumed to be the way DHTs operate. 
-We have implemented this in ChordReduce\cite{chordreduce} and UrDHT\cite{urdht} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling incredibly high amounts of churn.
+We have implemented this in ChordReduce\cite{chordreduce} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling incredibly high amounts of churn.
 
 The consequences of this are that a node suddenly dying is of minimal impact to the network.
 This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
@@ -475,8 +475,8 @@ The only difference is that the baseline never uses a strategy, nor experiences 
 
 We will be referring to a \textbf{base} runtime factor.
 This means the network had the defaults for variable.
-We suspect the worse runtime factors in homogeneous networks does not necessarily imply the method is weaker.
-	It may imply that runtime factor is not the best metric, but it is the best simple one we have.
+%We suspect the worse runtime factors in homogeneous networks does not necessarily imply the method is weaker.
+%	It may imply that runtime factor is not the best metric, but it is the best simple one we have.
 	
 	
 	\subsection{Churn}
@@ -506,52 +506,48 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	The magnitude of churn's effect varies based on the size of the network and the number of tasks.
 	In networks where there are fewer nodes, we see the base runtime factor is smaller.
 	The gains from churn are most strongly related the number of tasks the network has, with the more tasks there are, the greater the gains of churn.
-	A network with 100 nodes and 1 million tasks, on average, has a runtime factor only 30\% higher than ideal when churn is 0.01 per tick.
+	A network with 100 nodes and 1 million tasks, on average, has a runtime factor only 30\% higher than ideal when churn is 0.01 per tick.\footnote{We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks, in order to give a fuller picture of the effects of churn and tested this network with a wider variety of churn rates and found significantly diminishing returns that occur after a churn rate of 0.01.
+		One facet not captured by our simulations, but is significant, is the rising maintenance costs after that point.
+		This makes any amount of churn after a certain point prohibitively expensive.
+		Determination of this point requires implementation on a real network.}
 	The runtime for heterogeneous versus homogeneous networks had no significant differences.
 	
 	
-	We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks, in order to give a fuller picture of the effects of churn.
-	We tested this network with a wider variety of churn rates.
-	The results of this are shown in Figure \ref{fig:churnVsTime}, which plots the runtime of the distributed computation against the level of churn in the network.
+
 	
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/churnVsTime}
+%		\caption[Churn vs Runtime factor]{Effect of churn has on runtime.}
+%		\label{fig:churnVsTime}
+%	\end{figure}
 	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/churnVsTime}
-		\caption[Churn vs Runtime factor]{Effect of churn has on runtime.}
-		\label{fig:churnVsTime}
-	\end{figure}
+
 	
-	We note the significantly diminishing returns that occur after a churn rate of 0.01.
-	One facet not captured by our simulations, but is significant, is the rising maintenance costs after that point.
-	This makes any amount of churn after a certain point prohibitively expensive.
-	Determination of this point requires implementation on a real network.
-	
-	This speedup is reflected in the average number of tasks consumed in a tick, shown in Figure \ref{fig:churnVsWork}.
+
 	In a stable network with no churn, we would expect a good portion of the network to end up with little work, which is quickly consumed.
 	These nodes must then idle, waiting for the few nodes that received a large number of tasks to finish.
 	When there is churn, however, nodes have a chance of joining the network and acquiring more work, thus making it possible for more work to be done per a tick.
 	The higher the rate of churn, the more this happens.
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/churnVsWork}
-		\caption[Churn vs average work per tick]{Effect of churn on average workload.}
-		\label{fig:churnVsWork}
-	\end{figure}
-	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/churnVsWork}
+%		\caption[Churn vs average work per tick]{Effect of churn on average workload.}
+%		\label{fig:churnVsWork}
+%	\end{figure}
+%	
 	
 	
 	A more detailed view of how this happens is shown in Figures \ref{fig:churnStableHist0}, \ref{fig:churnStableHist5}, and \ref{fig:churnStableHist35}.
 	These figures show histograms of workload distribution for two networks at different ticks.
 	One network uses 0.01 churn per tick to autonomously load balance the workload, the other uses no strategy at all.
 	
-	Both networks start with the 1000 nodes and 100,000 tasks distributed identically throughout the network. 
+	Both networks start with the 1000 nodes and 100,000 tasks distributed throughout the network. 
 	Figure \ref{fig:churnStableHist0} shows the distribution of the workload for this initial configuration.
 	
 	As the network begins to work, we see the distributions diverge from one another.
-	Figure \ref{fig:churnStableHist5} shows that after merely 5 ticks, the network using the churn strategy has noticeably fewer nodes that have smaller workloads.
-	We also see more nodes with greater workloads.
+	Figure \ref{fig:churnStableHist5} shows that after merely 5 ticks, the network using the churn strategy has noticeably fewer nodes that have smaller workloads and more nodes with greater workloads.
 	The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig:churnStableHist35}, where more have had a chance to finish their work and more churn has occurred.
 	
 	\begin{figure}
@@ -599,7 +595,7 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
+		\includegraphics[width=0.9\linewidth]{figs/randomStableHist5}
 		\caption[Random injection vs no strategy after 5 ticks.]{The networks after 5 ticks.  The network using random injection has significantly less underutilized nodes, even after only 5 ticks.}
 		\label{fig:randomStableHist5}
 	\end{figure}
@@ -678,7 +674,7 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	
 	\subsection{Neighbor Injection}
 	The neighbor injection strategy was also effective at reducing the overall runtime factor, albeit not as greatly as the random injection strategy.
-	Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35} show the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
+	Figure \ref{fig:neighborsStableHist35} shows the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
 	At the first glance, neighbor injection does not seem to be doing worse than no strategy; there are more nodes with less work than no strategy.
 	However, if we look at the whole histogram, we see there are less nodes that have a large amount of work and noticeably more nodes with a small number of tasks.
 	In fact, at tick 35, we see that the network with no strategy has a node with approximately 650 tasks, while the most that the network using the neighbors strategy has is 450 tasks.
@@ -686,7 +682,7 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	This is because the network is finishing off the tasks with small amounts of work quicker.
 	However, nodes are not able to acquire work outside their immediate vicinity and must idle.
 	In addition, nodes always inject Sybils into the largest gap between their successors that they see, but may not acquire any work.
-	That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.\footnote{We suggest how to avoid this in a real implementation in Section \ref{sec:strat-neighbor}}
+	That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.%\footnote{We suggest how to avoid this in a real implementation in Section \ref{sec:strat-neighbor}}
 	
 	The base runtime factor of the neighbor strategy in a 1000 node/100,000 task homogeneous network was 5.033, which is 2.4 lower than no strategy.
 	In a 100 node/10,000 task network, this was lower -- a runtime factor of 3.006, which was 2 lower than no strategy.
@@ -699,36 +695,36 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxSybil} for homogeneous networks.
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
-		\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
-		\label{fig:neighborsStableHist5}
-	\end{figure}
-	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
+%		\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
+%		\label{fig:neighborsStableHist5}
+%	\end{figure}
+%	
 	
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/neighborsStableHist35}
-		\caption[Neighbor injection  vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
+		\caption[Neighbor injection vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
 		\label{fig:neighborsStableHist35}
 	\end{figure}
 	
 	
 	
 	To fully evaluate the effectiveness of the strategy, we compared the neighbor injection strategy, which estimates the node with the largest workload, to what we call smart neighbor injection.
-	Smart neighbor injection actually queries the neighbors to find out their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
-	The workload distributions of smart injection are shown in Figures \ref{fig:neighborsStableSmartHist5} and \ref{fig:neighborsStableSmartHist35}.
+	Smart neighbor injection queries the neighbors to find out their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
+	The workload distributions of smart injection are shown in Figure  \ref{fig:neighborsStableSmartHist35}.
 	Both graphs show the same reduction in high amounts of workload that the base neighbor strategy provided, but with fewer idling nodes.
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
-		\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
-		\label{fig:neighborsStableSmartHist5}
-	\end{figure}
-	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
+%		\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
+%		\label{fig:neighborsStableSmartHist5}
+%	\end{figure}
+%	
 	
 	\begin{figure}
 		\centering
@@ -739,7 +735,7 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	
 	
 	
-	The strategy of probing each of the neighbors before inserting, rather than estimating, improved the runtime factor by 1.2  on average when we compare each strategy's mean homogeneous and heterogeneous runtimes.
+	The strategy of probing each of the neighbors before inserting, rather than estimating, improved the runtime factor by 1.2 on average when we compare each strategy's mean homogeneous and heterogeneous runtimes.
 	However, the estimation based neighbor injection requires fewer messages in an actual implementation.
 	Overall, either neighbor injection strategy did not perform as well as the random injection strategy, but generates much less churn from joining nodes, since nodes can create their Sybils in a greatly reduced range.
 	
@@ -759,15 +755,15 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	This means queries of other nodes and Sybil injections only occur when they need to, greatly reducing the maintenance costs in an actual implementation.
 	
 	
-	Figures \ref{fig:inviteStableHist5} and \ref{fig:inviteStableHist35} show the work distribution of a network using the invitation based strategy.
-	When we compare this strategy to the smart neighbor injection strategy (Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35}), we see that invitation does a much better job of distributing the work.
+	Figure \ref{fig:inviteStableHist35} show the work distribution of a network using the invitation based strategy.
+	When we compare this strategy to the smart neighbor injection strategy (Figure\ref{fig:neighborsStableHist35}), we see that invitation does a much better job of distributing the work.
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
-		\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
-		\label{fig:inviteStableHist5}
-	\end{figure}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/inviteStableHist5}
+%		\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
+%		\label{fig:inviteStableHist5}
+%	\end{figure}
 	
 	\begin{figure}
 		\centering
@@ -777,14 +773,14 @@ We suspect the worse runtime factors in homogeneous networks does not necessaril
 	\end{figure}
 	
 	
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
-		\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
-		\label{fig:inviteNeighborsHist5}
-	\end{figure}
-	
+%	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
+%		\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
+%		\label{fig:inviteNeighborsHist5}
+%	\end{figure}
+%	
 	
 	\begin{figure}
 		\centering
