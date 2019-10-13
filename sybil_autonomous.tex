@@ -21,19 +21,24 @@
 
 %\doublespacing
 
-\title{Autonomous Load Balancing in Distributed Hash Tables Using Churn and The Sybil Attack}
+\title{Autonomous Load Balancing in Distributed Hash Tables Using Churn and the Sybil Attack}
 \author{\IEEEauthorblockN{
-		Andrew Rosen,
-		Benjamin Levin, and
-		Anu G. Bourgeois}
+	%	\begin{tabular}{cc}
+		Andrew Rosen\IEEEauthorrefmark{1},
+		Benjamin Levin\IEEEauthorrefmark{1}, and 
+		Anu G. Bourgeois\IEEEauthorrefmark{2}
+	%	\end{tabular}
+	}
 	\IEEEauthorblockA{ 
 		\begin{tabular}{cc}
 			\begin{tabular}{@{}c@{}}
+				\IEEEauthorrefmark{1}
 					Department of Computer Science\\
 					Temple University\\
 					Philadelphia, PA\\
 					\{andrew.rosen, blevin\}@temple.edu
 			\end{tabular} & \begin{tabular}{@{}c@{}}
+				\IEEEauthorrefmark{2}
 					Department of Computer Science\\
 					Georgia State University\\
 					Atlanta, GA\\
@@ -50,10 +55,9 @@
 
 \begin{abstract}
 Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts 30-40\% of North American uplink traffic \cite{evobt}.
-
 In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
 
-Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced, with some nodes processing hundreds of tasks, while other process minimal or no tasks at all. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
+Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced, with some nodes processing hundreds of tasks, others process minimal or no tasks at all. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
 
 In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload. We also present avenues for future research.
 \end{abstract}
@@ -93,7 +97,7 @@ Therefore, if we want to create strategies to act against the inequity of the lo
 These strategies need to make decisions that a node can make at a local level, using only information about their own load and the local topology they have access to.
 
 
-\subsection*{Motivation}
+\subsection*{Motivation and Related Work}
 
 %%% GRAB FROM CHORD REDUCE
 %Update section
@@ -101,7 +105,7 @@ These strategies need to make decisions that a node can make at a local level, u
 %The primary motivation for us is creating a new viable type of platform for distributed computing.
 Distributed computing is and will continue to be the approach of choice for intensive applications.
 We have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
-Most distributed computing paradigms assume that the computations occur in a centralized environments, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
+Most distributed computing paradigms assume that the computations occur using a centralized controller, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
 
 First and foremost is the issue of fault-tolerance.
@@ -119,11 +123,9 @@ Previous research has demonstrated the feasibility of a P2P or DHT-based distrib
 Marozzo et al. \cite{marozzo2012p2p} investigated the issue of fault tolerance in centralized MapReduce architectures such as Hadoop.  
 They focused on creating a new P2P based MapReduce architecture built on JXTA \cite{jxta} called P2P-MapReduce.  
 P2P-MapReduce is designed to be more robust at handling node and job failures during execution.
-
 %Rather than use a single master node, P2P-MapReduce employs multiple master nodes, each responsible for some job.  If one of those master nodes fails, another will be ready as a backup to take its place and manage the slave nodes assigned to that job.  This avoids the single point of failure that Hadoop is vulnerable to. Failures of the slave nodes are handled by the master node responsible for it.
 %
 %Experimental results were gathered via simulation and compared P2P-MapReduce to a centralized framework. Their results showed that while P2P-MapReduce generated an order of magnitude more messages than a centralized approach, the difference rapidly began to shrink at higher rates of churn.  When looking at actual amounts of data being passed around the network, the bandwidth required by the centralized approach greatly increased as a function of churn, while the distributed approach again remained relatively static in terms of increased bandwidth usage.  
-
 They concluded that P2P-MapReduce would, in general, use more network resources than a centralized approach. 
 However, this was an acceptable cost as the P2P-MapReduce would lose less time from node and job failures \cite{marozzo2012p2p}.
 
@@ -149,16 +151,16 @@ Lee et al. \cite{leemap} explores the benefits of building a MapReduce module to
 
 Our own previous work in ChordReduce \cite{chordreduce} focused on creating a decentralized distributed computing framework based off of the Chord (DHT) and MapReduce.
 ChordReduce can be thought of a more generalized implementation of the concepts of MapReduce.
-One of the advantages of ChordReduce can be used in either a traditional datacenter or P2P environment.\footnote{The other one being that new nodes could join during runtime and receive work from nodes doing computations.}
+One of the advantages of ChordReduce is that it can be used in either a traditional datacenter or P2P environment.
+%footnote
+The other one being that new nodes could join during runtime and receive work from nodes doing computations.
+%
 Chord (and all DHTs) have the qualities we desire for distributed computing: scalability, fault tolerance, and load-balancing.
 
 Fault tolerance is of particular importance to DHTs, since their primary use case is P2P file-sharing, such as BitTorrent \cite{bittorrent}.
 These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
 ChordReduce had to have the same level of robustness against churn that Chord did, if not better.
-
-
-
-However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
+%However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
 As part of our research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
 
 %%%%%%%
@@ -818,8 +820,6 @@ This means the network had the defaults for variable.
 	%It could be that smarter or completely different strategies are needed.
 	%It could also be that the runtime factor is not the proper way to get a grasp of how well a heterogeneous network performs.
 	%This forms basis for interesting future work.
-	
-	
 	%change ref to previous chapters
 	Additionally, if we removed the assumption that nodes cannot choose their own ID or those of their Sybil, this presents even more strategies for nodes to autonomously balance the workload.
 \bibliography{notes,dht,mapreduce,voronoi,dns,botnets,bitcoin,mine}
