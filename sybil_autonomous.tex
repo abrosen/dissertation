@@ -29,6 +29,7 @@
 		Anu G. Bourgeois\IEEEauthorrefmark{2}
 	%	\end{tabular}
 	}
+
 	\IEEEauthorblockA{ 
 		\begin{tabular}{cc}
 			\begin{tabular}{@{}c@{}}
@@ -59,7 +60,7 @@ In previous work, we have shown that DHTs can also be used as a means of organiz
 
 Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced, with some nodes processing hundreds of tasks, others process minimal or no tasks at all. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
 
-In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload. We also present avenues for future research.
+In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherant churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload. We also present avenues for future research.
 \end{abstract}
 
 
@@ -96,8 +97,9 @@ We cannot rely on a centralized strategy to fix this imbalance, since that would
 Therefore, if we want to create strategies to act against the inequity of the load distribution, we need a strategy that individual nodes can act upon autonomously.
 These strategies need to make decisions that a node can make at a local level, using only information about their own load and the local topology they have access to.
 
+To address these issues, we present four methods to autonomously balance the load of DHTs. Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack. We present simulations to demonstrate the effectiveness of our strategies in terms of load balancing and resulting speedup.
 
-\subsection*{Motivation and Related Work}
+\section{Motivation and Related Work}
 
 %%% GRAB FROM CHORD REDUCE
 %Update section
@@ -107,10 +109,8 @@ Distributed computing is and will continue to be the approach of choice for inte
 We have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
 Most distributed computing paradigms assume that the computations occur using a centralized controller, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
-
-First and foremost is the issue of fault-tolerance.
-Centralized designs have a single point of failure \cite{shvachko2010hadoop}.
-So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. 
+First and foremost is the issue of fault-tolerance, specifically a single point of failure \cite{shvachko2010hadoop}.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. Another concern in scalability.
 
 A centralized design often assumes that the network is relatively static and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
 Many environments also anticipate a certain degree in homogeneity in the system.
@@ -149,7 +149,18 @@ Lee et al. \cite{leemap} explores the benefits of building a MapReduce module to
  Unlike Hadoop, this allows the MapReduce tasks to be executed without the need of a central source of coordination by distributing tasks over a bounded broadcast tree created at runtime.  The Symphony based MapReduce architecture would be greatly improved by the addition of components to handle the failure of nodes during execution.  As it stands now, if a node crashes the job will fail due to the loss of data.
 
 
-Our own previous work in ChordReduce \cite{chordreduce} focused on creating a decentralized distributed computing framework based off of the Chord (DHT) and MapReduce.
+
+
+Fault tolerance is of particular importance to DHTs, since their primary use case is P2P file-sharing, such as BitTorrent \cite{bittorrent}.
+These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
+.
+%However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
+As part of our previous research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
+
+%%%%%%%
+
+
+
 ChordReduce can be thought of a more generalized implementation of the concepts of MapReduce.
 One of the advantages of ChordReduce is that it can be used in either a traditional datacenter or P2P environment.
 %footnote
@@ -157,16 +168,7 @@ The other one being that new nodes could join during runtime and receive work fr
 %
 Chord (and all DHTs) have the qualities we desire for distributed computing: scalability, fault tolerance, and load-balancing.
 
-Fault tolerance is of particular importance to DHTs, since their primary use case is P2P file-sharing, such as BitTorrent \cite{bittorrent}.
-These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
-ChordReduce had to have the same level of robustness against churn that Chord did, if not better.
-%However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
-As part of our research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
-
-%%%%%%%
-
-
-
+ChordReduce had to have the same level of robustness against churn that Chord did, if not better
 During our experiments with ChordReduce, we found that high levels of churn actually made our computations run \textit{faster}.
 We hypothesized that the churn was effectively load-balancing the network.
 
@@ -175,7 +177,6 @@ We hypothesized that the churn was effectively load-balancing the network.
 
 This paper serves to prove our hypothesis that inherent random churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
-
 We present three additional strategies that nodes can use to redistribute the workload in the network.
 Each of these three strategies relies on nodes creating virtual nodes, as a result they are represented multiple times in the network.
 The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.
@@ -804,7 +805,10 @@ This means the network had the defaults for variable.
 	The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 	
 	\section{Conclusions and Future Work}
-	Our simulation results are notable for a number reasons.
+	In this paper we presented four strategies for autonomous load balancing in a DHT. 
+	The strategies either exploited the inherant churn property of DHTs or utilized a variation of the Sybil attack. 
+	Each strategy has nodes making independent local decision and works in conjuction with the dynamic nature of DHTs and its change topology.
+	Our results are notable for a number reasons.
 	First, is the confirmation that churn can have a net positive effect on the runtime of the network.
 	Second, we presented strategies based on the Sybil attack that performed significantly better than churn and would have a less disruptive impact on the network's structure.
 	We found that our random injection strategy performed the best, approaching as close to ideal times as we could hope.
