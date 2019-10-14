@@ -29,7 +29,7 @@
 		Anu G. Bourgeois\IEEEauthorrefmark{2}
 	%	\end{tabular}
 	}
-
+	\vspace*{0.25cm}
 	\IEEEauthorblockA{ 
 		\begin{tabular}{cc}
 			\begin{tabular}{@{}c@{}}
@@ -84,13 +84,13 @@ Our previous research \cite{chordreduce} examined using a DHT as the organizing 
 This enabled us to create a fault tolerant distributed computing platform that was easy to setup and could be run in a completely decentralized P2P environment.
 
 % Copy into disseration start here
-One of key components of a DHT is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
+One of the key components of a DHT is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
 DHTs rely on this cryptographic hash function to generate identifiers for data stored on the network.
 The cryptographic hash of the filename or other identifier for the data is used as the location of the file or data in the network.
 It can also be used to generate the identifiers for nodes in the network.
 
 Ideally, inputting random numbers into a cryptographic hash function should produce a uniformly distributed output.
-However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}, meaning that in given any DHT with files and nodes, there will be an inherent imbalance in the network.
+However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}, meaning that in any given DHT with files and nodes, there will be an inherent imbalance in the network.
 Some nodes will end up with a larger share of the keys, while others will have few responsibilities (Table \ref{tab:medianLoads}), resulting in an unbalanced workload.
 
 We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objectives behind creating a fully decentralized and distributed system.
@@ -110,7 +110,7 @@ We have seen this over the past decades with the development of cloud computing 
 Most distributed computing paradigms assume that the computations occur using a centralized controller, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
 First and foremost is the issue of fault-tolerance, specifically a single point of failure \cite{shvachko2010hadoop}.
-So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. Another concern in scalability.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. Another concern is scalability.
 
 A centralized design often assumes that the network is relatively static and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
 Many environments also anticipate a certain degree in homogeneity in the system.
@@ -153,7 +153,6 @@ Lee et al. \cite{leemap} explores the benefits of building a MapReduce module to
 
 Fault tolerance is of particular importance to DHTs, since their primary use case is P2P file-sharing, such as BitTorrent \cite{bittorrent}.
 These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
-.
 %However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
 As part of our previous research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
 
@@ -168,7 +167,7 @@ The other one being that new nodes could join during runtime and receive work fr
 %
 Chord (and all DHTs) have the qualities we desire for distributed computing: scalability, fault tolerance, and load-balancing.
 
-ChordReduce had to have the same level of robustness against churn that Chord did, if not better
+ChordReduce had to have the same level of robustness against churn that Chord did, if not better.
 During our experiments with ChordReduce, we found that high levels of churn actually made our computations run \textit{faster}.
 We hypothesized that the churn was effectively load-balancing the network.
 
@@ -807,7 +806,9 @@ This means the network had the defaults for variable.
 	\section{Conclusions and Future Work}
 	In this paper we presented four strategies for autonomous load balancing in a DHT. 
 	The strategies either exploited the inherant churn property of DHTs or utilized a variation of the Sybil attack. 
-	Each strategy has nodes making independent local decision and works in conjuction with the dynamic nature of DHTs and its change topology.
+	Each strategy has nodes making independent local decisions and works in conjuction with the dynamic nature of DHTs and its changing topology.
+	
+	
 	Our results are notable for a number reasons.
 	First, is the confirmation that churn can have a net positive effect on the runtime of the network.
 	Second, we presented strategies based on the Sybil attack that performed significantly better than churn and would have a less disruptive impact on the network's structure.
