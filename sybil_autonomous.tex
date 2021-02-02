@@ -1,5 +1,5 @@
 %\documentclass[11pt,letterpaper]{article}
-\documentclass[11pt,conference]{IEEEtran}
+\documentclass[10pt,conference]{IEEEtran}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -21,9 +21,32 @@
 
 %\doublespacing
 
-\title{Autonomous Load Balancing in Distributed Hash Tables Using Churn and The Sybil Attack}
-\author{\IEEEauthorblockN{Andrew Rosen \qquad Benjamin Levin \qquad Anu G. Bourgeois}
-	\IEEEauthorblockA{ Department of Computer Science \\ Temple University \qquad Temple University \qquad Georgia State University \\ Philadelphia, PA \qquad Philadelphia, PA \qquad Atlanta, GA \\ andrew.rosen@temple.edu \qquad blevin@temple.edu \qquad abourgeois@gsu.edu }
+\title{Autonomous Load Balancing in Distributed Hash Tables Using Churn and the Sybil Attack}
+\author{\IEEEauthorblockN{
+	%	\begin{tabular}{cc}
+		Andrew Rosen\IEEEauthorrefmark{1},
+		Benjamin Levin\IEEEauthorrefmark{1}, and 
+		Anu G. Bourgeois\IEEEauthorrefmark{2}
+	%	\end{tabular}
+	}
+	\vspace*{0.25cm}
+	\IEEEauthorblockA{ 
+		\begin{tabular}{cc}
+			\begin{tabular}{@{}c@{}}
+				\IEEEauthorrefmark{1}
+					Department of Computer Science\\
+					Temple University\\
+					Philadelphia, PA\\
+					\{andrew.rosen, blevin\}@temple.edu
+			\end{tabular} & \begin{tabular}{@{}c@{}}
+				\IEEEauthorrefmark{2}
+					Department of Computer Science\\
+					Georgia State University\\
+					Atlanta, GA\\
+					abourgeois@gsu.edu
+			\end{tabular}
+		\end{tabular}
+	}
 }
 
 \hyphenation{op-tical net-works semi-conduc-tor Chord-Reduce Map-Reduce Data-Nodes Name-Nodes Ur-DHT Ur-CHORD}
@@ -32,13 +55,12 @@
 \maketitle
 
 \begin{abstract}
-Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts 30-40\% of North American uplink traffic.
-
+Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts 30-40\% of North American uplink traffic \cite{evobt}.
 In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
 
-Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced, with some nodes processing hundreds of tasks, while other process minimal or no tasks at all. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
+Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
 
-In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload. We also present avenues for future research.
+In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherant churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload.
 \end{abstract}
 
 
@@ -54,65 +76,110 @@ In this paper, we present four methods to autonomously balance the load of DHTs:
 %\subsection{2-4 sentences telling people what you will talk about in the paper}
 
 Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
-DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the incredibly popular BitTorrent \cite{bittorrent}.
-DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing.
+DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the BitTorrent \cite{bittorrent} and IPFS \cite{benet2014ipfs}.
+DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing  \cite{marozzo2012p2p} \cite{leemap}.
 %Still add block chain reference? No real relations between DHTS and blockchain found
 
 Our previous research \cite{chordreduce} examined using a DHT as the organizing mechanism for a distributed platform.
 This enabled us to create a fault tolerant distributed computing platform that was easy to setup and could be run in a completely decentralized P2P environment.
 
 % Copy into disseration start here
-One of key components of a DHT is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
+One of the key components of a DHT is a cryptographic hash function, most commonly SHA1 \cite{sha1}.
 DHTs rely on this cryptographic hash function to generate identifiers for data stored on the network.
 The cryptographic hash of the filename or other identifier for the data is used as the location of the file or data in the network.
 It can also be used to generate the identifiers for nodes in the network.
 
-Ideally, inputing random numbers into a cryptographic hash function should produce a uniformly distributed output.
-However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}.
-%Weird transistion between these two sentences
-In practice, that means given any DHT with files and nodes, there will be an inherent imbalance in the network.
+Ideally, inputting random numbers into a cryptographic hash function should produce a uniformly distributed output.
+However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cryptographic}, meaning that in any given DHT with files and nodes, there will be an inherent imbalance in the network.
 Some nodes will end up with a larger share of the keys, while others will have few responsibilities (Table \ref{tab:medianLoads}), resulting in an unbalanced workload.
 
-We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objects behind creating a fully decentralized and distributed system.
-
+We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objectives behind creating a fully decentralized and distributed system.
 Therefore, if we want to create strategies to act against the inequity of the load distribution, we need a strategy that individual nodes can act upon autonomously.
-These strategies need to make decisions that a node can make at a local level, using only information about their own load and the topology they can see.
+These strategies need to make decisions that a node can make at a local level, using only information about their own load and the local topology they have access to.
 
+To address these issues, we present four methods to autonomously balance the load of DHTs. Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack. We present simulations to demonstrate the effectiveness of our strategies in terms of load balancing and resulting speedup.
 
-\subsection*{Motivation}
+\section{Motivation and Related Work}
+
+%%% GRAB FROM CHORD REDUCE
 %Update section
 %expand Primary motivation
-The primary motivation for us is creating a new viable type of platform for distributed computing.
-Most distributed computing paradigms, such as Hadoop \cite{hadoop}, assume that the computations occur in a centralized environments.
-One enormous benefit is a centralized system has much greater control in ensuring load-balancing.
-%change computation is king to something better
-However, in an increasingly global world where computation is king and the Internet is increasingly an integral part of everyday life, single points of failure quickly become more and more risky.
-Users expect their apps to work regardless of any power outage affecting an entire region.
-Customers expect their services to still be provided regardless of any.
-The next big quake affecting the the San Andreas fault line is a matter of when, not if.
-Thus, centralized systems with single points of failure become a riskier option and decentralized, distributed systems the safer choice.
+%The primary motivation for us is creating a new viable type of platform for distributed computing.
+Distributed computing is and will continue to be the approach of choice for intensive applications.
+We have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
+Most distributed computing paradigms assume that the computations occur using a centralized controller, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
+One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
+First and foremost is the issue of fault-tolerance, specifically a single point of failure \cite{shvachko2010hadoop}.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. Another concern is scalability.
+A centralized design often assumes that the network is relatively static and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
+Many environments also anticipate a certain degree in homogeneity in the system.
+%Finally deploying these systems and developing programs for them has an extremely steep learning curve.
+%%%%%%%
 
 
-Our previous work in ChordReduce \cite{chordreduce} focused on creating a decentralized distributed computing framework based off of the Chord Distributed Hash Table (DHT) and MapReduce.
-ChordReduce can be thought of a more generalized implementation of the concepts of MapReduce.
-One of the advantages of ChordReduce can be used in either a traditional datacenter or P2P environment.\footnote{The other one being that new nodes could join during runtime and receive work from nodes doing computations.}
-Chord (and all DHTs) have the qualities we desire for distributed computing: scalability, fault tolerance, and load-balancing.
+Moving away from the data center context opens up more possibilities for distributed computing, such as P2P clouds \cite{p2p-cloud}.
+Previous research has demonstrated the feasibility of a P2P or DHT-based distributed computational system.
+Marozzo et al. \cite{marozzo2012p2p} investigated the issue of fault tolerance in centralized MapReduce architectures such as Hadoop.  
+They focused on creating a new P2P based MapReduce architecture built on JXTA \cite{jxta} called P2P-MapReduce.  
+P2P-MapReduce is designed to be more robust at handling node and job failures during execution.
+%Rather than use a single master node, P2P-MapReduce employs multiple master nodes, each responsible for some job.  If one of those master nodes fails, another will be ready as a backup to take its place and manage the slave nodes assigned to that job.  This avoids the single point of failure that Hadoop is vulnerable to. Failures of the slave nodes are handled by the master node responsible for it.
+%
+%Experimental results were gathered via simulation and compared P2P-MapReduce to a centralized framework. Their results showed that while P2P-MapReduce generated an order of magnitude more messages than a centralized approach, the difference rapidly began to shrink at higher rates of churn.  When looking at actual amounts of data being passed around the network, the bandwidth required by the centralized approach greatly increased as a function of churn, while the distributed approach again remained relatively static in terms of increased bandwidth usage.  
+They concluded that P2P-MapReduce would, in general, use more network resources than a centralized approach \cite{marozzo2012p2p}. 
+However, this was an acceptable cost as P2P-MapReduce would lose less time from node and job failures.
+
+While P2P-MapReduce is decentralized, it still relies on a very definite parent/child hierarchy for organization, computations, and scaling. 
+During simulation, 1\% of the entire network was assigned as parent nodes. This means for a simulation of 40000 nodes, 400 were required to organize and coordinate jobs, rendering them unable to do any processing.  
+In addition, a loosely-consistent DHT such as JXTA can be much slower and fails to maintain the same level of guarantees as an actual DHT, such as Chord \cite{5359174}.   
+%
+%Marozzo et al. \cite{marozzo2012p2p} shows that adding additional fault-tolerance features to a MapReduce architecture is worth the added cost of maintenance, as the time lost due to node failures is greatly reduced.  However, Marozzo et al. do not explore the benefits of leveraging the properties of a P2P protocol to reduce the complexity of the architecture and completely distribute the responsibility of the task across the network.  As a result, P2P-MapReduce still relies on a ratio of masters to slaves to coordinate and organize the network, meaning a percentage of the network is unable to contribute processing power to the actual solving of a problem.   
+
+
+
+%Lee et al.'s work \cite{leemap} demonstrated that a P2P network can be more than a way to distribute files and demonstrates how to accomplish different tasks using Map and Reduce functions over a P2P network.  
+%Rather than using Chord, Lee et al. used Symphony \cite{symphony}, a DHT protocol.  
+%To run a MapReduce job over the Symphony ring, a node is selected by the user to effectively act as the coordinator.  
+%This ad-hoc coordinator then performs a bounded broadcast over a subsection the ring.  
+%Each node repeats this broadcast over a subsection of that subsection, resulting in a tree with the first node at the top.  Map tasks are disseminated evenly throughout the tree and their results are reduced on the way back up to the ad-hoc master node.  This allows the ring to disseminate Map and Reduce tasks without the need for a coordinator responsible for distributing these tasks and keeping track of them, unlike Hadoop.
+%
+%Their experimental results showed that the latency experienced by a centralized configuration is similar to the latency experienced in a completely distributed framework.  However, there are no mechanisms in place to handle churn in the network.  If a node joins during a MapReduce job, it will be unable to contribute any of its resources to the problem. If a node in the bounded broadcast tree fails, or worse the ad-hoc master node fails, the data that node is responsible for is lost.
+
+Lee et al. \cite{leemap} explores the benefits of building a MapReduce module to run on top of Symphony \cite{symphony},  a P2P protocol. 
+ Unlike Hadoop, this allows the MapReduce tasks to be executed without the need of a central source of coordination by distributing tasks over a bounded broadcast tree created at runtime.  The Symphony based MapReduce architecture would be greatly improved by the addition of components to handle the failure of nodes during execution.  As it stands now, if a node crashes the job will fail due to the loss of data.
+
+
+
 
 Fault tolerance is of particular importance to DHTs, since their primary use case is P2P file-sharing, such as BitTorrent \cite{bittorrent}.
 These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
-ChordReduce had to have the same level of robustness against churn that Chord did, if not better.
+%However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
+As part of our previous research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
 
+%%%%%%%
+
+
+
+ChordReduce can be thought of a more generalized implementation of the concepts of MapReduce.
+One of the advantages of ChordReduce is that it can be used in either a traditional datacenter or P2P environment.
+%footnote
+The other one being that new nodes could join during runtime and receive work from nodes doing computations.
+%
+Chord (and all DHTs) have the qualities we desire for distributed computing: scalability, fault tolerance, and load-balancing.
+
+ChordReduce had to have the same level of robustness against churn that Chord did, if not better.
 During our experiments with ChordReduce, we found that high levels of churn actually made our computations run \textit{faster}.
 We hypothesized that the churn was effectively load-balancing the network.
 
+
+
+
 This paper serves to prove our hypothesis that inherent random churn can load balance a Distributed Hash Table.
 We also set out to show that we can use this in a highly controlled manner to greater effect.
-
 We present three additional strategies that nodes can use to redistribute the workload in the network.
 Each of these three strategies relies on nodes creating virtual nodes, as a result they are represented multiple times in the network.
 The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.
 
-We call our virtual nodes in this scenario Sybils.
+We call our virtual nodes in this scenario Sybils, as this duplication is almost identical to the way the Sybil attack  \cite{sybil} creates virtual nodes in a P2P system.
 None of our strategies require a centralized organizer, but instead a way for a node to check the amount of files or tasks it and its Sybils are responsible for.
 
 
@@ -127,12 +194,12 @@ In particular, we want to see if our strategies result in similar speedups in bo
 %ChordReduce leverages the features of distributed hash tables to handle distributed file storage, fault tolerance, and lookup.
 %We designed ChordReduce to ensure that no single node is a point of failure and that there is no need for any node to coordinate the efforts of other nodes during processing.
 
-\section{How Work Is Distributed in DHTs: A Visual Guide}
+\section{A Visual Guide for DHT Load Distribution }
 %In this section, we display graphs to give a visual representation of how work is distributed in a Chord \cite{chord} network
 
 %Remove A Visual Guide part of section to save space?
 As we have previously mentioned, many DHTs use a cryptographic hash function to choose keys for nodes and data.
-However, no cryptographic hash function can uniformly distribute its outputs across its range. 
+However, no cryptographic hash function can uniformly distribute its outputs across its range, despite this being an assumption made in many DHTs. 
 Table \ref{tab:medianLoads} shows the median workload for networks of different numbers of nodes and tasks.
 In this context, tasks and nodes are interchangeable, as each node in a DHT performing a distributed computation would receive one task per file or chunk of file.
 
@@ -160,31 +227,34 @@ In this context, tasks and nodes are interchangeable, as each node in a DHT perf
 
 
 We can see  that in a 1000 node/1,000,000 tasks network, the average median workload of a node is 692.3 tasks. 
-If work were distributed equally among all nodes in this network, each node would have 1000 tasks.
+If work were distributed equally among all nodes in this network, each node would have 1000 tasks (the mean).
 This means that 50\% of the network has less significantly less tasks than the average number of tasks per node.
+
+
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figs/workloadDistribution}
+	\caption[Workload Distribution in a DHT]{The probability distribution of workload in a DHT with 1000 nodes and 1,000,000 tasks or files.  The vertical dashed line designates the median.  Keys were generated by feeding random numbers into the SHA1 hash function \cite{sha1}, a favorite for many distributed hash tables.}
+	\label{fig:workloadDistribution}
+\end{figure}
 
 Figure \ref{fig:workloadDistribution} plots the probability of of how work is distributed in this network.
 We see the bulk of the nodes have less than 1000 tasks and a few unfortunate nodes are burdened with more than 10,000 tasks.
 
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{figs/workloadDistribution}
-	\caption[Workload Distribution in a DHT]{The probability distribution of workload in a DHT with 1000 nodes and 1,000,000 tasks or files.  The vertical dashed line designates the median.  Keys were generated by feeding random numbers into the SHA1 hash function \cite{sha1}, a favorite for many distributed hash tables.}
-	\label{fig:workloadDistribution}
-\end{figure}
 
 Our final example is on a much smaller scale, but provides an excellent visual representation of a network.
 Figure \ref{fig:exampleChordDistribution} shows a visualization of 10 nodes and 100 tasks in a Chord overlay network.
 
 Each node and task is given a 160-bit identifier \texttt{id} that is mapped to location $ (x,y) $ on the perimeter of the unit circle via the equations $ x = \sin\left( \frac{ 2 \pi \cdot id}{2^{160}} \right)$ and $ y = \cos\left( \frac{ 2 \pi \cdot id}{2^{160}} \right)$. 
 Note that some of the nodes cluster right next to each other, while other nodes have a relatively long distance between each other along the perimeter.  
-The most blatant example of this is the node located at approximately $(-0.67, 0.75)$, which would be responsible for all the tasks between that and the next node located counterclockwise.
-That node and the node located at about $(-0.1, -1)$ are responsible for approximately half the tasks in the network.
+%The most blatant example of this is pair of nodes located at approximately $(.75, .5)$; the bottom node of this pair receives only a single task.
+%That node and the node located at about $(-0.1, -1)$ are responsible for approximately half the tasks in the network.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{figs/exampleChordUnevenRedone}
+	\includegraphics[width=0.9\linewidth]{figs/exampleChordUnevenRedone}
 	\caption[Distribution of Nodes and Tasks in a Chord DHT]{A visual example of data and nodes in a Chord DHT with 10 nodes (represented by red circles) and 100 tasks (blue pluses). Nodes are responsible for all the tasks that fall along the perimeter between themselves and their predecessor, which is the closest node counterclockwise.}
 	\label{fig:exampleChordDistribution}
 \end{figure}
@@ -198,7 +268,7 @@ In addition, it would require some additional centralization to ensure every sin
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{figs/exampleChordEvenRedone}
+	\includegraphics[width=0.9\linewidth]{figs/exampleChordEvenRedone}
 	\caption[Distribution of Tasks in a Chord DHT  with Evenly Distributed Nodes]{A visual example of data and nodes in a Chord DHT with 10 evenly distributed nodes (represented by red circles) and 100 tasks (blue pluses).}
 	\label{fig:exampleChordEvenDistribution}
 \end{figure}
@@ -215,18 +285,16 @@ As we will see in our simulations, if nodes with little or no work can acquire s
 %We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
 
 
-We simulate our strategies on a Chord distributed hash table \cite{chord}, although it is fairly straightforward to implement our strategies for other, more complex DHTs.
-Nodes in a Chord ring are given an ID, drawn from a cryptographic hash function, typically SHA1 \cite{sha1}.
+We simulate our strategies on a Chord DHT \cite{chord}.
+Nodes obtain an ID, drawn from a call to SHA1 \cite{sha1}.
 Any data in the network is given a key in a similar manner.
 Nodes are responsible for all the keys between their predecessor's ID and their own.
-
 We assume that the network starts our experiments stable and the data necessary is already present on the nodes and backed-up.
-The following analysis and simulation relies on an important assumption about DHT behavior often assumed but not necessarily implemented.
-
+The following analysis and simulation relies on an important assumption about DHT behavior often assumed, but not necessarily implemented.
 
 We assume that nodes are active and aggressive in creating and monitoring the backups and the data they are responsible for.
 %Specifically, we will assume it takes  $T_{detect}$ time for a node to detect a change in their responsibility or to detect a new node to hand a backup to and that this check is performed regularly. 
-We have demonstrated the effectiveness and viability of implementing an active backup strategy in other work \cite{chordreduce} \cite{urdht}.
+We have demonstrated the effectiveness and viability of implementing an active backup strategy in our previous work \cite{chordreduce}.
 As previously mentioned, we also assume nodes have the ability to examine the amount of work they have and know how many tasks or pieces of data exist for a particular job.
 
 Another assumption is that nodes do not have control in choosing their IDs from the range of hash values.
@@ -247,18 +315,16 @@ We discussed this process in previous work and showed that it is extremely quick
 %Incidentally, this time interval $T = T_{detect} + T_{transfer} $
 %
 
-Our simulations relied on a great number of parameters and variables.
-We present each of them below.
 
 \subsection{Constants and Terminology}
 
 First, we will informally define the vocabulary we use to discuss our simulations.
 
-\subsubsection*{Tick} In a simulation, normal measurements of time, such as a second, are completely arbitrary.  
+\subsubsection*{Tick} 
 We will be using an abstract \textit{tick} to measure time.  
 We consider the tick to be the amount of time it takes a node to complete one task (or more depending on our variables, see below) and perform the appropriate maintenance to keep the network consistent and healthy.
 
-\subsubsection*{Maintenance} We assume nodes use the active, aggressive strategy from ChordReduce and UrDHT \cite{chordreduce} \cite{urdht}.
+\subsubsection*{Maintenance} We assume nodes use the active, aggressive strategy from ChordReduce \cite{chordreduce}.
 Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately. 
 We assume that a tick is enough time to accomplish at least one maintenance cycle.
 \subsubsection*{Task} We measure the size of a distributed computing job in tasks.
@@ -273,8 +339,8 @@ We tested a number of strategies and variables that could affect each strategy.
 While we believed the overall strategy would result in largest differences in runtime, we wanted to see what effects, if any, each of the variables would have on a particular strategy.
 
 \subsubsection*{Strategy} We use several different strategies: churn, random injection, neighbor injection, and invitation.
-Each of these strategies differs in how nodes attempt  to autonomously balance the workload of the network.
-None of the strategies require centralized organization.
+Each of these strategies differs in how nodes attempt to autonomously balance the workload of the network, without centralized organization.
+These strategies are described in Section \ref{sec:strategies}.
 \subsubsection*{Homogeneity}  This variable controls whether the network is homogeneous or not.
 In a homogeneous network, each node has the same strength, which dictates how much work is completed per a tick and how many Sybils it can create.
 In a heterogeneous network, each node has a strength chosen uniformly at random from 1 to \texttt{maxSybils}.
@@ -293,18 +359,18 @@ Churn can be self induced or a result of actual turbulence in the network.
 Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
 The default value is 0.
 \subsubsection*{Max Sybils} \texttt{maxSybils} is the maximum number of Sybils a node can have at once.  We tested 5, the default, and 10.
-\subsubsection*{Sybil Threshold} The \texttt{sybilThreshold} dictates the number of tasks a node must have before it can create a Sybil.  The default setting is having no work (0 tasks).
+\subsubsection*{Sybil Threshold} The \texttt{sybilThreshold} dictates the number of tasks a node must have before it can create a Sybil.  The default setting is having no work (0 tasks), mean a node must finish all their tasks before seeking to obtain new work.
 %Why is the sybil default 0?
 \subsubsection*{Successors} The number of successors each node keeps track of, either 5 or 10, with 5 being the default.
 Nodes also keep track of the same number of predecessors.
 	
-
-We also considered using a variable noted as the \texttt{AdaptationRate}, which was the interval at which nodes decided whether or not to create a Sybil.
-Preliminary experiments showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
+%
+%We also considered using a variable noted as the \texttt{AdaptationRate}, which was the interval at which nodes decided whether or not to create a Sybil.
+%Preliminary experiments showed \texttt{AdaptationRate} to have a minimal effect on the runtime, so it was removed.
 
 \subsection{Outputs}
 The most important output was the number of ticks it took for the experiment to complete.
-We compared this runtime to the what we call the ``ideal runtime,'' which is our expected runtime if the every node in the network was given an equal number of tasks and performed them without any churn or creating any Sybils.
+We compared this runtime to the what we call the ``ideal runtime,'' which is our expected runtime if every node in the network was given an equal number of tasks and performed them without any churn or creating any Sybils.
 For example, consider a network with 1,000 nodes and 100,000 tasks, where each node consumes a single task each tick. 
 This network has an ideal runtime of 100 ticks ($ \frac{100000}{1000} = 100$).
 
@@ -324,7 +390,6 @@ We then look at three different strategies, in which nodes take a more tactical 
 
 Specifically, nodes perform a limited and controlled Sybil attack \cite{sybil} on their own network in an effort to acquire work with their virtual nodes.
 Our strategies dictate when and where these Sybil nodes are created.
-
 We discuss the effectiveness of each of the strategies and present the results of our simulations in Section \ref{sec:autonomous-results}.
 
 
@@ -341,14 +406,14 @@ When they generate an appropriate random number, they join the network and leave
 We assume that nodes enter and leave the network at the same rate.
 Because the initial size of the network and the pool of waiting nodes is the same and nodes move between one another at the same random rate, the size of either does not fluctuate wildly.
 
-As we have previously discussed, nodes in our network model actively back up their data and tasks to the a number of successors in case of failure.
+As we have previously discussed, nodes in our network model actively back up their data and tasks to the number of successors in case of failure.
 In addition, when a node joins, it acquires all the work it is responsible for.
 While this model is rarely implemented for DHTs, it is often assumed to be the way DHTs operate. 
-We have implemented this in ChordReduce\cite{chordreduce} and UrDHT\cite{urdht} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling incredibly high amounts of churn.
+We have implemented this in ChordReduce\cite{chordreduce} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling incredibly high amounts of churn.
 
 The consequences of this are that a node suddenly dying is of minimal impact to the network.
 This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
-Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquiring work.
+Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquire work.
 
 This strategy acts as a baseline with which to compare the other strategies, as it is no more than a overcomplicated way of turning machines off and on again. 
 All strategies below are attempts to do better than random chance.
@@ -379,19 +444,19 @@ Specifically, it looks for the biggest range among its successors and creates a 
 This range strategy of finding the largest range and injecting assumes that the node with the largest range of responsibility will have been allocated the most work.
 This is a sensible assumption since the larger the range of a node's responsibility, the more \textit{potential} tasks it can receive. 
 We compare this estimation strategy to actually querying the neighbor and asking how many tasks they have.
-An estimation, if accurate, would be preferable to querying the nodes as an estimation can be done without any communication with the successor nodes.
+An estimation, if accurate, would be preferable to querying the nodes, it can be done without any communication with the successor nodes.
 
 To avoid constant spamming of a range, once a node creates a Sybil, but does not acquire work, it may be advisable to mark that range as invalid for Sybil nodes to prevent repeated attempts in the same range. 
 
 
 \subsection{Invitation}
-The \textit{Invitation} strategy is the reverse of the Sybil injection.
+The \textit{Invitation} strategy is the reverse of Neighbor Injection.
 In  this strategy, nodes with a higher than desired level of work announces it needs help to its predecessors.
 %communication to determine the least amounts of tasks?
-The predecessor with least amount of tasks less than or equal to the \texttt{sybilThreshold} creates a Sybil to acquire work from the node.
+The predecessor with the least amount of tasks less than or equal to the \texttt{sybilThreshold} creates a Sybil to acquire work from the node.
 %Ask about ^^ this
-It is possible for an invitation to get more work to be refused by anyone if no  predecessor is at the \texttt{sybilThreshold} or each predecessor has too many Sybils.
-Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold}.
+It is possible for an invitation to get more work to be refused if no  predecessor is at the \texttt{sybilThreshold} or each predecessor has too many Sybils.
+Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold} parameter.
 
 
 
@@ -400,19 +465,15 @@ Nodes determine whether or not they are overburdened using the \texttt{sybilThre
 
 We now briefly summarize the results of our simulation before discussing each in more depth below.
 First, we confirmed that churn, even at low levels, can speed up the execution of a distributed computation by dynamically load balancing the network.
-However, our best strategy was random injection, which managed to have a runtime factor that approached 1.
+Our best strategy was random injection, which managed to have a runtime factor that approached 1.
 
 All examples are compared against a baseline network of the same size and initial configuration of nodes. 
-The only difference is that the baseline never uses a strategy or experiences any churn.
-
-All the raw data can be found online \cite{simulation-data}.
-Files are sorted by the strategy used, the network size,  and number of tasks and include the both the results of each individual run and the averages of each 100 trials for a particular set of variables.
-Each trial is linked with a seed for the pseudorandom number generator and can be fully reproduced.
-
+The only difference is that the baseline never uses a strategy, nor experiences any churn.
+%All the raw data can be found online \cite{simulation-data}.
 We will be referring to a \textbf{base} runtime factor.
 This means the network had the defaults for variable.
-{We suspect the worse runtime factors in homogeneous networks does not necessarily imply the method is weaker.
-	It may imply that runtime factor is not the best metric, but it is the best simple one we have.
+%We suspect the worse runtime factors in homogeneous networks does not necessarily imply the method is weaker.
+%	It may imply that runtime factor is not the best metric, but it is the best simple one we have.
 	
 	
 	\subsection{Churn}
@@ -442,60 +503,53 @@ This means the network had the defaults for variable.
 	The magnitude of churn's effect varies based on the size of the network and the number of tasks.
 	In networks where there are fewer nodes, we see the base runtime factor is smaller.
 	The gains from churn are most strongly related the number of tasks the network has, with the more tasks there are, the greater the gains of churn.
-	A network with 100 nodes and 1 million tasks, on average, has a runtime factor only 30\% higher than ideal when churn is 0.01 per tick.
+	A network with 100 nodes and 1 million tasks, on average, has a runtime factor only 30\% higher than ideal when churn is 0.01 per tick.\footnote{We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks, in order to give a fuller picture of the effects of churn and tested this network with a wider variety of churn rates and found significantly diminishing returns that occur after a churn rate of 0.01.
+		One facet not captured by our simulations, but is significant, is the rising maintenance costs after that point.
+		This makes any amount of churn after a certain point prohibitively expensive.
+		Determination of this point requires implementation on a real network.}
 	The runtime for heterogeneous versus homogeneous networks had no significant differences.
 	
 	
-	We ran additional experiments on rates of churn for a 1000 node network and 100,000 tasks, in order to give a fuller picture of the effects of churn.
-	We tested this network with a wider variety of churn rates.
-	The results of this are shown in Figure \ref{fig:churnVsTime}, which plots the runtime of the distributed computation against the level of churn in the network.
+
 	
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/churnVsTime}
+%		\caption[Churn vs Runtime factor]{Effect of churn has on runtime.}
+%		\label{fig:churnVsTime}
+%	\end{figure}
 	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/churnVsTime}
-		\caption[Churn vs Runtime factor]{This graph shows the effect churn has on runtime in a distributed computation.
-			Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
-			The lower the runtime factor, the closer it is to an ideal of 1.
-			Neither the homogeneity of the network nor work measurement had a significant effect on the runtime.}
-		\label{fig:churnVsTime}
-	\end{figure}
+
 	
-	We note the significantly diminishing returns that occur after a churn rate of 0.01.
-	One facet not captured by our simulations, but is significant, is the rising maintenance costs after that point.
-	This makes any amount of churn after a certain point prohibitively expensive.
-	Determination of this point requires implementation on a real network.
-	
-	This speedup is reflected in the average number of tasks consumed in a tick, shown in Figure \ref{fig:churnVsWork}.
+
 	In a stable network with no churn, we would expect a good portion of the network to end up with little work, which is quickly consumed.
 	These nodes must then idle, waiting for the few nodes that received a large number of tasks to finish.
 	When there is churn, however, nodes have a chance of joining the network and acquiring more work, thus making it possible for more work to be done per a tick.
 	The higher the rate of churn, the more this happens.
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/churnVsWork}
-		\caption[Churn vs average work per tick]{With more and more churn in the network, new nodes have a higher chance of joining the network and acquiring work from overloaded nodes.  This results in more average work being done each tick, as there are less nodes simply idling.}
-		\label{fig:churnVsWork}
-	\end{figure}
-	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/churnVsWork}
+%		\caption[Churn vs average work per tick]{Effect of churn on average workload.}
+%		\label{fig:churnVsWork}
+%	\end{figure}
+%	
 	
 	
 	A more detailed view of how this happens is shown in Figures \ref{fig:churnStableHist0}, \ref{fig:churnStableHist5}, and \ref{fig:churnStableHist35}.
 	These figures show histograms of workload distribution for two networks at different ticks.
 	One network uses 0.01 churn per tick to autonomously load balance the workload, the other uses no strategy at all.
 	
-	Both networks start with the 1000 nodes and 100,000 tasks distributed identically throughout the network. 
+	Both networks start with the 1000 nodes and 100,000 tasks distributed throughout the network. 
 	Figure \ref{fig:churnStableHist0} shows the distribution of the workload for this initial configuration.
 	
 	As the network begins to work, we see the distributions diverge from one another.
-	Figure \ref{fig:churnStableHist5} shows that after merely 5 ticks, the network using the churn strategy has noticeably fewer nodes that have smaller workloads.
-	We also see more nodes with greater workloads.
+	Figure \ref{fig:churnStableHist5} shows that after merely 5 ticks, the network using the churn strategy has noticeably fewer nodes that have smaller workloads and more nodes with greater workloads.
 	The effect becomes even more pronounced after 35 ticks, shown in Figure \ref{fig:churnStableHist35}, where more have had a chance to finish their work and more churn has occurred.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist0}
+		\includegraphics[width=0.9\linewidth]{figs/ChurnStableHist0}
 		\caption[Workload for churn at tick 0]{The initial distribution of the workload in both networks.  As both networks start with same initial configuration, the distribution is currently identical.  This greatly resembles the distribution we saw in Figure \ref{fig:workloadDistribution}.}
 		
 		\label{fig:churnStableHist0}
@@ -504,7 +558,7 @@ This means the network had the defaults for variable.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist5}
+		\includegraphics[width=0.9\linewidth]{figs/ChurnStableHist5}
 		\caption[Workload for churn at tick 5]{This is the distribution of the workloads at the beginning of tick 5.  We can see the network using 0.01 churn has fewer nodes with less work and more nodes with a greater workload.}
 		
 		\label{fig:churnStableHist5}
@@ -514,7 +568,7 @@ This means the network had the defaults for variable.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/ChurnStableHist35}
+		\includegraphics[width=0.9\linewidth]{figs/ChurnStableHist35}
 		\caption[Workload for churn at tick 35]{After 35 ticks, the effects of churn on the workload distribution become more pronounced.  More nodes have consumed all their tasks and are simply idling, but significantly less in the network using churn.}
 		\label{fig:churnStableHist35}
 	\end{figure}
@@ -538,7 +592,7 @@ This means the network had the defaults for variable.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/randomStableHist5}
+		\includegraphics[width=0.9\linewidth]{figs/randomStableHist5}
 		\caption[Random injection vs no strategy after 5 ticks.]{The networks after 5 ticks.  The network using random injection has significantly less underutilized nodes, even after only 5 ticks.}
 		\label{fig:randomStableHist5}
 	\end{figure}
@@ -546,7 +600,7 @@ This means the network had the defaults for variable.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/randomStableHist35}
+		\includegraphics[width=0.9\linewidth]{figs/randomStableHist35}
 		\caption[Random injection vs no strategy after 35 ticks.]{The networks after 35 ticks.  The network using random injection has significantly less underutilized nodes and substantially more notes with some or lots of work.}
 		\label{fig:randomStableHist35}
 	\end{figure}
@@ -558,11 +612,11 @@ This means the network had the defaults for variable.
 	
 	We can see these effects become even more pronounced at tick 35 (Figure \ref{fig:randomStableHist35}), where seven load balancing operations have taken place.
 	The network using random injection has many fewer nodes with little or no work and many more nodes with some work.
-	Furthermore, we see significant difference between the effectiveness of random injection versus churn (Figure \ref{fig:churnInjectionHist35}).
+	Figure \ref{fig:churnInjectionHist35} shows the significant difference between the effectiveness of random injection versus churn.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/churnInjectionHist35}
+		\includegraphics[width=0.9\linewidth]{figs/churnInjectionHist35}
 		\caption[Churn vs Random Injection after 35 ticks.]{The networks after 35 ticks.  The network using random injection load-balances significantly better than the network using Churn.}
 		\label{fig:churnInjectionHist35}
 	\end{figure}
@@ -583,7 +637,7 @@ This means the network had the defaults for variable.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/randomStableHistHetero35}
+		\includegraphics[width=0.9\linewidth]{figs/randomStableHistHetero35}
 		\caption[Random injection in a Heterogenous Network]{The workload distribution of heterogenous networks after 35 ticks.  We can see the network using the random injection strategy is experiencing a better distribution of work.}
 		\label{fig:randomStableHistHetero35}
 	\end{figure}
@@ -617,7 +671,7 @@ This means the network had the defaults for variable.
 	
 	\subsection{Neighbor Injection}
 	The neighbor injection strategy was also effective at reducing the overall runtime factor, albeit not as greatly as the random injection strategy.
-	Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35} show the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
+	Figure \ref{fig:neighborsStableHist35} shows the workload distribution of the neighbor injection strategy in a 1000 node/100,000 task network.
 	At the first glance, neighbor injection does not seem to be doing worse than no strategy; there are more nodes with less work than no strategy.
 	However, if we look at the whole histogram, we see there are less nodes that have a large amount of work and noticeably more nodes with a small number of tasks.
 	In fact, at tick 35, we see that the network with no strategy has a node with approximately 650 tasks, while the most that the network using the neighbors strategy has is 450 tasks.
@@ -625,7 +679,7 @@ This means the network had the defaults for variable.
 	This is because the network is finishing off the tasks with small amounts of work quicker.
 	However, nodes are not able to acquire work outside their immediate vicinity and must idle.
 	In addition, nodes always inject Sybils into the largest gap between their successors that they see, but may not acquire any work.
-	That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.\footnote{We suggest how to avoid this in a real implementation in Section \ref{sec:strat-neighbor}}
+	That means in the simulation, it is possible for nodes to get into a loop of constantly checking the largest gap and miss other neighbors that do have work to acquire.%\footnote{We suggest how to avoid this in a real implementation in Section \ref{sec:strat-neighbor}}
 	
 	The base runtime factor of the neighbor strategy in a 1000 node/100,000 task homogeneous network was 5.033, which is 2.4 lower than no strategy.
 	In a 100 node/10,000 task network, this was lower -- a runtime factor of 3.006, which was 2 lower than no strategy.
@@ -638,47 +692,47 @@ This means the network had the defaults for variable.
 	However, \texttt{sybilThreshold} had no significant effect, nor did \texttt{maxSybil} for homogeneous networks.
 	
 	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
+%		\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
+%		\label{fig:neighborsStableHist5}
+%	\end{figure}
+%	
+	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist5}
-		\caption[Neighbor injection vs no strategy after 5 ticks.]{While the network no strategy appears to have less nodes idling, the active nodes in the network using neighbors are being better utilized.}
-		\label{fig:neighborsStableHist5}
-	\end{figure}
-	
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableHist35}
-		\caption[Neighbor injection  vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
+		\includegraphics[width=0.9\linewidth]{figs/neighborsStableHist35}
+		\caption[Neighbor injection vs no strategy after 35 ticks.]{Despite have more idling nodes, we see that the nodes using the neighbor injection strategy have acquired smaller workloads and have effectively shifted part of the histogram left.}
 		\label{fig:neighborsStableHist35}
 	\end{figure}
 	
 	
 	
 	To fully evaluate the effectiveness of the strategy, we compared the neighbor injection strategy, which estimates the node with the largest workload, to what we call smart neighbor injection.
-	Smart neighbor injection actually queries the neighbors to find out their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
-	The workload distributions of smart injection are shown in Figures \ref{fig:neighborsStableSmartHist5} and \ref{fig:neighborsStableSmartHist35}.
+	Smart neighbor injection queries neighbors about their workload and injects a Sybil to take work away from the node with the most amount of work, not merely the node with the largest space of responsibility.
+	Figure \ref{fig:neighborsStableSmartHist35} shows the workload distributions of smart injection.
 	Both graphs show the same reduction in high amounts of workload that the base neighbor strategy provided, but with fewer idling nodes.
 	
 	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
+%		\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
+%		\label{fig:neighborsStableSmartHist5}
+%	\end{figure}
+%	
+	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist5}
-		\caption[Smart neighbor injection vs no strategy after 5 ticks.]{The workload in the networks after 5 ticks. We can that the network using neighbor injection has directed more nodes that would be idling to perform work.  This is especially apparent in comparison to Figure \ref{fig:neighborsStableHist5}.}
-		\label{fig:neighborsStableSmartHist5}
-	\end{figure}
-	
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/neighborsStableSmartHist35}
+		\includegraphics[width=0.9\linewidth]{figs/neighborsStableSmartHist35}
 		\caption[Smart Neighbor injection  vs no strategy after 35 ticks.]{After 35 ticks, we see the network using the smart neighbor injection strategy has significantly less nodes with little or no work, more nodes with smaller amounts of work, and less nodes with large amounts of tasks.}
 		\label{fig:neighborsStableSmartHist35}
 	\end{figure}
 	
 	
 	
-	The strategy of probing each of the neighbors before inserting, rather than estimating, improved the runtime factor by 1.2  on average when we compare each strategy's mean homogeneous and heterogeneous runtimes.
+	The strategy of probing each of the neighbors before inserting, rather than estimating, improved the runtime factor by 1.2 on average when we compare each strategy's mean homogeneous and heterogeneous runtimes.
 	However, the estimation based neighbor injection requires fewer messages in an actual implementation.
 	Overall, either neighbor injection strategy did not perform as well as the random injection strategy, but generates much less churn from joining nodes, since nodes can create their Sybils in a greatly reduced range.
 	
@@ -698,43 +752,43 @@ This means the network had the defaults for variable.
 	This means queries of other nodes and Sybil injections only occur when they need to, greatly reducing the maintenance costs in an actual implementation.
 	
 	
-	Figures \ref{fig:inviteStableHist5} and \ref{fig:inviteStableHist35} show the work distribution of a network using the invitation based strategy.
-	When we compare this strategy to the smart neighbor injection strategy (Figures \ref{fig:neighborsStableHist5} and \ref{fig:neighborsStableHist35}), we see that invitation does a much better job of distributing the work.
+	Figure \ref{fig:inviteStableHist35} shows the work distribution of a network using the invitation based strategy.
+	When we compare this strategy to the smart neighbor injection strategy (Figure\ref{fig:neighborsStableHist35}), we see that invitation does a much better job of distributing the work.
+	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.9\linewidth]{figs/inviteStableHist5}
+%		\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
+%		\label{fig:inviteStableHist5}
+%	\end{figure}
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteStableHist5}
-		\caption[Invitiation vs no strategy after 5 ticks]{Here, we see that the invitation strategy performs markedly better at distributing the work than no strategy.  At tick 5, there are many more nodes with small work loads.  There are also few nodes with large amounts of work.}
-		\label{fig:inviteStableHist5}
-	\end{figure}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteStableHist35}
+		\includegraphics[width=0.9\linewidth]{figs/inviteStableHist35}
 		\caption[Invitiation vs no strategy after 35 ticks]{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
 		\label{fig:inviteStableHist35}
 	\end{figure}
 	
 	
+%	
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
+%		\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
+%		\label{fig:inviteNeighborsHist5}
+%	\end{figure}
+%	
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist5}
-		\caption[Invitation  vs smart neighbor injection after 5 ticks.]{A comparison of a network using the smart neighbors strategy and a network using the invitation strategy.  Invitation has slightly more nodes on the performing less work, but no significant differences have emerged.}
-		\label{fig:inviteNeighborsHist5}
-	\end{figure}
-	
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/inviteNeighborsHist35}
+		\includegraphics[width=0.9\linewidth]{figs/inviteNeighborsHist35}
 		\caption[Invitation vs smart neighbor injection after 35 ticks.]{After 35 ticks, differences between the two strategies have emerged.  The network using the invitation strategy has significantly less nodes with a small work load and many more with large work loads.}
 		\label{fig:inviteNeighborsHist35}
 	\end{figure}
 	
 	
 	
-	The impact of the invitation strategy on the runtime factor was closely tied to the number of nodes in the network.
+	The impact of the invitation strategy on the runtime factor was closely tied to the network size.
 	For example, in a 100 node/ 100,000 task network (1000 tasks per node), the base average runtime factor was 3.749.
 	However, a 1000 node/ 100,000 task network had a base average runtime of 5.673.
 	
@@ -745,10 +799,15 @@ This means the network had the defaults for variable.
 	The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 	
 	\section{Conclusions and Future Work}
-	Our simulation results are notable for a number reasons.
-	First, as we have previously mentioned, is the confirmation that churn can have a net positive effect on the runtime of the network.
-	Second, we presented strategies based on the Sybil attack that performed significantly better than churn and would have a much less disruptive impact on the network's structure.
-	We found that our random injection strategy performed exceptionally well, approaching as close to ideal times as we could hope.
+	In this paper we presented four strategies for autonomous load balancing in a DHT. 
+	The strategies either exploited the inherant churn property of DHTs or utilized a variation of the Sybil attack. 
+	Each strategy has nodes making independent local decisions and works in conjuction with the dynamic nature of DHTs and its changing topology.
+	
+	
+	Our results are notable for a number reasons.
+	First, is the confirmation that churn can have a net positive effect on the runtime of the network.
+	Second, we presented strategies based on the Sybil attack that performed significantly better than churn and would have a less disruptive impact on the network's structure.
+	We found that our random injection strategy performed the best in terms of run time.
 	
 	
 	The fact that these strategies can be used as new nodes join the network can not be understated.
@@ -757,15 +816,12 @@ This means the network had the defaults for variable.
 	However, our strategies were not nearly as successful in a heterogeneous network, even though the work was better distributed throughout the network.
 	We suspect this is the result of weaker nodes acquiring more work from stronger nodes, leading to an overall longer runtime, despite the workload being better balanced.
 	In other words, the workload is balanced in the heterogeneous network, but the efficiency is not improved.
-	An avenue for future work can take the node strength into account or use another, smarter strategy.
+	An avenue for future work could consider the node strength as a factor.
 	%It could be that smarter or completely different strategies are needed.
 	%It could also be that the runtime factor is not the proper way to get a grasp of how well a heterogeneous network performs.
 	%This forms basis for interesting future work.
-	
-	
 	%change ref to previous chapters
-	As mentioned in Section \ref{sec:auto-simulation}, we made the assumption that nodes cannot choose their own ID and must rely on the strategies described in Chapter \ref{chapter:sybil}  \cite{sybil-analysis} for creating a Sybil with the appropriate ID.
-	However, if this assumption was removed, this presents even more strategies for nodes to autonomously load-balance.
+	Additionally, if we removed the assumption that nodes cannot choose their own ID or those of their Sybil, this presents even more strategies for nodes to autonomously balance the workload.
 \bibliography{notes,dht,mapreduce,voronoi,dns,botnets,bitcoin,mine}
 \bibliographystyle{plain}
 

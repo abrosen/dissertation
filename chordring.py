@@ -4,13 +4,14 @@ import math
 import random
 
 def drawGraphBalanced(numNodes):
+    random.seed(12345)
     xs = []
     ys = []
     fx = []
     fy = []
     randpoints = []
     for _ in range(numNodes):
-        num = random.randrange(0.0, 2.0)
+        num = random.uniform(0.0, 2.0)
         while num in randpoints:
             num = random.uniform(0.0, 2.0)
         randpoints.append(num)
@@ -32,6 +33,7 @@ def drawGraphBalanced(numNodes):
     plt.show()
 
 def drawGraphUnbalanced(numNodes):
+    random.seed(12345)
     xs = []
     ys = []
     fx = []
@@ -65,5 +67,5 @@ def drawGraphUnbalanced(numNodes):
     plt.scatter(fx, fy, c="r", marker="o")
     plt.show()
 
-#drawGraphBalanced(100)
-drawGraphUnbalanced(100)
+drawGraphBalanced(100)
+#drawGraphUnbalanced(100)

@@ -82,6 +82,8 @@ These strategies need to make decisions that a node can make at a local level, u
 
 
 \subsection{Motivation}
+
+
 The primary motivation for us is creating a new viable type of platform for distributed computing.
 Most distributed computing paradigms, such as Hadoop \cite{hadoop}, assume that the computations occur in a centralized environments.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing.
@@ -91,6 +93,12 @@ Users expect their apps to work regardless of any power outage affecting an enti
 Customers expect their services to still be provided regardless of any.
 The next big quake affecting the the San Andreas fault line is a matter of when, not if.
 Thus, centralized systems with single points of failure become a riskier option and decentralized, distributed systems the safer choice.
+
+
+Previous research has demostrated the feasibility of a DHT-based distributed computational system.
+\cite{marozzo2012p2p} demonstrated ABC awesomely, but however had XYZ issue
+Similarly \cite{leemap} showed ABC awesomely, had XYZ as issue
+Our own research  \cite{chordreduce} was awesome, but did not load balance properly.
 
 
 Our previous work in ChordReduce \cite{chordreduce} focused on creating a decentralized distributed computing framework based off of the Chord Distributed Hash Table (DHT) and MapReduce.
@@ -373,7 +381,7 @@ This DHT contained 1000 nodes and 100000 tasks.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\linewidth]{figs/churnVsTime}
+	\includegraphics[width=1\linewidth]{figs/churnVsTime}
 	\caption{This graph shows the effect churn has on runtime in a distributed computation.
 		Runtime is measured as how many times slower the computation runs than an ideal computation, where each node receives an equal number of tasks.
 		Neither the homogeneity of the network nor work measurement affected the runtime.}
