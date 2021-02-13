@@ -55,12 +55,15 @@
 \maketitle
 
 \begin{abstract}
-Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts for 30-40\% of North American uplink traffic.
-In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
-
-Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
-
-In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload.
+Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications. In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context. Whether a DHT is being used for file access or distributing a large-scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced. To address this issue, there have been numerous methods proposed for load balancing DHTs, but often they are a centralized approach.  
+	
+In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low workloads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT. Our results show that by balancing the workload, we can achieve speedup.  
+%Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts for 30-40\% of North American uplink traffic.
+%In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
+%
+%Whether a DHT is being used for file access or distributing a large scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced. To address this issue, there have been numerous methods proposed for load balancing DHTs. It is desirable to avoid a load balancing approach that is centralized, since this would conflict with the goal of maintaining decentralized computing in DHTs.
+%
+%In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low work loads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and present the results showing that speedup can be achieved by balancing the workload.
 \end{abstract}
 
 
@@ -97,8 +100,8 @@ However, this is impossible in practice \cite{hash-outputs} \cite{thomsen2005cry
 Some nodes will end up with a larger share of the keys, while others will have few responsibilities (Table \ref{tab:medianLoads}), resulting in an unbalanced workload.
 
 We cannot rely on a centralized strategy to fix this imbalance, since that would violate the principles and objectives behind creating a fully decentralized and distributed system.
-Therefore, if we want to create strategies to act against the inequity of the load distribution, we need a strategy that individual nodes can act upon autonomously.
-These strategies need to make decisions that a node can make at a local level, using only information about their own load and the local topology they have access to.
+In order to create strategies which act against the inequity of load distribution, we need a strategy that individual nodes can act upon autonomously.
+These strategies need to be decisions a node can make at a local level, using only information about their own load and the local topology they have access to.
 
 To address these issues, we present four methods to autonomously balance the load of DHTs. 
 Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack. 
@@ -109,34 +112,27 @@ We present simulations to demonstrate the effectiveness of our strategies in ter
 %%% GRAB FROM CHORD REDUCE
 %Update section
 %expand Primary motivation
-%The primary motivation for us is creating a new viable type of platform for distributed computing.
+%The primayoutry motivation for us is creating a new viable type of platform for distributed computing.
 %TODO Bittorrent traffic  traffic surpassed netflix traffic in the lockdowns
 %TODO F@H 
-Non data center research is BIG first exascale 
-\cite{sandvineCOVID2020}
-Thus improving methods for backup and distribution is big
 
 
+The year 2020 provided us with an incredible snapshot of the significant activity of distributing applications and computing outside the usual data center context.
+Bittorrent \cite{bittorrent} accounted for about 5.23\% of global internet traffic in May 2020, when many internet users were at home all day due to COVID-19 restrictions.
+This may not sound like much, but the only applications with a greater share of internet traffic were HTTP (6.57\%), Netflix(11.42\%), and YouTube(15.94\%) \cite{sandvineCOVID2020}.
 
-Bittorrent accounted for about 5\% of global internet traffic in May 2020, beaten only by HTTP (6.57\%), Netflix(11.42\%), and YouTube(15.94\%) \cite{sandvineCOVID2020}.
-
-On the distributed computing end, Folding @ Home became the first exascale computer ever in 2020 \cite{Zimmerman2020.06.27.175430}  \cite{folding2020Review}.
-Folding @ Home \cite{larson2002folding}, which relies on volunteer computing power from users around the globe, as opposed  large clusters of servers hosted in a data center, saw explosive growth during 2020.
-This growth was due to users banding together to donate compute power to the global COVID-19 research effort.
-
-
+Most significantly, Folding @ Home became the first ever \textbf{exascale} computer in 2020 \cite{folding2020Review} \cite{Zimmerman2020.06.27.175430}.
+Folding @ Home \cite{larson2002folding}, which relies on volunteer computing power from users around the globe, as opposed large clusters of servers hosted in a data center, saw explosive growth during 2020.
+The number of users grew from around 100,000 to about 1.2 million in 2020, almost exclusively due to efforts to aid COVID-19 research, an entire order of magnitude.
 
 This shows that ``data-centerless'' distributed computing, completely decentralized networks, and P2P  systems still have a role to play and are a worth continued research.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Distributed computing is and will continue to be the approach of choice for intensive applications.
-We have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
+This continues the trend 
+%Distributed computing is and will continue to be the approach of choice for intensive applications.
+we have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
 Most distributed computing paradigms assume that the computations occur using a centralized controller, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
 First and foremost is the issue of fault-tolerance, specifically a single point of failure \cite{shvachko2010hadoop}.
-So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. Another concern is scalability.  
-%TODO scaling centralized data centers in slow, scaling decentralized is fast.
+So long as all computing resources are located in one geographical area or rely on a particular node, a power outage or catastrophic event could interrupt computations or otherwise disrupt the platform \cite{babaoglu2014people}. Another concern is scalability.
 A centralized design often assumes that the network is relatively static and may not have mechanisms to handle node failure during execution or, conversely, cannot speed up the execution of a job by adding additional workers on the fly.
 Many environments also anticipate a certain degree in homogeneity in the system.
 %Finally deploying these systems and developing programs for them has an extremely steep learning curve.
