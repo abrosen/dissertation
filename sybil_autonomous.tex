@@ -15,9 +15,9 @@
 \usepackage[english]{babel}
 %\usepackage[margin=1in]{geometry}
 
-%TODO:
 % brief background on early sybil attacks when "sybil attack" term is first used
 % Update Authors
+
 
 %\doublespacing
 
@@ -57,7 +57,8 @@
 \begin{abstract}
 Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications. In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context. Whether a DHT is being used for file access or distributing a large-scale computing job, a cryptographic hash function is used to assign keys for nodes and data. Ideally, these would be uniformly distributed across the available range, thus evenly distributing the nodes and tasks. However, this is rarely the case in practice and as a result, the workload can become highly unbalanced. To address this issue, there have been numerous methods proposed for load balancing DHTs, but often they are a centralized approach.  
 	
-In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low workloads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT. Our results show that by balancing the workload, we can achieve speedup.  
+In this paper, we present four methods to autonomously balance the load of DHTs: 1) induced churn; 2) random injection of Sybil Nodes; 3) neighbor injection; and 4) invitation of nodes with low workloads. Each approach is completely decentralized, requiring minimal overhead, with individual nodes making decisions based only upon local information. What makes our approach unique is that the strategies rely on using the inherent churn in a DHT or by a variation of the Sybil attack to balance the workload. We simulate the four strategies on a Chord DHT and show they significantly rebalance the workload in a DHT. The strategy of randomly injecting virtual ``Sybil''  nodes performed the best in terms of balance and speedup. 
+
 %Distributed Hash Tables (DHTs) are an integral foundation for a variety of modern internet applications, such as BitTorrent, which accounts for 30-40\% of North American uplink traffic.
 %In previous work, we have shown that DHTs can also be used as a means of organizing a large number of workers to tackle large-scale computing problems in a fault tolerant context.
 %
@@ -76,14 +77,22 @@ In this paper, we present four methods to autonomously balance the load of DHTs:
 
 \section{Introduction}
 
-%\subsection{2-4 sentences telling people what you will talk about in the paper}
+
+
+The year 2020 provided us with an incredible snapshot of the significant activity of distributing applications and computing outside the usual data center context.
+Bittorrent \cite{bittorrent} accounted for about 5.23\% of global internet traffic in May 2020, when many internet users were at home all day due to COVID-19 restrictions.
+This may not sound like much, but the only applications with a greater share of internet traffic were HTTP (6.57\%), Netflix(11.42\%), and YouTube(15.94\%) \cite{sandvineCOVID2020}.
+
+Most significantly, Folding @ Home became the first ever \textbf{exascale} computer in 2020 \cite{folding2020Review} \cite{Zimmerman2020.06.27.175430}.
+Folding @ Home \cite{larson2002folding}, which relies on volunteer computing power from users around the globe, as opposed large clusters of servers hosted in a data center, saw explosive growth during 2020.
+The number of users grew from around 100,000 to about 1.2 million in 2020, almost exclusively due to efforts to aid COVID-19 research, an entire order of magnitude.
+
+
+%TODO add transition between paragraphs 2 and 3 : ANU
 
 Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
-DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the BitTorrent \cite{bittorrent} and IPFS \cite{benet2014ipfs}.
+DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the aforementioned BitTorrent \cite{bittorrent} and IPFS \cite{benet2014ipfs}.
 DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing  \cite{marozzo2012p2p} \cite{leemap}.
-%Still add block chain reference? No real relations between DHTS and blockchain found
-%TODO add bit about COMPLETELY distributing computing re F@H and COVID 
-
 
 
 Our previous research \cite{chordreduce} examined using a DHT as the organizing mechanism for a distributed platform.
@@ -103,32 +112,24 @@ We cannot rely on a centralized strategy to fix this imbalance, since that would
 In order to create strategies which act against the inequity of load distribution, we need a strategy that individual nodes can act upon autonomously.
 These strategies need to be decisions a node can make at a local level, using only information about their own load and the local topology they have access to.
 
+%TODO define churn and sybil hereish or about : ANDREW
+
 To address these issues, we present four methods to autonomously balance the load of DHTs. 
 Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack. 
 We present simulations to demonstrate the effectiveness of our strategies in terms of load balancing and resulting speedup.
 
-\section{Motivation and Related Work}
+\section{Related Work}
 
 %%% GRAB FROM CHORD REDUCE
 %Update section
 %expand Primary motivation
 %The primayoutry motivation for us is creating a new viable type of platform for distributed computing.
-%TODO Bittorrent traffic  traffic surpassed netflix traffic in the lockdowns
-%TODO F@H 
 
 
-The year 2020 provided us with an incredible snapshot of the significant activity of distributing applications and computing outside the usual data center context.
-Bittorrent \cite{bittorrent} accounted for about 5.23\% of global internet traffic in May 2020, when many internet users were at home all day due to COVID-19 restrictions.
-This may not sound like much, but the only applications with a greater share of internet traffic were HTTP (6.57\%), Netflix(11.42\%), and YouTube(15.94\%) \cite{sandvineCOVID2020}.
-
-Most significantly, Folding @ Home became the first ever \textbf{exascale} computer in 2020 \cite{folding2020Review} \cite{Zimmerman2020.06.27.175430}.
-Folding @ Home \cite{larson2002folding}, which relies on volunteer computing power from users around the globe, as opposed large clusters of servers hosted in a data center, saw explosive growth during 2020.
-The number of users grew from around 100,000 to about 1.2 million in 2020, almost exclusively due to efforts to aid COVID-19 research, an entire order of magnitude.
-
-This shows that ``data-centerless'' distributed computing, completely decentralized networks, and P2P  systems still have a role to play and are a worth continued research.
-This continues the trend 
-%Distributed computing is and will continue to be the approach of choice for intensive applications.
-we have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
+%This shows that ``data-centerless'' distributed computing, completely decentralized networks, and P2P  systems still have a role to play and are a worth continued research.
+%This continues the trend 
+Distributed computing is and will continue to be the approach of choice for intensive applications.
+We have seen this over the past decades with the development of cloud computing \cite{p2p-cloud}, volunteer computing frameworks like BOINC \cite{shvachko2010hadoop}, and frameworks such a MapReduce\cite{mapreduce} and Hadoop \cite{hadoop}.
 Most distributed computing paradigms assume that the computations occur using a centralized controller, if not explicitly designed to be used in large datacenters \cite{hadoopAssumptions} and the majority of research has been focused there.
 One enormous benefit is a centralized system has much greater control in ensuring load-balancing, but this is not without risks and issues specific to centralized approaches.
 First and foremost is the issue of fault-tolerance, specifically a single point of failure \cite{shvachko2010hadoop}.
@@ -153,6 +154,11 @@ However, this was an acceptable cost as P2P-MapReduce would lose less time from 
 While P2P-MapReduce is decentralized, it still relies on a very definite parent/child hierarchy for organization, computations, and scaling. 
 During simulation, 1\% of the entire network was assigned as parent nodes. This means for a simulation of 40000 nodes, 400 were required to organize and coordinate jobs, rendering them unable to do any processing.  
 In addition, a loosely-consistent DHT such as JXTA can be much slower and fails to maintain the same level of guarantees as an actual DHT, such as Chord \cite{5359174}.   
+
+
+
+
+%TODO 1-2 sentence, what is chord.  1 sentence why care.  ANDREW 
 %
 %Marozzo et al. \cite{marozzo2012p2p} shows that adding additional fault-tolerance features to a MapReduce architecture is worth the added cost of maintenance, as the time lost due to node failures is greatly reduced.  However, Marozzo et al. do not explore the benefits of leveraging the properties of a P2P protocol to reduce the complexity of the architecture and completely distribute the responsibility of the task across the network.  As a result, P2P-MapReduce still relies on a ratio of masters to slaves to coordinate and organize the network, meaning a percentage of the network is unable to contribute processing power to the actual solving of a problem.   
 
@@ -199,7 +205,8 @@ This paper serves to prove our hypothesis that inherent random churn can load ba
 We also set out to show that we can use this in a highly controlled manner to greater effect.
 We present three additional strategies that nodes can use to redistribute the workload in the network.
 Each of these three strategies relies on nodes creating virtual nodes, as a result they are represented multiple times in the network.
-The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.
+The idea behind this is that a node with low work can create virtual nodes to seek out and acquire work from other nodes.  
+Nodes are not able to request additional work from other nodes, as that would violate the organizing principles that define DHTs, in which nodes are responsible for files or processes that are ``closest'' to them. 
 
 We call our virtual nodes in this scenario Sybils, as this duplication is almost identical to the way the Sybil attack  \cite{sybil} creates virtual nodes in a P2P system.
 None of our strategies require a centralized organizer, but instead a way for a node to check the amount of files or tasks it and its Sybils are responsible for.
@@ -228,7 +235,6 @@ In this context, tasks and nodes are interchangeable, as each node in a DHT perf
 
 \begin{table}
 	\centering
-	%TODO Move text from caption to body at ref point.
 	\caption{The median distribution of tasks (or files) among nodes.  We can see the standard deviation is fairly close to the expected mean workload ($\frac{tasks}{nodes}$). Each row is the average of 100 trials.  Experiments show there is practically little deviation in the median load of the network.}
 	\begin{tabular}{r r r r}
 		Nodes & Tasks & Median Workload & $\sigma$ \\ \hline
@@ -258,7 +264,7 @@ This means that 50\% of the network has less significantly less tasks than the a
 
 
 
-
+%TODO add zoomed in view : ANDREW
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figs/workloadDistribution}
@@ -304,13 +310,13 @@ In this setting, a few nodes are responsible for the bulk of the work, and in a 
 As we will see in our simulations, if nodes with little or no work can acquire some of this work, it will have a significant impact on the network's runtime.
 
 
-
+%TODO Swap sections 4 and 5 BEN
 \section{Simulation Setup}
 \label{sec:auto-simulation}
 
 %We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
 
-
+%TODO add link and citation to project url. ANDREW
 We simulate our strategies on a Chord DHT \cite{chord}.
 Nodes obtain an ID, drawn from a call to SHA1 \cite{sha1}.
 Any data in the network is given a key in a similar manner.
@@ -349,6 +355,7 @@ First, we will informally define the vocabulary we use to discuss our simulation
 \subsubsection*{Tick} 
 We will be using an abstract \textit{tick} to measure time.  
 We consider the tick to be the amount of time it takes a node to complete one task (or more depending on our variables, see below) and perform the appropriate maintenance to keep the network consistent and healthy.
+It does not have meaning in actual implementations, but provides a metric to compare speedups from different strategies.
 
 \subsubsection*{Maintenance} We assume nodes use the active, aggressive strategy from ChordReduce \cite{chordreduce}.
 Every maintenance cycle, each node checks and updates its list of neighbors (successors and predecessors in Chord) and responds appropriately. 
@@ -382,7 +389,7 @@ This number is typically a few orders of magnitude greater than the network size
 This represents both the chance each individual node has of leaving (or joining) the network each tick.
 It also corresponds to the fraction of nodes we expect to leave the network each tick.
 Churn can be self induced or a result of actual turbulence in the network.
-Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rate are equal.
+Like most analyses of churn \cite{marozzo2012p2p}, we assume churn is constant throughout the experiment and that the joining and leaving rates are equal.
 The default value is 0.
 \subsubsection*{Max Sybils} \texttt{maxSybils} is the maximum number of Sybils a node can have at once.  We tested 5, the default, and 10.
 \subsubsection*{Sybil Threshold} The \texttt{sybilThreshold} dictates the number of tasks a node must have before it can create a Sybil.  The default setting is having no work (0 tasks), mean a node must finish all their tasks before seeking to obtain new work.
@@ -396,7 +403,7 @@ Nodes also keep track of the same number of predecessors.
 
 \subsection{Outputs}
 The most important output was the number of ticks it took for the experiment to complete.
-We compared this runtime to the what we call the ``ideal runtime,'' which is our expected runtime if every node in the network was given an equal number of tasks and performed them without any churn or creating any Sybils.
+We compared this runtime to what we call the ``ideal runtime,'' which is our expected runtime if every node in the network was given an equal number of tasks and performed them without any churn or creating any Sybils.
 For example, consider a network with 1,000 nodes and 100,000 tasks, where each node consumes a single task each tick. 
 This network has an ideal runtime of 100 ticks ($ \frac{100000}{1000} = 100$).
 
@@ -562,7 +569,7 @@ This means the network had the defaults for variable.
 %	
 	
 	
-	A more detailed view of how this happens is shown in Figures \ref{fig:churnStableHist0}, \ref{fig:churnStableHist5}, and \ref{fig:churnStableHist35}.
+	A more detailed view of how this happens is shown in Figures \ref{fig:churnStableHist0}, \ref{fig:churnStableHist5}, and \ref{fig:churnStableHist35} (note that the y-axis in each of the graphs have differing maximal values).
 	These figures show histograms of workload distribution for two networks at different ticks.
 	One network uses 0.01 churn per tick to autonomously load balance the workload, the other uses no strategy at all.
 	
@@ -611,7 +618,7 @@ This means the network had the defaults for variable.
 	As we discussed earlier, random injection does this by means of the Sybil Attack \cite{sybil}, with nodes creating virtual Sybil nodes when they are underutilized.
 	
 	We found that the strategy of having under-utilized nodes randomly creating Sybil nodes works well, approaching very close to the ideal time.
-	Figures \ref{fig:randomStableHist5} and \ref{fig:churnStableHist35} compare two networks with identical starting configurations as the network performs the computations.
+	Figures \ref{fig:randomStableHist5} and \ref{fig:randomStableHist35} compare two networks with identical starting configurations as the network performs the computations.
 	These networks have 1000 nodes and 100,000 tasks.  
 	The network using random injection fared significantly better than those using no strategy.
 	
@@ -820,15 +827,14 @@ This means the network had the defaults for variable.
 	
 	Other variables and the ratio of tasks to nodes appeared to have no effect on the runtime factor.\footnote{Churn was not tested on the invitation strategy, but we suspect it has the same effect as in the neighbor strategy.}
 	The single exception was when the network was heterogeneous and each node could complete a number of tasks equal to its strength.
-	Like the neighbor injection strategy, networks under these conditions faired much worse, with our 1000 node/ 100000 tasks networks base average runtime factor being 6.097.
+	Like the neighbor injection strategy, networks under these conditions fared much worse, with our 1000 node/ 100000 tasks networks base average runtime factor being 6.097.
 	
 	The invitation strategy load balances better than smart neighbors and uses less bandwidth than it and neighbor injection, since this strategy is reactive, rather than proactive, like random injection or neighbor injection.
 	
 	\section{Conclusions and Future Work}
 	In this paper we presented four strategies for autonomous load balancing in a DHT. 
-	The strategies either exploited the inherant churn property of DHTs or utilized a variation of the Sybil attack. 
-	Each strategy has nodes making independent local decisions and works in conjuction with the dynamic nature of DHTs and its changing topology.
-	%TODO if my results are so obivous, then why hasn't it been published?
+	The strategies either exploited the inherent churn property of DHTs or utilized a variation of the Sybil attack. 
+	Each strategy has nodes making independent local decisions and works in conjunction with the dynamic nature of DHTs and its changing topology.
 	
 	Our results are notable for a number reasons.
 	First, is the confirmation that churn can have a net positive effect on the runtime of the network.
