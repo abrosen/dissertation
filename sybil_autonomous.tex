@@ -311,6 +311,84 @@ In this setting, a few nodes are responsible for the bulk of the work, and in a 
 As we will see in our simulations, if nodes with little or no work can acquire some of this work, it will have a significant impact on the network's runtime.
 
 
+\section{Proposed Strategies}
+\label{sec:strategies}
+
+For our analysis, we examined four different strategies for nodes to perform autonomous load balancing.
+We first show the effects of churn on the speed of a distributed computation.
+We then look at three different strategies, in which nodes take a more tactical approach for creating churn and affecting the runtime.
+
+Specifically, nodes perform a limited and controlled Sybil attack \cite{sybil} on their own network in an effort to acquire work with their virtual nodes.
+Our strategies dictate when and where these Sybil nodes are created.
+We discuss the effectiveness of each of the strategies and present the results of our simulations in Section \ref{sec:autonomous-results}.
+
+
+
+\subsection{Induced Churn}
+\label{sec:strat-churn}
+Our first strategy, \textit{Induced Churn}, relies solely on churn to perform load balancing.
+This churn can either be a product of normal network activity or self-induced.
+By self-induced churn, we mean that each node generates a random floating point number between 0 and 1.
+If the number is $\leq churnRate$, the node shuts down and leaves the network and gets added to the pool of nodes waiting to join.
+
+Similarly, we have a pool of waiting nodes that begins at the same initial size as the network.
+When they generate an appropriate random number, they join the network and leave the waiting pool.
+We assume that nodes enter and leave the network at the same rate.
+Because the initial size of the network and the pool of waiting nodes is the same and nodes move between one another at the same random rate, the size of either does not fluctuate wildly.
+
+As we have previously discussed, nodes in our network model actively back up their data and tasks to the number of successors in case of failure.
+In addition, when a node joins, it acquires all the work it is responsible for.
+While this model is rarely implemented for DHTs, it is often assumed to be the way DHTs operate. 
+We have implemented this in ChordReduce\cite{chordreduce} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling incredibly high amounts of churn.
+
+The consequences of this are that a node suddenly dying is of minimal impact to the network.
+This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
+Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquire work.
+
+This strategy acts as a baseline with which to compare the other strategies, as it is no more than an overcomplicated way of turning machines off and on again. 
+All strategies below are attempts to do better than random chance.
+However, this strategy also serves to confirm the speedup phenomenon we observed in our previous work on a distributed, decentralized MapReduce framework \cite{chordreduce}.
+
+\subsection{Random Injection}
+\label{sec:strat-randomInject}
+Our second strategy we dubbed \textit{Random Injection}.
+In this strategy, once a node's workload was at or below the \texttt{sybilThreshold}, the node would attempt to acquire more work by creating a Sybil node at a random address.
+
+A node compares its workload to the \texttt{sybilThreshold} and decides whether or not to make a Sybil.
+This check occurs every 5 ticks.
+A node can also have multiple Sybils, up to \texttt{maxSybils} in a homogeneous network or the node's \texttt{strength} in a heterogeneous network.\footnote{No benefit was shown by increasing \texttt{maxSybils} beyond 10.}
+If a node has at least one Sybil, but no work, it has its Sybils quit the network.
+We limit each node to creating a single Sybil during this decision to avoid overwhelming the network.
+
+%As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisingly effective and comes close to ideal runtimes.
+
+
+
+\subsection{Neighbor Injection}
+\label{sec:strat-neighbor}
+\textit{Neighbor Injection} also creates Sybils, but in this case, nodes act on a more restricted range in an attempt to limit the network traffic.
+Nodes with \texttt{sybilThreshold} or less tasks attempt to acquire more work by placing a Sybil among its successors.
+Specifically, it looks for the biggest range among its successors and creates a Sybil in that range.
+%Justification required?
+
+This range strategy of finding the largest range and injecting assumes that the node with the largest range of responsibility will have been allocated the most work.
+This is a sensible assumption since the larger the range of a node's responsibility, the more \textit{potential} tasks it can receive. 
+We compare this estimation strategy to actually querying the neighbor and asking how many tasks they have.
+An estimation, if accurate, would be preferable to querying the nodes, it can be done without any communication with the successor nodes.
+
+To avoid constant spamming of a range, once a node creates a Sybil, but does not acquire work, it may be advisable to mark that range as invalid for Sybil nodes to prevent repeated attempts in the same range. 
+
+
+\subsection{Invitation}
+The \textit{Invitation} strategy is the reverse of Neighbor Injection.
+In  this strategy, nodes with a higher than desired level of work announces it needs help to its predecessors.
+%communication to determine the least amounts of tasks?
+The predecessor with the least amount of tasks less than or equal to the \texttt{sybilThreshold} creates a Sybil to acquire work from the node.
+%Ask about ^^ this
+It is possible for an invitation to get more work to be refused if no  predecessor is at the \texttt{sybilThreshold} or each predecessor has too many Sybils.
+Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold} parameter.
+
+
 %TODO Swap sections 4 and 5 BEN
 \section{Simulation Setup}
 \label{sec:auto-simulation}
@@ -414,82 +492,6 @@ We prefer to use this runtime factor for comparisons since it allows us to compa
 We also collected data on the average work per tick and statistical information about how the tasks are distributed throughout the network.
 We additionally performed detailed observations of how the workload is  distributed and redistributed throughout the network during the first 50 ticks.
 
-\section{Proposed Strategies}
-\label{sec:strategies}
-
-For our analysis, we examined four different strategies for nodes to perform autonomous load balancing.
-We first show the effects of churn on the speed of a distributed computation.
-We then look at three different strategies, in which nodes take a more tactical approach for creating churn and affecting the runtime.
-
-Specifically, nodes perform a limited and controlled Sybil attack \cite{sybil} on their own network in an effort to acquire work with their virtual nodes.
-Our strategies dictate when and where these Sybil nodes are created.
-We discuss the effectiveness of each of the strategies and present the results of our simulations in Section \ref{sec:autonomous-results}.
-
-
-
-\subsection{Induced Churn}
-\label{sec:strat-churn}
-Our first strategy, \textit{Induced Churn}, relies solely on churn to perform load balancing.
-This churn can either be a product of normal network activity or self-induced.
-By self-induced churn, we mean that each node generates a random floating point number between 0 and 1.
-If the number is $\leq churnRate$, the node shuts down and leaves the network and gets added to the pool of nodes waiting to join.
-
-Similarly, we have a pool of waiting nodes that begins at the same initial size as the network.
-When they generate an appropriate random number, they join the network and leave the waiting pool.
-We assume that nodes enter and leave the network at the same rate.
-Because the initial size of the network and the pool of waiting nodes is the same and nodes move between one another at the same random rate, the size of either does not fluctuate wildly.
-
-As we have previously discussed, nodes in our network model actively back up their data and tasks to the number of successors in case of failure.
-In addition, when a node joins, it acquires all the work it is responsible for.
-While this model is rarely implemented for DHTs, it is often assumed to be the way DHTs operate. 
-We have implemented this in ChordReduce\cite{chordreduce} and demonstrated that the network is capable from recovering from quite catastrophic failures and handling incredibly high amounts of churn.
-
-The consequences of this are that a node suddenly dying is of minimal impact to the network.
-This is because a node's successor will quickly detect the loss of the node and know to be responsible for the node's work.
-Conversely, a node joining in this model can be a potential boon to the network by joining a portion of the network with a lot of tasks and immediately acquire work.
-
-This strategy acts as a baseline with which to compare the other strategies, as it is no more than an overcomplicated way of turning machines off and on again. 
-All strategies below are attempts to do better than random chance.
-However, this strategy also serves to confirm the speedup phenomenon we observed in our previous work on a distributed, decentralized MapReduce framework \cite{chordreduce}.
-
-\subsection{Random Injection}
-\label{sec:strat-randomInject}
-Our second strategy we dubbed \textit{Random Injection}.
-In this strategy, once a node's workload was at or below the \texttt{sybilThreshold}, the node would attempt to acquire more work by creating a Sybil node at a random address.
-
-A node compares its workload to the \texttt{sybilThreshold} and decides whether or not to make a Sybil.
-This check occurs every 5 ticks.
-A node can also have multiple Sybils, up to \texttt{maxSybils} in a homogeneous network or the node's \texttt{strength} in a heterogeneous network.\footnote{No benefit was shown by increasing \texttt{maxSybils} beyond 10.}
-If a node has at least one Sybil, but no work, it has its Sybils quit the network.
-We limit each node to creating a single Sybil during this decision to avoid overwhelming the network.
-
-%As we discuss in Section \ref{sec:autonomous-results}, this strategy is surprisingly effective and comes close to ideal runtimes.
-
-
-
-\subsection{Neighbor Injection}
-\label{sec:strat-neighbor}
-\textit{Neighbor Injection} also creates Sybils, but in this case, nodes act on a more restricted range in an attempt to limit the network traffic.
-Nodes with \texttt{sybilThreshold} or less tasks attempt to acquire more work by placing a Sybil among its successors.
-Specifically, it looks for the biggest range among its successors and creates a Sybil in that range.
-%Justification required?
-
-This range strategy of finding the largest range and injecting assumes that the node with the largest range of responsibility will have been allocated the most work.
-This is a sensible assumption since the larger the range of a node's responsibility, the more \textit{potential} tasks it can receive. 
-We compare this estimation strategy to actually querying the neighbor and asking how many tasks they have.
-An estimation, if accurate, would be preferable to querying the nodes, it can be done without any communication with the successor nodes.
-
-To avoid constant spamming of a range, once a node creates a Sybil, but does not acquire work, it may be advisable to mark that range as invalid for Sybil nodes to prevent repeated attempts in the same range. 
-
-
-\subsection{Invitation}
-The \textit{Invitation} strategy is the reverse of Neighbor Injection.
-In  this strategy, nodes with a higher than desired level of work announces it needs help to its predecessors.
-%communication to determine the least amounts of tasks?
-The predecessor with the least amount of tasks less than or equal to the \texttt{sybilThreshold} creates a Sybil to acquire work from the node.
-%Ask about ^^ this
-It is possible for an invitation to get more work to be refused if no  predecessor is at the \texttt{sybilThreshold} or each predecessor has too many Sybils.
-Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold} parameter.
 
 
 
