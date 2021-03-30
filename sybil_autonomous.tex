@@ -88,10 +88,9 @@ Folding @ Home \cite{larson2002folding}, which relies on volunteer computing pow
 The number of users grew from around 100,000 to about 1.2 million in 2020, almost exclusively due to efforts to aid COVID-19 research, an entire order of magnitude.
 
 
-%TODO add transition between paragraphs 2 and 3 : ANU
 
-Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems.
-DHTs are most frequently used to construct the overlays of P2P file-sharing systems, such as the aforementioned BitTorrent \cite{bittorrent} and IPFS \cite{benet2014ipfs}.
+Through these examples, we can see that multi-user distributed applications and content distribution systems are highly relevant.
+Distributed Hash Tables (DHTs) are a class of well researched decentralized key-value storage systems that are most frequently used to construct the overlays of P2P file-sharing systems, such as the aforementioned BitTorrent \cite{bittorrent} and IPFS \cite{benet2014ipfs}.
 DHTs have also been used in many unorthodox applications, such as machine learning \cite{liparameter} and, most relevant for our discussion, distributed computing  \cite{marozzo2012p2p} \cite{leemap}.
 
 
@@ -112,10 +111,12 @@ We cannot rely on a centralized strategy to fix this imbalance, since that would
 In order to create strategies which act against the inequity of load distribution, we need a strategy that individual nodes can act upon autonomously.
 These strategies need to be decisions a node can make at a local level, using only information about their own load and the local topology they have access to.
 
-%TODO define churn and sybil hereish or about : ANDREW
+
 
 To address these issues, we present four methods to autonomously balance the load of DHTs. 
-Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack, in which one node assumes multiple identities. 
+Our strategies revolve around two key points.
+First, we exploit the mechanisms DHTs use to handle churn, the constant change to the network topology caused nodes continually entering and leaving a distributed system.
+This is combined with a variation of the Sybil attack, in which one node assumes multiple identities. 
 We present simulations to demonstrate the effectiveness of our strategies in terms of load balancing and resulting speedup.
 
 \section{Related Work}
@@ -158,7 +159,6 @@ In addition, a loosely-consistent DHT such as JXTA \cite{5359174} can be much sl
 
 
 
-%TODO 1-2 sentence, what is chord.  1 sentence why care.  ANDREW 
 %
 %Marozzo et al. \cite{marozzo2012p2p} shows that adding additional fault-tolerance features to a MapReduce architecture is worth the added cost of maintenance, as the time lost due to node failures is greatly reduced.  However, Marozzo et al. do not explore the benefits of leveraging the properties of a P2P protocol to reduce the complexity of the architecture and completely distribute the responsibility of the task across the network.  As a result, P2P-MapReduce still relies on a ratio of masters to slaves to coordinate and organize the network, meaning a percentage of the network is unable to contribute processing power to the actual solving of a problem.   
 
@@ -389,7 +389,7 @@ It is possible for an invitation to get more work to be refused if no  predecess
 Nodes determine whether or not they are overburdened using the \texttt{sybilThreshold} parameter.
 
 
-%TODO Swap sections 4 and 5 BEN
+
 \section{Simulation Setup}
 \label{sec:auto-simulation}
 
@@ -800,7 +800,7 @@ This means the network had the defaults for variable.
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/inviteStableHist35}
-		\caption[Invitiation vs no strategy after 35 ticks]{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
+		\caption[Invitation vs no strategy after 35 ticks]{At 35 ticks, we can see the network using the invitation strategy perform markedly better than the network using no strategy. The highest load is around 500 tasks in the network using invitation, compared to approximately 650 tasks in the network using no strategy.}
 		\label{fig:inviteStableHist35}
 	\end{figure}
 	
