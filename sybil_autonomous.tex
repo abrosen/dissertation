@@ -115,7 +115,7 @@ These strategies need to be decisions a node can make at a local level, using on
 %TODO define churn and sybil hereish or about : ANDREW
 
 To address these issues, we present four methods to autonomously balance the load of DHTs. 
-Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack. 
+Our strategies exploit the inherent churn in a DHT and use a variation of the Sybil attack, in which one node assumes multiple identities. 
 We present simulations to demonstrate the effectiveness of our strategies in terms of load balancing and resulting speedup.
 
 \section{Related Work}
@@ -153,7 +153,7 @@ However, this was an acceptable cost as P2P-MapReduce would lose less time from 
 
 While P2P-MapReduce is decentralized, it still relies on a very definite parent/child hierarchy for organization, computations, and scaling. 
 During simulation, 1\% of the entire network was assigned as parent nodes. This means for a simulation of 40000 nodes, 400 were required to organize and coordinate jobs, rendering them unable to do any processing.  
-In addition, a loosely-consistent DHT such as JXTA can be much slower and fails to maintain the same level of guarantees as an actual DHT, such as Chord \cite{5359174}.   
+In addition, a loosely-consistent DHT such as JXTA \cite{5359174} can be much slower and fails to maintain the same level of guarantees as an actual DHT, such as Chord \cite{chord}.   
 
 
 
@@ -182,6 +182,7 @@ Fault tolerance is of particular importance to DHTs, since their primary use cas
 These systems experience high levels of churn-- disruptions to the network topology as a result of nodes entering and leaving the network.
 %However, without a centralized organizer, the network needs some kind of protocol to coordinate the various parts in the network.
 As part of our previous research, we developed a highly robust and distributed MapReduce framework based on Chord, called ChordReduce \cite{chordreduce}.
+
 
 %%%%%%%
 
@@ -316,7 +317,6 @@ As we will see in our simulations, if nodes with little or no work can acquire s
 
 %We simulate an UrDHT Voronoi based-network in multiple dimensions. \footnote{UrDHT in one dimension is a Chord ring with the definition of responsibility changed to a node being responsible to all data closest to it. A 2-dimensional network will emulate the performance of CAN.}
 
-%TODO add link and citation to project url. ANDREW
 We simulate our strategies on a Chord DHT \cite{chord}.
 Nodes obtain an ID, drawn from a call to SHA1 \cite{sha1}.
 Any data in the network is given a key in a similar manner.
@@ -333,7 +333,7 @@ Another assumption is that nodes do not have control in choosing their IDs from 
 This means that nodes cannot automatically change their spacing to ensure they are all evenly spread out across the network.
 Likewise, nodes cannot create Sybils exactly where they would like, but would have to search for an appropriate ID in between two other nodes.
 We discussed this process in previous work and showed that it is extremely quick for a node to do so \cite{sybil-analysis}.
-
+All source code can be found on the simulation's GitHub \cite{simulation-source}.
 
 
 %Smaller chunking results in more files spread throughout the network and a greater chance of the data being evenly spread across the network 
